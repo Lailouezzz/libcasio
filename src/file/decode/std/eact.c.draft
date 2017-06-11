@@ -1,0 +1,502 @@
+/* ****************************************************************************
+ * file/decode/std/eact.c -- decode an e-activity file.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ * ************************************************************************* */
+#include "../decode.h"
+
+/* ************************************************************************* */
+/*  Content parsing                                                          */
+/* ************************************************************************* */
+/* line content parsing function prototype */
+static int eact_decode_line(casio_line_t *handle, uint8_t *buf, size_t size,
+	uint_fast8_t type);
+
+/**
+ *	eact_decode_content_eact:
+ *	Decodes an EACT in an EACT, from the subheader.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	bufsize		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_content_eact(casio_line_t *handle, uint8_t *buf,
+	size_t bufsize)
+{
+	int err;
+	unsigned long int i;
+
+	/* initialize the handle */
+	handle->casio_line_type  = casio_linetype_eact;
+	handle->casio_line_count = 0;
+	handle->casio_line__size = 0;
+	handle->casio_line_lines = NULL;
+
+	/* check if the buffer is non-empty */
+	if (!bufsize) return (0);
+
+	/* get e-act subheader */
+	if (bufsize < sizeof(casio_eact_content_eact_header_t))
+		return (casio_error_eof);
+	casio_eact_content_eact_header_t ehd;
+	memcpy(&ehd, buf, sizeof(casio_eact_content_eact_header_t));
+
+	/* get the line descriptors
+	 *	there is actually a "bonus" line descriptor at the end, but the
+	 *	fact that we're using offsets lets us unaware of it. */
+	uint32_t count = be32toh(ehd.casio_eact_content_eact_header_line_count);
+	if (bufsize < sizeof(casio_eact_content_eact_header_t)
+		+ (count + 1) * sizeof(casio_eact_line_descriptor_t))
+		return (casio_error_eof);
+	casio_eact_line_descriptor_t *lds =
+		(void*)&buf[sizeof(casio_eact_content_eact_header_t)];
+
+	/* prepare the handle */
+	handle->casio_line_count = 0;
+	handle->casio_line__size = count;
+	handle->casio_line_lines =
+		malloc(sizeof(casio_line_t*) * handle->casio_line__size);
+	if (!handle->casio_line_lines) return (casio_error_alloc);
+	memset(handle->casio_line_lines, 0,
+		sizeof(casio_line_t*) * handle->casio_line__size);
+
+	/* browse the lines */
+	msg((ll_info, "%" CASIO_PRIu32 " lines to browse", count));
+	if (count)
+		lds[0].casio_eact_line_descriptor_offset =
+			be32toh(lds[0].casio_eact_line_descriptor_offset << 8);
+	for (i = 0; i < count; i++) {
+		/* allocate line */
+		casio_line_t *line = malloc(sizeof(casio_line_t));
+		err = casio_error_alloc;
+		if (!line) goto fail;
+
+		/* get line size
+		 *	for this, we'll calculate the distance to the next line offset.
+		 *	if there is no next line (last line), then the data left will be
+		 *	attributed to the line. */
+		size_t linesize;
+		if (i == count - 1)
+			linesize = bufsize - lds[i].casio_eact_line_descriptor_offset;
+		else {
+			/* correct endianess of the next element */
+			lds[i + 1].casio_eact_line_descriptor_offset =
+				be32toh(lds[i + 1].casio_eact_line_descriptor_offset << 8);
+			/* then calculate */
+			linesize = lds[i + 1].casio_eact_line_descriptor_offset
+				- lds[i].casio_eact_line_descriptor_offset;
+		}
+
+		/* store current info */
+		uint_fast8_t entry_type = lds[i].casio_eact_line_descriptor_type;
+		uint_fast32_t entry_offset =
+			lds[i].casio_eact_line_descriptor_offset;
+
+		/* check if buffer is big enough */
+		err = casio_error_eof;
+		if (entry_offset + linesize > bufsize)
+			goto loop_fail;
+
+		/* look for the line type */
+		err = eact_decode_line(line, &buf[entry_offset], linesize, entry_type);
+		if (err) goto loop_fail;
+
+		/* store and continue */
+		handle->casio_line_lines[handle->casio_line_count++] = line;
+		continue;
+
+	loop_fail:
+		casio_free_line_content(line);
+		free(line);
+		goto fail;
+	}
+
+	/* no error */
+	return (0);
+fail:
+	casio_free_line_content(handle);
+	return (err);
+}
+
+/* ************************************************************************* */
+/*  Content Type correspondance list                                         */
+/* ************************************************************************* */
+/* Correspondance type */
+struct eact_content_type_corresp {
+	const char *type;
+
+	int (*decode)(casio_line_t*, uint8_t*, size_t);
+};
+
+/* Correspondance list */
+static struct eact_content_type_corresp eact_content_types[] = {
+	{"@EACT\0\0", eact_decode_content_eact},
+	{}
+};
+
+/* ************************************************************************* */
+/*  Line parsing                                                             */
+/* ************************************************************************* */
+/**
+ *	eact_decode_line_content:
+ *	Decodes an E-Activity content.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_content(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	/* read content header */
+	size_t could_read = min(size, sizeof(casio_eact_content_header_t));
+	if (could_read < 9) return (casio_error_eof);
+	casio_eact_content_header_t hd = {};
+	memcpy(&hd, buf, could_read);
+
+	/* store info */
+	bzero(handle->casio_line_name, 17);
+	size_t namesize = max(could_read - 8, 16);
+	strncpy(handle->casio_line_name, (char*)hd.casio_eact_content_header_name,
+		namesize);
+
+	/* log info */
+	msg((ll_info, "Type is '%.8s'", hd.casio_eact_content_header_type));
+	msg((ll_info, "Name is '%s'", handle->casio_line_name));
+
+	/* prepare for next */
+	buf += could_read;
+	size -= could_read;
+
+	/* check for content type */
+	struct eact_content_type_corresp *ctype = eact_content_types;
+	while (ctype->decode) {
+		if (!memcmp(hd.casio_eact_content_header_type, ctype->type, 8))
+			break ;
+		ctype++;
+	}
+
+	/* print the content */
+#if !defined(LIBCASIO_DISABLED_LOG)
+	if (!ctype->decode)
+		msg((ll_error, "Type is unmanaged!"));
+
+	if (!size) log_info("Content was name-only.");
+	else if (!ctype->decode) {
+		msg((ll_info, "Content was:"));
+		mem((ll_info, buf, size));
+	}
+#endif
+
+	/* then decode */
+	return (ctype->decode ? (*ctype->decode)(handle, buf, size) : 0);
+}
+
+/**
+ *	eact_decode_line_calculation:
+ *	Decodes a calculation.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_calculation(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	(void)handle;
+	(void)buf;
+	(void)size;
+	/* TODO */
+	msg((ll_info, "Calculation raw data is:"));
+	mem((ll_info, buf, size));
+	return (0);
+}
+
+/**
+ *	eact_decode_line_result:
+ *	Decodes a calculation result.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_result(casio_line_t *handle,
+	uint8_t *buf, size_t size)
+{
+	(void)handle;
+	(void)buf;
+	(void)size;
+	/* TODO */
+	msg((ll_info, "Calculation result raw data is:"));
+	mem((ll_info, buf, size));
+	return (0);
+}
+
+/**
+ *	eact_decode_line_stdheading:
+ *	Decodes standard heading line.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_stdheading(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	(void)size;
+
+	/* log */
+	msg((ll_info, "Standard heading raw data is:"));
+	mem((ll_info, buf, size));
+
+	/* set handle info */
+	handle->casio_line_type = casio_linetype_text;
+	handle->casio_line_content = strdup((char*)buf);
+	if (!handle->casio_line_content) return (casio_error_alloc);
+
+	/* no error */
+	return (0);
+}
+
+/**
+ *	eact_decode_line_picture:
+ *	Decodes picture line.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_picture(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	(void)size;
+
+	/* log */
+	msg((ll_info, "Picture raw data is:"));
+	mem((ll_info, buf, size));
+
+	/* big endian to host endianness */
+	FONTCHARACTER *s = (FONTCHARACTER*)buf;
+	FONTCHARACTER *p = s - 1;
+	while (*(++p)) *p = be16toh(*p);
+
+	/* get the size of the multi-byte string */
+	size_t sz = casio_wcstombs(NULL, s, 0);
+	if (sz == (size_t)-1) return (casio_error_magic);
+
+	/* make the string */
+	handle->casio_line_content = malloc(sizeof(FONTCHARACTER) * (sz + 1));
+	if (!handle->casio_line_content) return (casio_error_alloc);
+	casio_wcstombs(handle->casio_line_content, s, 0);
+
+	/* don't forget to set the handle type! */
+	handle->casio_line_type = casio_linetype_picture;
+
+	/* no error */
+	return (0);
+}
+
+/**
+ *	eact_decode_line_text:
+ *	Decodes a text line.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_text(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	(void)size;
+
+	/* log */
+	msg((ll_info, "Text raw data is:"));
+	mem((ll_info, buf, size));
+
+	/* set handle info */
+	handle->casio_line_type = casio_linetype_text;
+	handle->casio_line_content = strdup((char*)buf);
+	if (!handle->casio_line_content) return (casio_error_alloc);
+
+	/* TODO: manage text coloration */
+	/* no error */
+	return (0);
+}
+
+/**
+ *	eact_decode_line_code:
+ *	Decodes code line.
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line_code(casio_line_t *handle, uint8_t *buf,
+	size_t size)
+{
+	(void)handle;
+	(void)buf;
+	(void)size;
+	/* TODO */
+	msg((ll_info, "Code raw data is:"));
+	mem((ll_info, buf, size));
+	return (0);
+}
+/* ************************************************************************* */
+/*  Line Type correspondance list                                            */
+/* ************************************************************************* */
+/* Correspondance type */
+struct eact_line_type_corresp {
+	int rawtype;
+
+	int (*decode)(casio_line_t*, uint8_t*, size_t);
+	const char *info;
+};
+
+/* All correspondances */
+static struct eact_line_type_corresp eact_line_types[] = {
+	{casio_eact_ltype_calc, eact_decode_line_calculation,
+		"calculation"},
+	{casio_eact_ltype_calc_result, eact_decode_line_result,
+		"calculation result"},
+	{casio_eact_ltype_content, eact_decode_line_content,
+		"content"},
+	{casio_eact_ltype_stdheading, eact_decode_line_stdheading,
+		"standard heading"},
+	{casio_eact_ltype_picture, eact_decode_line_picture,
+		"picture"},
+	{casio_eact_ltype_text, eact_decode_line_text,
+		"pure text"},
+	{casio_eact_ltype_code, eact_decode_line_code,
+		"text mixed with functions"},
+	{0, 0, NULL}
+};
+
+/**
+ *	eact_decode_line:
+ *	decode a line [content].
+ *
+ *	@arg	handle		the handle.
+ *	@arg	buf			the buffer.
+ *	@arg	size		the buffer size.
+ *	@arg	type		the type.
+ *	@return				the error code (0 if ok).
+ */
+
+static int eact_decode_line(casio_line_t *handle, uint8_t *buf, size_t size,
+	uint_fast8_t type)
+{
+	/* initialize handle */
+	handle->casio_line_type = 0x00;
+
+	/* look for the line type */
+	struct eact_line_type_corresp *linetype = eact_line_types;
+	while (linetype->decode) {
+		if (linetype->rawtype == type)
+			break;
+		linetype++;
+	}
+	if (!linetype->decode) {
+		msg((ll_error, "unknown line type: %02x", type));
+		return (0);
+	}
+
+	/* act */
+	msg((ll_info, "line type is '%s' (0x%02x)", linetype->info, type));
+	return ((*linetype->decode)(handle, buf, size));
+}
+/* ************************************************************************* */
+/*  Main parsing functions                                                   */
+/* ************************************************************************* */
+/**
+ *	casio_decode_std_eact:
+ *	Decodes an EACT.
+ *
+ *	Thanks to Julese50 for his help on e-acts parsing.
+ *
+ *	@arg	h			the handle to create.
+ *	@arg	buffer		the buffer to read from.
+ *	@return				the error code (0 if ok).
+ */
+
+int casio_decode_std_eact(casio_file_t **h, casio_stream_t *buffer,
+	casio_standard_header_t *std)
+{
+	(void)std; int err;
+	/* decode the header */
+	DREAD(hd, casio_eact_header_s)
+	hd.casio_eact_header_filesize =
+		be32toh(hd.casio_eact_header_filesize);
+	hd.casio_eact_header_setup_area_size =
+		be32toh(hd.casio_eact_header_setup_area_size);
+	hd.casio_eact_header_eact_version =
+		be32toh(hd.casio_eact_header_eact_version);
+	hd.casio_eact_header_os_version =
+		be32toh(hd.casio_eact_header_os_version);
+
+	/* find out the size of the setup area */
+	msg((ll_info, "E-Activity version is '%s'.",
+		hd.casio_eact_header_eact_version == EACT_G1E ? "g1e" :
+		hd.casio_eact_header_eact_version == EACT_G2E ? "g2e" : "g3e"));
+	msg((ll_info, "Setup area size is 0x%" PRIx32 " bytes long.",
+		hd.casio_eact_header_setup_area_size));
+
+	/* allocate handle */
+	*h = malloc(sizeof(casio_file_t));
+	if (!*h) return (casio_error_alloc);
+	casio_file_t *handle = *h;
+	memset(handle, 0, sizeof(casio_file_t));
+
+	/* skip the setup area */
+	SKIP(hd.casio_eact_header_setup_area_size)
+
+	/* prepare the handle */
+	handle->casio_file_type = casio_filetype_eact;
+	handle->casio_handle_platform = casio_filefor_fx;
+	if (hd.casio_eact_header_eact_version == EACT_G3E) /* check if fx-CG */
+		handle->casio_handle_platform = casio_filefor_cg;
+
+	/* get content buffer */
+	size_t bufsize = hd.casio_eact_header_filesize
+		- sizeof(casio_standard_header_t)
+		- sizeof(casio_eact_header_t)
+		- hd.casio_eact_header_setup_area_size;
+	uint8_t buf[bufsize];
+	GREAD(&buf, bufsize)
+
+	/* decode content */
+	handle->casio_file_line = &handle->casio_file__linedata;
+	return (eact_decode_line_content(handle->casio_file_line, buf, bufsize));
+fail:
+	casio_free_file(*h); *h = NULL;
+	return (err);
+}

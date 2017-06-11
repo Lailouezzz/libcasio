@@ -1,0 +1,107 @@
+#!/bin/sh
+#*****************************************************************************#
+#  Arguments                                                                  #
+#*****************************************************************************#
+# Initialize the variables
+no_file=
+no_libusb=
+no_log=
+version=
+maintainer='anon <anon@localhost>'
+
+# Read the arguments
+for arg ; do case "$arg" in
+--no-file) no_file=y ;;
+--no-libusb) no_libusb=y ;;
+--no-log|--no-logging) no_log=y ;;
+--version=*) version="${arg#*=}" ;;
+--maintainer=*) maintainer="${arg#*=}" ;;
+*) echo "'${arg}': Did not read." ;;
+esac; done
+
+# Make version as numbers
+vnum=$(echo ${version} | cut -d- -f1)
+version_major=$(printf "%d" "$(echo ${vnum} | cut -d. -f1)")
+version_minor=$(printf "%d" "$(echo ${vnum} | cut -s -d. -f2)")
+version_rev=$(printf "%d" "$(echo ${vnum} | cut -s -d. -f3)")
+version_indev="$(echo ${version} | cut -s -d- -f2)"
+version_indev="$([ "${version_indev}" ] && echo 1 || echo 0)"
+
+# Constitute version thingies
+version_num=$(printf "0x%02X%02X%04X" \
+	"${version_major}" "${version_minor}" "${version_rev}")
+
+#*****************************************************************************#
+#  Write the file                                                             #
+#*****************************************************************************#
+# Beginning
+cat <<_EOF
+/* ****************************************************************************
+ * libcasio/config.h -- libcasio configuration header.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ *
+ * This file is GENERATED from the options you pass to the configure script.
+ * It shall not be modified by the user after its generation, as this could
+ * lead to unresolved symbols! If you want another configuration, then you
+ * will have to build the library again, with your different configuration.
+ * ************************************************************************* */
+#ifndef  LIBCASIO_CONFIG_H
+# define LIBCASIO_CONFIG_H
+# define LIBCASIO_VERSION "${version}"
+# define LIBCASIO_VERNUM  ${version_num}
+# define LIBCASIO_MAJOR   ${version_major}
+# define LIBCASIO_MINOR   ${version_minor}
+# define LIBCASIO_REV     ${version_rev}
+# define LIBCASIO_INDEV   ${version_indev}
+# define LIBCASIO_MAINTAINER \\
+  "${maintainer}"
+
+/* Useful macros for checking libcasio's version */
+# define LIBCASIO_PREREQ(CASIO__MAJ, CASIO__MIN) \\
+	((CASIO__MAJ) >  (LIBCASIO_MAJOR) || \\
+	((CASIO__MAJ) == (LIBCASIO_MAJOR) && (CASIO__MIN) >= (LIBCASIO_MINOR)))
+
+_EOF
+
+# File part
+if [ "$no_file" ]; then cat <<_EOF
+/* FILE interface is disabled */
+# define LIBCASIO_DISABLED_FILE 1
+
+_EOF
+fi
+
+# libusb part
+if [ "$no_libusb" ]; then cat <<_EOF
+/* libusb is disabled */
+# define LIBCASIO_DISABLED_LIBUSB 1
+
+_EOF
+fi
+
+# disable logging
+if [ "$no_log" ]; then cat <<_EOF
+/* logging is disabled */
+# define LIBCASIO_DISABLED_LOG 1
+
+_EOF
+fi
+
+# End of the file
+cat <<_EOF
+#endif /* LIBCASIO_CONFIG_H */
+_EOF

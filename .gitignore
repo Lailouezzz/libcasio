@@ -1,0 +1,8 @@
+/Makefile.cfg
+/include/lib*/config.h
+/obj
+/lib*.so*
+/lib*.dll*
+/man
+
+.*.swp

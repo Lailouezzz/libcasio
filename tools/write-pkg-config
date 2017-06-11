@@ -1,0 +1,41 @@
+#!/bin/sh
+#*****************************************************************************#
+# Defaults                                                                    #
+#*****************************************************************************#
+# Project variables
+name="name"
+description="my description"
+version="<unknown version>"
+
+# Directories
+libdir=''
+incdir=''
+
+#*****************************************************************************#
+# Read arguments                                                              #
+#*****************************************************************************#
+for arg ; do case "$arg" in
+--name=*) name="${arg#*=}" ;;
+--description=*) description="${arg#*=}" ;;
+--version=*) version="${arg#*=}" ;;
+--deps=*) deps="${arg#*=}" ;;
+--deps.private=*) privdeps="${arg#*=}" ;;
+--libdir=*) libdir="${arg#*=}" ;;
+--incdir=*) incdir="${arg#*=}" ;;
+esac; done
+#*****************************************************************************#
+# Write result                                                                #
+#*****************************************************************************#
+cat <<EOF
+includedir=$incdir
+libdir=$libdir
+
+Name: lib$name
+Description: $description
+Version: $version
+Requires: $deps
+Requires.private: $privdeps
+Libs: -L\${libdir} -l$name
+Libs.private: -lm
+Cflags: -I\${includedir}
+EOF

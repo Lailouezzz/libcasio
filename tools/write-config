@@ -1,0 +1,79 @@
+#!/bin/sh
+#*****************************************************************************#
+# Defaults                                                                    #
+#*****************************************************************************#
+# Project variables
+name="libshoes"
+version="<unknown version>"
+
+# Maintainer
+maintainer="Some unknown guy <anon@localhost>"
+
+#*****************************************************************************#
+# Read arguments                                                              #
+#*****************************************************************************#
+for arg ; do case "$arg" in
+--name=*) name="${arg#*=}" ;;
+--target=*) target="${arg#*=}" ;;
+--version=*) version="${arg#*=}" ;;
+--maintainer=*) maintainer="${arg#*=}" ;;
+esac; done
+
+#*****************************************************************************#
+# Write result                                                                #
+#*****************************************************************************#
+cat <<_EOF
+#!/bin/sh
+cfgtool=\$(basename \$0)
+#*****************************************************************************#
+# Help message                                                                #
+#*****************************************************************************#
+usage() {
+cat <<EOF
+Usage: \$cfgtool [--help] [--version] [--cflags] [--libs]
+Report bugs to ${maintainer}.
+EOF
+exit 0
+}
+
+#*****************************************************************************#
+# Version message                                                             #
+#*****************************************************************************#
+version() {
+echo ${version}
+exit 0
+}
+
+#*****************************************************************************#
+# Check for help and version                                                  #
+#*****************************************************************************#
+put_version=
+put_help=
+for arg ; do case "\$arg" in
+--help|-h) put_help=1 ;;
+--version|-v) put_version=1 ;;
+esac; done
+[ \$put_version ] && version
+[ \$put_help ] && usage
+
+#*****************************************************************************#
+# Parse arguments                                                             #
+#*****************************************************************************#
+# Defaults
+put_cflags=
+put_libs=
+for arg ; do case "\$arg" in
+--cflags) put_cflags=y ;;
+--libs) put_libs=y ;;
+*) echo "\$arg: did not read" >&2 ;;
+esac; done
+
+# Put
+opt=""
+[ \$put_cflags\$put_libs ] || usage
+[ \$put_cflags ] && opt+="--cflags "
+[ \$put_libs   ] && opt+="--libs "
+${target}pkg-config lib${name} \$opt
+
+# End of file
+_EOF

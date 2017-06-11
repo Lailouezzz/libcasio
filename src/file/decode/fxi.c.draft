@@ -1,0 +1,140 @@
+/* ****************************************************************************
+ * file/decode/fxi.c -- decode a fx-Interface file.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ *
+ * FXI is the official fx-Interface format. It is an obfuscated, binary format.
+ * It is partially described in the Casetta project documentation:
+ * https://casetta.tuxfamily.org/formats/fxi
+ * ************************************************************************* */
+#include "decode.h"
+#define FREAD(TO, SZ) { \
+	READ(TO, SZ) \
+	deobf(TO, SZ); }
+#define FDREAD(NAM, TYPE) { \
+	DREAD(NAM, TYPE) \
+	obf(&NAM, sizeof(struct TYPE)); }
+
+/* ************************************************************************* */
+/*  Obfuscation-related functions                                            */
+/* ************************************************************************* */
+/**
+ *	obf:
+ *	Obfuscate AND de-obfuscate a string.
+ *
+ *	The formula was found by Lephenixnoir, from Planète Casio, out of an array
+ *	found by Alexis Soulard, from Casioland (with a 14-years time lapse, yay!).
+ *
+ *	The formula is an involution, which means the obfuscation and
+ *	de-obfuscation is done using the same formula.
+ *
+ *	@arg	s	the string to deobfuscate.
+ *	@arg	n	the string length.
+ */
+
+#define deobf(S, N) obf(S, N)
+static void obf(unsigned char *s, size_t n)
+{
+	while (n--)
+		*s++ ^= ~24;
+}
+
+/* ************************************************************************* */
+/*  File header                                                              */
+/* ************************************************************************* */
+static unsigned char header =
+	"\xD5\xD7\x1F" "f" "FX-INTERFACE - YELLOW COMPUTING" /* 35 */
+
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" /* 20 */
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" "\x06"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" "\0\x07" /* entries total? */
+	"\0\xFF\xFF" "\0\0\x0F\0"
+	"CY" "CFXListItem"
+	
+	"NP\0\0"       "\x00" "\0\0\0" "\x00\0" "\x03\0"
+	"\x15\x18" "\0\0\x00" "\0\x00" "\xA4\xA0"
+	"\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x01" "\0\0\0" "\x01\0" "\x03\0"
+	"\x55\x1A" "\0\0\x04" "\0\x00" "\x5B\x80"
+	"\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x02" "\0\0\0" "\x02\0" "\x00\0"
+	"\x08\x13" "\0\0\x22" "\0\x00" "\x83\x80"
+	"\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x03" "\0\0\0" "\x01\0" "\x03\0"
+	"\x55\x1A" "\0\0\x20" "\0\x00" "\x1F\x81"
+	"\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x04" "\0\0\0" "\x02\0" "\x00\0"
+	"\x08\x13" "\0\0\x21" "\0\x00" "\x83\x80"
+	"\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x05" "\0\0\0" "\x00\0" "\x02\0"
+	"\x58\x10" "\0\0\x1E" "\0\x00" "\xCC\x80"
+	"\0\0\0\0\0\0\0\0"  "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	"\x01\x80\0\0" "\x06" "\0\0\0" "\x01\0" "\x00\0"
+	"\x08\x11" "\0\0\x1E" "\0\x00" "\x83\x80"
+	"\0\0\0\0\0\0\0\0"  "\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0" "\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	/* from here, it is a real file, SpeedSnk.fxi */
+
+	"\x01" /* number of records? */ "\x00"
+
+	"\x01\x80\0\0" "\x00" "\0\0\0" "\x02\0" "\x01\0"
+	"\xBA\x1E" "\0\0\x22" "\0\x08" /* >program name size */
+	"SpeedSnk" "\x83\x80" "\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+	"\0\0\0\0\0\0\0\0\0\0\0\0" "SpeedSnk"
+	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+
+	/* subheader? */
+	"\0\0\0\0\0\0\0" "\0\1\0\1" "\0" "\xAF\x12"
+
+	/* text file header */
+	"TXT\0PG\0\0\x12\x81" "SpeedSnk"
+	"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"
+	"NL" "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"
+
+	/* ... program content */
+	"\xFF" "\0\0\0\0\0\0"
+;

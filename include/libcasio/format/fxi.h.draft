@@ -1,0 +1,93 @@
+/* ****************************************************************************
+ * libcasio/format/fxi.h -- the FXI file format description.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ * ************************************************************************* */
+#ifndef  LIBCASIO_FORMAT_FXI_H
+# define LIBCASIO_FORMAT_FXI_H
+# include <libcasio/cdefs.h>
+# include <stdint.h>
+# pragma pack(1)
+CASIO_BEGIN_NAMESPACE
+
+/* FXI is obfuscated with a symetrical obfuscation algorithm:
+ *		byte = byte ^ ~24;
+ *
+ * Once the format is deobfuscated, this is the header structure: */
+
+typedef struct casio_fxi_header_s {
+	/* unknown - probably part of the magic? "\xD5\xD7\x1F" "f" */
+	casio_uint8_t  _unknown[4];
+
+	/* description: the description of the format (probably part of the
+	 * magic too): "FX-INTERFACE - YELLOW COMPUTING" */
+	casio_uint8_t  description[31];
+	casio_uint8_t  _unused[40];
+
+	/* the number of meta entries */
+	casio_uint8_t  num;
+	casio_uint8_t  _unused2[80];
+
+	/* sum of the number of meta entries and records */
+	casio_uint16_t sum;
+	casio_uint8_t  _unused3;
+
+	/* 0xFF, 0xFF, 0, 0, 0x0F, 0 */
+	casio_uint8_t  _blackmagic[6];
+
+	/* board type? CY */
+	casio_uint8_t  board[2];
+
+	/* introduction? */
+	casio_uint8_t  type[11];
+} casio_fxi_header_t;
+
+/* Then come the meta-entries, which have this structure: */
+
+typedef struct casio_fxi_entry_s {
+	/* entry type: first type is 'NP', then {0x01, 0x80}. */
+	casio_uint8_t  type[2];
+	casio_uint8_t  _unused[2];
+
+	/* entry number */
+	casio_uint8_t  number;
+	casio_uint8_t  _unused2[3];
+
+	/* unknown: either 0x00, 0x01, 0x02 */
+	casio_uint8_t  _unknown;
+	casio_uint8_t  _unused3;
+
+	/* unknown: either 0x00, 0x02, 0x03 */
+	casio_uint8_t  _unknown2;
+	casio_uint8_t  _unused4;
+
+	/* unknown: checksum? */
+	casio_uint16_t checksum;
+	casio_uint8_t  _unused5[2];
+
+	/* unknown: some sort of type? */
+	casio_uint8_t  typeid;
+	casio_uint8_t  _unused6;
+
+	/* size of the file name */
+	casio_uint8_t  filename_size;
+
+	/* TODO: finish me */
+} casio_fxi_entry_t;
+
+CASIO_END_NAMESPACE
+# pragma pack()
+#endif
