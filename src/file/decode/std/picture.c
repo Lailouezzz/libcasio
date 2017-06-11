@@ -101,9 +101,7 @@ int casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	}
 
 	/* make the destination buffer */
-	rawsize = picfmt == casio_pictureformat_4bit_code
-		? casio_picturesize_4bit_code(width, height)
-		: casio_picturesize_16bit(width, height);
+	rawsize = casio_get_picture_size(NULL, picfmt, width, height);
 	err = casio_error_alloc;
 	if (!(infbuf = malloc(rawsize))) goto fail;
 

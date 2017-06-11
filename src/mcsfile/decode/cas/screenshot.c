@@ -37,7 +37,8 @@ int casio_decode_caspart_capture(casio_mcsfile_t *handle,
 	/* read the picture data */
 	width = handle->casio_mcsfile_head.casio_mcshead_width;
 	height = handle->casio_mcsfile_head.casio_mcshead_height;
-	pic_size = casio_picturesize_4bit_color(width, height);
+	pic_size = casio_get_picture_size(NULL,
+		casio_pictureformat_4bit_color, width, height);
 
 	/* read the picture size */
 	err = casio_error_alloc;

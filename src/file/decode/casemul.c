@@ -184,7 +184,8 @@ static int read_picture(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	msg((ll_info, "picture dimension is %d*%dpx", width, height));
 
 	/* read all of the pixels */
-	rawpxsize = casio_picturesize_casemul(width, height);
+	rawpxsize = casio_get_picture_size(NULL,
+		casio_pictureformat_casemul, width, height);
 	rawpx = malloc(rawpxsize);
 	if (!rawpx) return (casio_error_alloc);
 	GREAD(rawpx, rawpxsize)

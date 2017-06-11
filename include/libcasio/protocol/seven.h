@@ -148,8 +148,8 @@ typedef enum casio_seven_ow_e {
 # define CASIO_SEVEN_MAX_VRAM_WIDTH  384 /* max. encountered VRAM width */
 # define CASIO_SEVEN_MAX_VRAM_HEIGHT 500 /* max. encountered VRAM height */
 
-# define CASIO_SEVEN_MAX_VRAM_SIZE casio_picturesize_16bit( \
-	CASIO_SEVEN_MAX_VRAM_WIDTH, CASIO_SEVEN_MAX_VRAM_HEIGHT)
+# define CASIO_SEVEN_MAX_VRAM_SIZE \
+	(CASIO_SEVEN_MAX_VRAM_WIDTH * CASIO_SEVEN_MAX_VRAM_HEIGHT * 2)
 
 # define CASIO_SEVEN_MAX_RAWDATA_SIZE 256 /* maximum raw data size */
 # define CASIO_SEVEN_MAX_ENCDATA_SIZE ((CASIO_SEVEN_MAX_RAWDATA_SIZE) * 2)

@@ -84,15 +84,15 @@
 # endif
 
 # ifdef  __cplusplus
+#  define CASIO_BEGIN_NAMESPACE
 #  define     CASIO_BEGIN_DECLS extern "C" {
-#  define CASIO_BEGIN_NAMESPACE
-#  define   CASIO_END_NAMESPACE
 #  define       CASIO_END_DECLS }
-# else
-#  define     CASIO_BEGIN_DECLS
-#  define CASIO_BEGIN_NAMESPACE
 #  define   CASIO_END_NAMESPACE
+# else
+#  define CASIO_BEGIN_NAMESPACE
+#  define     CASIO_BEGIN_DECLS
 #  define       CASIO_END_DECLS
+#  define   CASIO_END_NAMESPACE
 # endif
 /* ************************************************************************* */
 /*  `casio_attr_wur`: warn if the result is unused.                          */

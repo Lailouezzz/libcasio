@@ -52,8 +52,8 @@ int casio_decode_mcs_capture(casio_mcsfile_t **h, casio_stream_t *buffer,
 		handle->casio_mcsfile_head.casio_mcshead_height));
 
 	/* read raw data */
-	pic_size = casio_picturesize_1bit_packed(head->casio_mcshead_width,
-		head->casio_mcshead_height);
+	pic_size = casio_get_picture_size(NULL, casio_pictureformat_1bit_packed,
+		head->casio_mcshead_width, head->casio_mcshead_height);
 	err = casio_error_alloc;
 	if (!(pic_raw = malloc(pic_size))) goto fail;
 	READ(pic_raw, pic_size)
@@ -99,8 +99,8 @@ int casio_decode_mcs_picture(casio_mcsfile_t **h, casio_stream_t *buffer,
 	handle = *h;
 
 	/* get the images */
-	pic_size = casio_picturesize_1bit_packed(head->casio_mcshead_width,
-		head->casio_mcshead_height);
+	pic_size = casio_get_picture_size(NULL, casio_pictureformat_1bit_packed,
+		head->casio_mcshead_width, head->casio_mcshead_height);
 	err = casio_error_alloc;
 	if (!(pics_raw = malloc(pic_size * 2))) goto fail;
 	READ(pics_raw, pic_size * 2)

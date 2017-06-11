@@ -39,9 +39,8 @@ int casio_encode_picture(void *vraw,
 
 	switch (format) {
 	case casio_pictureformat_1bit:
-		memset(raw, 0, casio_picturesize_1bit(width, height));
 		for (y = 0; y < height; y++) {
-			msk = 0x80;
+			msk = 0x80; *raw = 0;
 			for (x = 0; x < width; x++) {
 				/* get pixel */
 				if (!pixels[y][x]) *raw |= msk;
@@ -49,15 +48,15 @@ int casio_encode_picture(void *vraw,
 				/* go to next */
 				raw += msk & 1;
 				msk = (msk >> 1) | ((msk & 1) << 7);
+				*raw &= ~(msk - 1);
 			}
 			if (width & 0x7) raw++;
 		}
 		break;
 
 	case casio_pictureformat_1bit_r:
-		memset(raw, 0, casio_picturesize_1bit(width, height));
 		for (y = 0; y < height; y++) {
-			msk = 0x80;
+			msk = 0x80; *raw = 0;
 			for (x = 0; x < width; x++) {
 				/* get pixel */
 				if (pixels[y][x]) *raw |= msk;
@@ -65,6 +64,7 @@ int casio_encode_picture(void *vraw,
 				/* go to next */
 				raw += msk & 1;
 				msk = (msk >> 1) | ((msk & 1) << 7);
+				*raw &= ~(msk - 1);
 			}
 			if (width & 0x7) raw++;
 		}

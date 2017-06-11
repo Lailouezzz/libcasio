@@ -1,0 +1,10 @@
+# Editor Configuration for libcasio - see http://editorconfig.org
+root = true
+
+# Unix-style newlines, ending newline;
+# 4 column tabulations.
+[*]
+end_of_line = lf
+insert_final_newline = true
+indent_style = tab
+indent_size = 4
