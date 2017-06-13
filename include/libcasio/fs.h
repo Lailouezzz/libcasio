@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * libcasio/filesystem.h -- libcasio filesystems.
+ * libcasio/fs.h -- libcasio filesystems.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_FILESYSTEM_H
-# define LIBCASIO_FILESYSTEM_H
-# include <libcasio/cdefs.h>
-# include <libcasio/stream.h>
+#ifndef  LIBCASIO_FS_H
+# define LIBCASIO_FS_H
+# include "cdefs.h"
+# include "stream.h"
 CASIO_BEGIN_NAMESPACE
 
 /* forward structure declarations (don't mind) */
@@ -92,13 +92,14 @@ struct casio_fsfuncs_s {
 /* ************************************************************************* */
 CASIO_BEGIN_DECLS
 
-extern int  casio_open_fs OF((casio_filesystem_t **casio__fs,
-	void *casio__cookie, const char *casio__dirsep,
-	const casio_fsfuncs_t *casio__funcs));
+CASIO_EXTERN int CASIO_EXPORT casio_open_fs
+	OF((casio_filesystem_t **casio__fs,
+		void *casio__cookie, const char *casio__dirsep,
+		const casio_fsfuncs_t *casio__funcs));
 
-extern int  casio_makedir OF((casio_filesystem_t *casio__fs,
-	const char *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_makedir
+	OF((casio_filesystem_t *casio__fs, const char *casio__path));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
-#endif /* LIBCASIO_FILESYSTEM_H */
+#endif /* LIBCASIO_FS_H */

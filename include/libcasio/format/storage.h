@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_STORAGE_H
 # define LIBCASIO_FORMAT_STORAGE_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "../cdefs.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 
@@ -109,7 +108,7 @@ typedef struct casio_storage_sector_s {
 /* ************************************************************************* */
 /* After the sectors come the directories.
  *
- * Their special nibble is either 0x05 if active or 0x00 if deleted.
+ * Their spec# include "../cdefs.h"ial nibble is either 0x05 if active or 0x00 if deleted.
  * Here is their subheader structure: */
 
 typedef struct casio_storage_directory_s {

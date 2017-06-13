@@ -18,6 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_CAS_GRAPH_H
 # define LIBCASIO_FORMAT_CAS_GRAPH_H
+# include "../../cdefs.h"
 
 /* This is the data type used for the expression of each function which can be
  * used to draw a graph. They are sent when you select 'Y=Data' in the

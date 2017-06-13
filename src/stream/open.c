@@ -70,7 +70,6 @@ int casio_open(casio_stream_t **pstream, casio_openmode_t mode,
 	casio_init_timeouts(stream);
 
 	/* no error! */
-	msg((ll_info, "Stream successfully created!"));
 	err = 0;
 fail:
 	if (err) {

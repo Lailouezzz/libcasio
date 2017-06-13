@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_ERROR_H
 # define LIBCASIO_ERROR_H
-# include <libcasio/cdefs.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* ************************************************************************* */
@@ -84,10 +84,13 @@ typedef enum casio_error_e {
 } casio_error_t;
 
 /* Get a string describing the error. */
-extern const char *casio_error_strings[];
+CASIO_EXTERN const char* CASIO_EXPORT casio_error_strings[];
+CASIO_EXTERN const char* CASIO_EXPORT casio_strerror
+	OF((int casio__error));
 
-# define casio_strerror(CASIO_N) casio_error_strings[(CASIO_N)]
-# define casio_geterror(CASIO_N) casio_error_strings[(CASIO_N)]
+# ifndef LIBCASIO_NO_STRERROR
+#  define casio_strerror(CASIO_N) casio_error_strings[(CASIO_N)]
+# endif
 
 CASIO_END_NAMESPACE
 #endif /* LIBCASIO_ERROR_H */

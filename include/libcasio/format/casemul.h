@@ -18,9 +18,8 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_CASEMUL_H
 # define LIBCASIO_FORMAT_CASEMUL_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
-# include <libcasio/number.h>
+# include "../cdefs.h"
+# include "../number.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 

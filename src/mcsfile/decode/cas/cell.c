@@ -44,15 +44,15 @@ static int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
 	/* read position */
 	DREAD(fx) *x = be16toh(fx) - 1;
 	DREAD(fy) *y = be16toh(fy) - 1;
-	csum = casio_checksum8(&fx, sizeof(uint16_t), csum);
-	csum = casio_checksum8(&fy, sizeof(uint16_t), csum);
+	csum = casio_checksum_cas(&fx, sizeof(uint16_t), csum);
+	csum = casio_checksum_cas(&fy, sizeof(uint16_t), csum);
 
 	/* read the parts */
 	DREAD(wkg)
-	csum = casio_checksum8(&wkg, sizeof(casio_casbcd_t), csum);
+	csum = casio_checksum_cas(&wkg, sizeof(casio_casbcd_t), csum);
 	if (casio_bcd_fromcas(&cell->casio_mcscell_real, &wkg)) {
 		READ(&wkg, sizeof(casio_casbcd_t))
-		csum = casio_checksum8(&wkg, sizeof(casio_casbcd_t), csum);
+		csum = casio_checksum_cas(&wkg, sizeof(casio_casbcd_t), csum);
 		casio_bcd_fromcas(&cell->casio_mcscell_imgn, &wkg);
 	}
 

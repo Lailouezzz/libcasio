@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FILE_H
 # define LIBCASIO_FILE_H
-# include <libcasio/mcsfile.h>
-# include <libcasio/version.h>
-# include <libcasio/date.h>
+# include "cdefs.h"
+# include "mcsfile.h"
+# include "version.h"
+# include "date.h"
 
 /* ************************************************************************* */
 /*  Description                                                              */
@@ -94,38 +95,47 @@ typedef struct casio_file_s {
 /* ************************************************************************* */
 /* Make a file. */
 
-extern int casio_make_picture OF((casio_file_t **casio__handle,
-	unsigned int casio__width, unsigned int casio__height));
-extern int casio_make_mcs     OF((casio_file_t **casio__handle,
-	int casio__count));
-extern int casio_make_fkey    OF((casio_file_t **casio__handle,
-	casio_filefor_t casio__for, int casio__count));
-extern int casio_make_lang    OF((casio_file_t **casio__handle,
-	casio_filefor_t casio__for, int casio__count));
-extern int casio_make_addin   OF((casio_file_t **casio__handle,
-	casio_filefor_t casio__for, size_t casio__size,
-	const char *casio__name, const char *casio__internal,
-	const casio_version_t *casio__version, const time_t *casio__created));
+CASIO_EXTERN int CASIO_EXPORT casio_make_picture
+	OF((casio_file_t **casio__handle,
+		unsigned int casio__width, unsigned int casio__height));
+CASIO_EXTERN int CASIO_EXPORT casio_make_mcs
+	OF((casio_file_t **casio__handle, int casio__count));
+CASIO_EXTERN int CASIO_EXPORT casio_make_fkey
+	OF((casio_file_t **casio__handle,
+		casio_filefor_t casio__for, int casio__count));
+CASIO_EXTERN int CASIO_EXPORT casio_make_lang
+	OF((casio_file_t **casio__handle,
+		casio_filefor_t casio__for, int casio__count));
+CASIO_EXTERN int CASIO_EXPORT casio_make_addin
+	OF((casio_file_t **casio__handle,
+		casio_filefor_t casio__for, size_t casio__size,
+		const char *casio__name, const char *casio__internal,
+		const casio_version_t *casio__version, const time_t *casio__created));
 
 /* Manage an MCS archive. */
 
-extern int casio_mcs_insert OF((casio_file_t *handle, casio_mcsfile_t **tofile,
-	const casio_mcshead_t *head));
-extern int casio_mcs_sort   OF((casio_file_t *handle));
+CASIO_EXTERN int CASIO_EXPORT casio_mcs_insert
+	OF((casio_file_t *handle, casio_mcsfile_t **tofile,
+		const casio_mcshead_t *head));
+CASIO_EXTERN int CASIO_EXPORT casio_mcs_sort
+	OF((casio_file_t *handle));
 
 /* Free a file. */
 
-extern void casio_free_file OF((casio_file_t *casio__handle));
+CASIO_EXTERN void CASIO_EXPORT casio_free_file
+	OF((casio_file_t *casio__handle));
 
 /* Decode a file. */
 
-extern int casio_decode OF((casio_file_t **casio__handle,
-	const char *casio__path, casio_stream_t *casio__buffer,
-	casio_filetype_t casio__expected_types));
+CASIO_EXTERN int CASIO_EXPORT casio_decode
+	OF((casio_file_t **casio__handle,
+		const char *casio__path, casio_stream_t *casio__buffer,
+		casio_filetype_t casio__expected_types));
 
 /* Open and decode a file. */
 
-extern int casio_open_file OF((casio_file_t **casio__handle,
-	const char *casio__path, casio_filetype_t casio__expected_types));
+CASIO_EXTERN int CASIO_EXPORT casio_open_file
+	OF((casio_file_t **casio__handle,
+		const char *casio__path, casio_filetype_t casio__expected_types));
 
 #endif /* LIBCASIO_FILE_H */

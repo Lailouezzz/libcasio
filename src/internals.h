@@ -51,9 +51,11 @@
 
 /* Checksum. */
 
-extern unsigned char  casio_checksum8  OF((void *casio__mem,
-	size_t casio__size, unsigned char  casio__current));
-extern casio_uint32_t casio_checksum32 OF((void *casio__mem,
+extern int            casio_checksum_cas OF((void *casio__mem,
+	size_t casio__size, int casio__current));
+extern int            casio_checksum_sub OF((void *casio__mem,
+	size_t casio__size, int casio__current));
+extern casio_uint32_t casio_checksum32   OF((void *casio__mem,
 	size_t casio__size, casio_uint32_t casio__current));
 
 /* Extension. */

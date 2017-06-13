@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_MCS_SETUP_H
 # define LIBCASIO_FORMAT_MCS_SETUP_H
+# include "../../cdefs.h"
 
 /* Setup files have no headers, they are just a bunch of bytes you can copy.
- * Legacy fx setup files have 100 entries (100 bytes), fx-CG setup files
+ * Legacy fx setup files have 0x64 (100) byte entries, fx-CG setup files
  * have twice as much (even though the first 100 entries have the same
  * signification in the two).
  *

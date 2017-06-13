@@ -18,9 +18,9 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_PROTOCOL_SEVEN_H
 # define LIBCASIO_PROTOCOL_SEVEN_H
-# include <libcasio/cdefs.h>
-# include <libcasio/link.h>
-# include <libcasio/protocol/typz.h>
+# include "../cdefs.h"
+# include "../link.h"
+# include "typz.h"
 CASIO_BEGIN_NAMESPACE
 
 /* ************************************************************************* */
@@ -178,8 +178,8 @@ CASIO_BEGIN_DECLS
  * to checksums; for example, in the screenstreaming packet flow, where the
  * receiver should not send anything. */
 
-extern int casio_seven_receive OF((casio_link_t *casio__handle,
-	int casio__care_about_checksums));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_receive
+	OF((casio_link_t *casio__handle, int casio__care_about_checksums));
 
 /* These are the base functions to send a packet.
  * Unless `resp` is zero, it will also get the response to the packet,
@@ -187,13 +187,15 @@ extern int casio_seven_receive OF((casio_link_t *casio__handle,
  *
  * You shouldn't use them directly to send a packet, but here they are: */
 
-extern int casio_seven_send_basic OF((casio_link_t *casio__handle,
-	casio_seven_type_t casio__type, unsigned int casio__subtype,
-	int casio__resp));
-extern int casio_seven_send_ext   OF((casio_link_t *casio__handle,
-	casio_seven_type_t casio__type, unsigned int casio__subtype,
-	const void *casio__data, unsigned int casio__size,
-	int casio__resp));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_basic
+	OF((casio_link_t *casio__handle,
+		casio_seven_type_t casio__type, unsigned int casio__subtype,
+		int casio__resp));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_ext
+	OF((casio_link_t *casio__handle,
+		casio_seven_type_t casio__type, unsigned int casio__subtype,
+		const void *casio__data, unsigned int casio__size,
+		int casio__resp));
 
 /* Send checks.
  * Initial checks are useful to check if there is another device speaking
@@ -219,8 +221,8 @@ extern int casio_seven_send_ext   OF((casio_link_t *casio__handle,
 		0x00, (CASIO__R)))
 # define casio_seven_confirm_ow(CASIO__H) \
 	(casio_seven_send_basic((CASIO__H), casio_seven_type_ack, 0x01, 1))
-extern int casio_seven_send_eack OF((casio_link_t *casio__handle,
-	casio_link_info_t *casio__info));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_eack
+	OF((casio_link_t *casio__handle, casio_link_info_t *casio__info));
 
 /* Send negative acknowledgements (NAK packets).
  * These are used to report errors. */
@@ -250,14 +252,16 @@ extern int casio_seven_send_eack OF((casio_link_t *casio__handle,
  * There are specific command-sending in `libcasio/protocol/seven/commands.h`,
  * so if you're using a classical command, you should use them instead. */
 
-extern int casio_seven_send_cmd      OF((casio_link_t *casio__handle,
-	unsigned int casio__subtype));
-extern int casio_seven_send_cmd_data OF((casio_link_t *casio__handle,
-	unsigned int casio__subtype,  int casio__overwrite,
-	unsigned int casio__datatype, unsigned long casio__filesize,
-	const char *casio__arg0, const char *casio__arg1,
-	const char *casio__arg2, const char *casio__arg3,
-	const char *casio__arg4, const char *casio__arg5));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmd
+	OF((casio_link_t *casio__handle,
+		unsigned int casio__subtype));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmd_data
+	OF((casio_link_t *casio__handle,
+		unsigned int casio__subtype,  int casio__overwrite,
+		unsigned int casio__datatype, unsigned long casio__filesize,
+		const char *casio__arg0, const char *casio__arg1,
+		const char *casio__arg2, const char *casio__arg3,
+		const char *casio__arg4, const char *casio__arg5));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
@@ -279,10 +283,10 @@ typedef struct casio_seven_env_s {
 CASIO_BEGIN_DECLS
 /* And here is everything you need lol. */
 
-extern int casio_seven_getenv OF((casio_seven_env_t *casio__env,
-	const char *casio__id));
-extern int casio_seven_command_is_supported OF((
-	const casio_seven_env_t *casio__env, unsigned int casio__code));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_getenv
+	OF((casio_seven_env_t *casio__env, const char *casio__id));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_command_is_supported
+	OF((const casio_seven_env_t *casio__env, unsigned int casio__code));
 
 CASIO_END_DECLS
 /* ************************************************************************* */
@@ -364,8 +368,10 @@ CASIO_BEGIN_DECLS
  * you shouldn't use them unless you know what you're doing
  * (and you probably don't if you actually want to use them). */
 
-extern int casio_seven_start OF((casio_link_t *casio__handle));
-extern int casio_seven_end   OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_start
+	OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_end
+	OF((casio_link_t *casio__handle));
 
 /* Send and receive data, using buffers.
  * This will automatically divide your data into packets, or make up the
@@ -377,36 +383,41 @@ extern int casio_seven_end   OF((casio_link_t *casio__handle));
  * It is advised not to use it for receiving data, or for sensitive
  * data. */
 
-extern int casio_seven_send_buffer OF((casio_link_t *casio__handle,
-	casio_stream_t *casio__stream, casio_off_t casio__size,
-	int casio__shift, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_buffer
+	OF((casio_link_t *casio__handle,
+		casio_stream_t *casio__stream, casio_off_t casio__size,
+		int casio__shift, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 
-extern int casio_seven_get_buffer  OF((casio_link_t *casio__handle,
-	casio_stream_t *casio__stream, casio_off_t casio__size,
-	int casio__shift, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_get_buffer
+	OF((casio_link_t *casio__handle,
+		casio_stream_t *casio__stream, casio_off_t casio__size,
+		int casio__shift, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 
 /* Send and receive data, using memory areas.
  * Beyond the buffer/memory difference, those and the previous ones are
  * basically the same thing. */
 
-extern int casio_seven_send_data OF((casio_link_t *casio__handle,
-	const void *casio__buf, casio_off_t casio__size,
-	int casio__shift, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_data
+	OF((casio_link_t *casio__handle,
+		const void *casio__buf, casio_off_t casio__size,
+		int casio__shift, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 
-extern int casio_seven_get_data  OF((casio_link_t *casio__handle,
-	void *casio__buf, casio_off_t casio__size,
-	int casio__shift, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_get_data
+	OF((casio_link_t *casio__handle,
+		void *casio__buf, casio_off_t casio__size,
+		int casio__shift, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 
 /* Send and receive data, using a stream.
  * This is practicle when you want to encode and write on the fly. */
 
-extern int casio_seven_open_data_stream OF((casio_stream_t **casio__stream,
-	casio_link_t *casio__link, casio_off_t casio__size,
-	casio_link_progress_t *casio__disp, void *casio__dcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_open_data_stream
+	OF((casio_stream_t **casio__stream,
+		casio_link_t *casio__link, casio_off_t casio__size,
+		casio_link_progress_t *casio__disp, void *casio__dcookie));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

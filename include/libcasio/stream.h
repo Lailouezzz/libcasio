@@ -26,8 +26,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_STREAM_H
 # define LIBCASIO_STREAM_H
-# include <libcasio/cdefs.h>
-# include <stddef.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* forward structure declarations (don't mind) */
@@ -263,91 +262,110 @@ struct casio_scsi_s {
 CASIO_BEGIN_DECLS
 /* Default stream serial settings utilities. */
 
-extern int  casio_make_attrs OF((casio_streamattrs_t *casio__attrs,
-	const char *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_make_attrs
+	OF((casio_streamattrs_t *casio__attrs, const char *casio__raw));
 
 /* List serial devices (platform agnostic). */
 
 typedef void casio_list_com_t OF((void *casio__cookie,
 	const char *casio__str));
 
-extern int casio_comlist OF((casio_list_com_t *casio__callback,
-	void *casio__cookie));
+CASIO_EXTERN int CASIO_EXPORT casio_comlist
+	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 
 /* Open and close a stream. */
 
-extern int casio_open  OF((casio_stream_t **casio__stream,
-	casio_openmode_t mode,
-	casio_streamtype_t casio__type, void *casio__cookie,
-	const casio_streamfuncs_t *casio__callbacks));
-extern int casio_close OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_open
+	OF((casio_stream_t **casio__stream, casio_openmode_t mode,
+		casio_streamtype_t casio__type, void *casio__cookie,
+		const casio_streamfuncs_t *casio__callbacks));
+CASIO_EXTERN int CASIO_EXPORT casio_close
+	OF((casio_stream_t *casio__stream));
 
 /* Get stream various data. */
 
-extern int casio_isreadable OF((casio_stream_t *casio__stream));
-extern int casio_iswritable OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_isreadable
+	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_iswritable
+	OF((casio_stream_t *casio__stream));
 
 # define casio_isreadable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_READ)
 # define casio_iswritable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_WRITE)
 
-extern casio_streamtype_t   casio_get_type OF((casio_stream_t *casio__stream));
-extern casio_openmode_t casio_get_openmode OF((casio_stream_t *casio__stream));
-extern void              *casio_get_cookie OF((casio_stream_t *casio__stream));
-extern int               casio_get_lasterr OF((casio_stream_t *casio__stream));
+CASIO_EXTERN casio_streamtype_t CASIO_EXPORT casio_get_type
+	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN casio_openmode_t CASIO_EXPORT casio_get_openmode
+	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN void* CASIO_EXPORT casio_get_cookie
+	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_get_lasterr
+	OF((casio_stream_t *casio__stream));
 
 /* Read and write data from and to a stream. */
 
-extern int casio_read  OF((casio_stream_t *casio__stream,
-	void *casio__dest, size_t casio__size));
-extern int casio_write OF((casio_stream_t *casio__stream,
-	const void *casio__data, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_read
+	OF((casio_stream_t *casio__stream,
+		void *casio__dest, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_write
+	OF((casio_stream_t *casio__stream,
+		const void *casio__data, size_t casio__size));
 
-extern int casio_write_char OF((casio_stream_t *casio__stream,
-	int casio__char));
+CASIO_EXTERN int CASIO_EXPORT casio_write_char
+	OF((casio_stream_t *casio__stream, int casio__char));
 
 /* Skip bytes from a stream. */
 
-extern int casio_skip OF((casio_stream_t *casio__stream, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_skip
+	OF((casio_stream_t *casio__stream, size_t casio__size));
 
 /* Set and get the attributes of a stream. */
 
-extern int casio_init_attrs OF((casio_stream_t *stream));
-extern int casio_set_attrs  OF((casio_stream_t *casio__stream,
-	const casio_streamattrs_t *casio__attrs));
-extern int casio_get_attrs  OF((casio_stream_t *casio__stream,
-	casio_streamattrs_t *casio__attrs));
+CASIO_EXTERN int CASIO_EXPORT casio_init_attrs
+	OF((casio_stream_t *stream));
+CASIO_EXTERN int CASIO_EXPORT casio_set_attrs
+	OF((casio_stream_t *casio__stream,
+		const casio_streamattrs_t *casio__attrs));
+CASIO_EXTERN int CASIO_EXPORT casio_get_attrs
+	OF((casio_stream_t *casio__stream, casio_streamattrs_t *casio__attrs));
 
 /* Set and get the timeouts of a stream. */
 
-extern int casio_init_timeouts OF((casio_stream_t *casio__stream));
-extern int  casio_set_timeouts OF((casio_stream_t *casio__stream,
-	const casio_timeouts_t *casio__timeouts));
-extern int casio_get_timeouts  OF((casio_stream_t *casio__stream,
-	casio_timeouts_t *casio__timeouts));
+CASIO_EXTERN int CASIO_EXPORT casio_init_timeouts
+	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_set_timeouts
+	OF((casio_stream_t *casio__stream,
+		const casio_timeouts_t *casio__timeouts));
+CASIO_EXTERN int CASIO_EXPORT casio_get_timeouts
+	OF((casio_stream_t *casio__stream, casio_timeouts_t *casio__timeouts));
 
 /* Move in a file. */
 
-extern int         casio_seek OF((casio_stream_t *casio__stream,
-	casio_off_t casio__offset, casio_whence_t casio__whence));
-extern casio_off_t casio_tell OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_seek
+	OF((casio_stream_t *casio__stream,
+		casio_off_t casio__offset, casio_whence_t casio__whence));
+CASIO_EXTERN casio_off_t CASIO_EXPORT casio_tell
+	OF((casio_stream_t *casio__stream));
 
 /* Make out the size of a file (shortcut for making out the size). */
 
-extern int      casio_getsize OF((casio_stream_t *casio__stream,
-	casio_off_t *casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_getsize
+	OF((casio_stream_t *casio__stream, casio_off_t *casio__size));
 
 /* Make a stream out of memory. */
 
-extern int casio_open_memory OF((casio_stream_t **casio__stream,
-	const void *casio__memory, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_open_memory
+	OF((casio_stream_t **casio__stream,
+		const void *casio__memory, size_t casio__size));
 
 /* Make a stream out of another, with a limit (and empty it). */
 
-extern int casio_open_limited OF((casio_stream_t **casio__stream,
-	casio_stream_t *casio__original, size_t casio__size));
-extern int casio_empty_limited OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_open_limited
+	OF((casio_stream_t **casio__stream,
+		casio_stream_t *casio__original, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_empty_limited
+	OF((casio_stream_t *casio__stream));
 /* ************************************************************************* */
 /*  USB or serial stream opening management                                  */
 /* ************************************************************************* */
@@ -356,30 +374,33 @@ extern int casio_empty_limited OF((casio_stream_t *casio__stream));
  *
  * Communication port listing. */
 
-typedef int casio_comlist_t             OF((casio_list_com_t *casio__callback,
+typedef int casio_comlist_t OF((casio_list_com_t *casio__callback,
 	void *casio__cookie));
 
-extern int casio_add_default_comlist    OF((casio_comlist_t *casio__function));
+CASIO_EXTERN int CASIO_EXPORT casio_add_default_comlist
+	OF((casio_comlist_t *casio__function));
 
 /* Serial communication stream opening. */
 
-typedef int casio_opencomstream_t       OF((casio_stream_t **casio__stream,
+typedef int casio_opencomstream_t OF((casio_stream_t **casio__stream,
 	const char *casio__path));
 
-extern int casio_open_com_stream        OF((casio_stream_t **casio__stream,
-	const char *casio__path));
-extern int casio_add_default_com_stream OF((
-	casio_opencomstream_t *casio__function));
+CASIO_EXTERN int CASIO_EXPORT casio_open_com_stream
+	OF((casio_stream_t **casio__stream,
+		const char *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_add_default_com_stream
+	OF((casio_opencomstream_t *casio__function));
 
 /* USB stream opening. */
 
-typedef int casio_openusbstream_t       OF((casio_stream_t **casio__stream));
+typedef int casio_openusbstream_t OF((casio_stream_t **casio__stream));
 
-extern int casio_open_usb_stream        OF((casio_stream_t **casio__stream));
-extern int casio_add_default_usb_stream OF((
-	casio_openusbstream_t *casio__function));
+CASIO_EXTERN int CASIO_EXPORT casio_open_usb_stream
+	OF((casio_stream_t **casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_add_default_usb_stream
+	OF((casio_openusbstream_t *casio__function));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
-# include <libcasio/builtin.h>
+# include "builtin.h"
 #endif /* LIBCASIO_STREAM_H */

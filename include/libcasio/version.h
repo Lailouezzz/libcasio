@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_VERSION_H
 # define LIBCASIO_VERSION_H
-# include <libcasio/cdefs.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* CASIO's versions look like 'MM.mm.ABCD', where 'MM' is the major, 'mm' is
@@ -70,11 +70,12 @@ CASIO_BEGIN_DECLS
  * right format (for user interface, such as command-line argument checking),
  * and to decode/encode a version. */
 
-extern int casio_check_version  OF((const char *casio__raw));
-extern int casio_decode_version OF((casio_version_t *casio__version,
-	const char *casio__raw));
-extern int casio_encode_version OF((char *casio__raw,
-	const casio_version_t *casio__version));
+CASIO_EXTERN int CASIO_EXPORT casio_check_version
+	OF((const char *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_version
+	OF((casio_version_t *casio__version, const char *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_version
+	OF((char *casio__raw, const casio_version_t *casio__version));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

@@ -31,15 +31,11 @@
 int casio_decode_mcs_setup(casio_mcsfile_t **h, casio_stream_t *buffer,
 	casio_mcshead_t *head)
 {
-	int err;
-	unsigned char *content = NULL;
+	int err; unsigned char content[100];
 	casio_setup_t *sp;
 
 	/* read content */
-	err = casio_error_alloc;
-	content = malloc(head->casio_mcshead_size);
-	if (!content) goto fail;
-	GREAD(content, head->casio_mcshead_size)
+	READ(content, 100)
 
 	/* make final head and file */
 	err = casio_make_mcsfile(h, head);
@@ -64,12 +60,5 @@ int casio_decode_mcs_setup(casio_mcsfile_t **h, casio_stream_t *buffer,
 
 	/* TODO: decode more options! */
 	/* no error! */
-	err = 0;
-fail:
-	free(content);
-	if (err) {
-		casio_free_mcsfile(*h);
-		*h = NULL;
-	}
 	return (0);
 }

@@ -19,7 +19,7 @@
 #include "../internals.h"
 
 /**
- *	casio_checksum8:
+ *	casio_checksum_cas:
  *	Make checksums great again.
  *
  *	@arg	mem		the memory zone.
@@ -28,12 +28,31 @@
  *	@return			the new checksum.
  */
 
-unsigned char casio_checksum8(void *mem, size_t size, unsigned char cs)
+int casio_checksum_cas(void *mem, size_t size, int cs)
 {
 	unsigned char *m = mem;
 
 	while (size--)
-		cs -= *m++;
+		cs = (cs - *m++) & 255;
+	return (cs);
+}
+
+/**
+ *	casio_checksum_sub:
+ *	Make the CASIOWIN type of checksums.
+ *
+ *	@arg	mem		the memory zone.
+ *	@arg	size	the memory zone size.
+ *	@arg	cs		the current checksum.
+ *	@return			the new checksum.
+ */
+
+int casio_checksum_sub(void *mem, size_t size, int cs)
+{
+	unsigned char *m = mem;
+
+	while (size--)
+		cs = (cs - *m++) & 255;
 	return (cs);
 }
 

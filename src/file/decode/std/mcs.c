@@ -63,9 +63,11 @@ int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
 		/* foreach subpart */
 		for (i = 0; i < hd.casio_mcs_subheader_subcount; i++) {
 			casio_mcs_fileheader_t fhd;
+			casio_uint32_t datalength;
 
 			/* get the part header */
 			GDREAD(fhd)
+			datalength = be32toh(fhd.casio_mcs_fileheader_datalength);
 
 			/* log info about the subpart */
 			msg((ll_info, "[%lu] directory name is '%.8s'",
@@ -73,7 +75,7 @@ int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
 			msg((ll_info, "[%lu] filename is '%.8s'", i,
 				fhd.casio_mcs_fileheader_filename));
 			msg((ll_info, "[%lu] data length is %" CASIO_PRIu32,
-				i, fhd.casio_mcs_fileheader_datalength));
+				i, datalength));
 
 			/* decode the head */
 			casio_decode_mcsfile_head(&head,
@@ -81,7 +83,7 @@ int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
 				hd.casio_mcs_subheader_intname,
 				fhd.casio_mcs_fileheader_dirname,
 				fhd.casio_mcs_fileheader_filename,
-				be32toh(fhd.casio_mcs_fileheader_datalength));
+				datalength);
 
 			/* decode */
 			handle->casio_file_mcsfiles[handle->casio_file_count] = NULL;

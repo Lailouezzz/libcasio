@@ -97,7 +97,7 @@ static int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
 	mem((ll_info, &hd, sizeof(casio_cas50_t)));
 
 	/* check the checksum */
-	csum = casio_checksum8(&hd, sizeof(casio_cas50_t) - 1, 0);
+	csum = casio_checksum_cas(&hd, sizeof(casio_cas50_t) - 1, 0);
 	if (csum != hd.casio_cas50_checksum) {
 		msg((ll_error, "Checksum mismatch: expected 0x%02X, got 0x%02X",
 			hd.casio_cas50_checksum, csum));
@@ -153,14 +153,14 @@ int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
 {
 	unsigned char buf[39], csum;
 	casio_casdyn_t *dhd = (void*)buf;
-	casio_cas40_t *hd = (void*)buf;
+	casio_cas40_t   *hd = (void*)buf;
 
 	/* check that the head exists */
 	if (!head) return (-1);
 	memset(head, 0, sizeof(casio_mcshead_t));
 
 	/* read beginning of the header, check if is an extended header */
-	READ(buf, 4) csum = casio_checksum8(buf, 4, 0);
+	READ(buf, 4) csum = casio_checksum_cas(buf, 4, 0);
 	if (!casio_maketype_casapp(head, dhd->casio_casdyn_ext,
 	 (char*)dhd->casio_casdyn_app))
 	  switch (head->casio_mcshead_info) {
@@ -176,7 +176,7 @@ int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
 
 	/* is a CAS40 head, read it. */
 	READ(&buf[4], 35)
-	csum = casio_checksum8(&buf[4], 34, csum);
+	csum = casio_checksum_cas(&buf[4], 34, csum);
 	msg((ll_info, "Raw CAS40 (CAS) header:"));
 	mem((ll_info, hd, sizeof(casio_cas40_t)));
 	if (casio_maketype_cas(head, (char*)hd->casio_cas40_data))

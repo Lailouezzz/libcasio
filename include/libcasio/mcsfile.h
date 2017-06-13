@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_MCSFILE_H
 # define LIBCASIO_MCSFILE_H
-# include <libcasio/cdefs.h>
-# include <libcasio/number.h>
-# include <libcasio/picture.h>
+# include "cdefs.h"
+# include "number.h"
+# include "picture.h"
+
 # define casio_theta 27
 # define casio_r     28
 # define casio_ans   29
@@ -279,47 +280,55 @@ typedef struct casio_mcsfile_s {
 CASIO_BEGIN_DECLS
 /* Manage a main memory file from a head, and free a main memory file. */
 
-extern int  casio_make_mcsfile OF((casio_mcsfile_t **casio__handle,
-	const casio_mcshead_t *casio__head));
-extern void casio_free_mcsfile OF((casio_mcsfile_t  *casio__handle));
+CASIO_EXTERN int  CASIO_EXPORT casio_make_mcsfile
+	OF((casio_mcsfile_t **casio__handle, const casio_mcshead_t *casio__head));
+CASIO_EXTERN void CASIO_EXPORT casio_free_mcsfile
+	OF((casio_mcsfile_t  *casio__handle));
 
 /* Decode and encode an MCS file from an MCS archive. */
 
-extern int casio_decode_mcsfile_head OF((casio_mcshead_t *casio__head,
-	int casio__raw_type, const unsigned char *casio__groupname,
-	const unsigned char *casio__dirname, const unsigned char *casio__filename,
-	unsigned long filesize));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_mcsfile_head
+	OF((casio_mcshead_t *casio__head, int casio__raw_type,
+		const unsigned char *casio__groupname,
+		const unsigned char *casio__dirname,
+		const unsigned char *casio__filename,
+		unsigned long casio__filesize));
 
-extern int casio_decode_mcsfile      OF((casio_mcsfile_t **casio__handle,
-	const casio_mcshead_t *casio__head, casio_stream_t *casio__buffer));
-extern int casio_decode_mcsfile_data OF((casio_mcsfile_t **casio__handle,
-	const casio_mcshead_t *casio__head,
-	const void *casio__data, size_t casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_mcsfile
+	OF((casio_mcsfile_t **casio__handle,
+		const casio_mcshead_t *casio__head,
+		casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_mcsfile_data
+	OF((casio_mcsfile_t **casio__handle,
+		const casio_mcshead_t *casio__head,
+		const void *casio__data, size_t casio__size));
 
-extern int casio_encode_mcsfile      OF((casio_mcsfile_t  *casio__handle,
-	casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_mcsfile
+	OF((casio_mcsfile_t  *casio__handle, casio_stream_t *casio__buffer));
 
 /* Decode and encode an MCS file from a CASIOLINK environment. */
 
-extern int casio_decode_casfile_head OF((casio_mcshead_t *casio__head,
-	casio_stream_t *casio__buffer));
-extern int casio_decode_casfile_part OF((casio_mcsfile_t *casio__file,
-	casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_casfile_head
+	OF((casio_mcshead_t *casio__head, casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_casfile_part
+	OF((casio_mcsfile_t *casio__file, casio_stream_t *casio__stream));
 
-extern int casio_encode_casfile_head OF((casio_mcshead_t *casio__head,
-	casio_stream_t *casio__buffer));
-extern int casio_encode_casfile_part OF((casio_mcsfile_t *casio__file,
-	casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_casfile_head
+	OF((casio_mcshead_t *casio__head, casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_casfile_part
+	OF((casio_mcsfile_t *casio__file, casio_stream_t *casio__buffer));
 
 /* Correct a head (add raw data). */
 
-extern int casio_correct_mcsfile_head OF((casio_mcshead_t *casio__head));
-extern int casio_correct_casfile_head OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcsfile_head
+	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_casfile_head
+	OF((casio_mcshead_t *casio__head));
 
 /* Compare MCS files (for ordering). */
 
-extern int casio_compare_mcsfiles OF((const casio_mcsfile_t *first,
-	const casio_mcsfile_t *second));
+CASIO_EXTERN int CASIO_EXPORT casio_compare_mcsfiles
+	OF((const casio_mcsfile_t *first, const casio_mcsfile_t *second));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

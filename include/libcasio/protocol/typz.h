@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_PROTOCOL_TYPZ_H
 # define LIBCASIO_PROTOCOL_TYPZ_H
-# include <libcasio/cdefs.h>
+# include "../cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* In both Protocol 7.00 and extended SCSI protocols, recent CASIO

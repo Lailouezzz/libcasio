@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_LOG_H
 # define LIBCASIO_LOG_H
-# include <libcasio/cdefs.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* Log levels -- prefer the functions to these values, that can change! */
@@ -32,22 +32,24 @@ typedef int casio_loglevel_t;
 CASIO_BEGIN_DECLS
 
 /* Get and set the log level at runtime */
-extern void             casio_setlog OF((casio_loglevel_t casio__level));
-extern casio_loglevel_t casio_getlog OF((void));
+CASIO_EXTERN void             CASIO_EXPORT casio_setlog
+	OF((casio_loglevel_t casio__level));
+CASIO_EXTERN casio_loglevel_t CASIO_EXPORT casio_getlog
+	OF((void));
 
 /* Get, set and list log level strings */
-extern const char      *casio_loglevel_tostring   OF((
-	casio_loglevel_t casio__level));
-extern casio_loglevel_t casio_loglevel_fromstring OF((
-	const char *casio__string));
+CASIO_EXTERN const char*      CASIO_EXPORT casio_loglevel_tostring
+	OF((casio_loglevel_t casio__level));
+CASIO_EXTERN casio_loglevel_t CASIO_EXPORT casio_loglevel_fromstring
+	OF((const char *casio__string));
 
 /* List log levels */
 
 typedef void casio_log_list_t OF((void *casio__cookie,
 	const char *casio__str));
 
-extern void casio_listlog OF((casio_log_list_t *casio__callback,
-	void *casio__cookie));
+CASIO_EXTERN void CASIO_EXPORT casio_listlog
+	OF((casio_log_list_t *casio__callback, void *casio__cookie));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

@@ -258,7 +258,6 @@ fail:
 	casio_free_file(*h); *h = NULL;
 	return (casio_error_alloc);
 }
-
 /* ************************************************************************* */
 /*  Free a handle                                                            */
 /* ************************************************************************* */
@@ -285,15 +284,13 @@ void casio_free_file(casio_file_t *handle)
 
 	/* mcs time! */
 	if (handle->casio_file_type & casio_filetype_mcs) {
-		casio_mcsfile_t **files;
+		casio_mcsfile_t **files = handle->casio_file_mcsfiles;
 
 		/* check if mcs */
-		if (!handle->casio_file_mcsfiles)
-			return ;
+		if (!files) return ;
 
 		/* foreach file in mcs */
-		files = handle->casio_file_mcsfiles;
-		for (i = handle->casio_file_count; i >= 0; i--) {
+		for (i = handle->casio_file_count - 1; i >= 0; i--) {
 			/* free the file if exists */
 			if (files[i]) casio_free_mcsfile(files[i]);
 		}

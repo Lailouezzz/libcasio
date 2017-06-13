@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define checksub8(BUF, SIZE, INI) \
-	casio_checksum8(&((char*)(BUF))[1], (SIZE) - 3, (INI))
+	casio_checksum_sub(&((char*)(BUF))[1], (SIZE) - 3, (INI))
 
 /* ************************************************************************* */
 /*  Logging                                                                  */

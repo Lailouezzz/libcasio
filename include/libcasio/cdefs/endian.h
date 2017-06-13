@@ -18,21 +18,29 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_CDEFS_ENDIAN_H
 # define LIBCASIO_CDEFS_ENDIAN_H
-# include <libcasio/cdefs.h>
+# include "../cdefs.h"
 
 /* These function always exist. They are the default ones, if the platform
  * does not have any equivalent function (or has one but indicates that
  * fact badly). */
 
-extern casio_uint16_t casio_be16toh OF((casio_uint16_t casio__x));
-extern casio_uint16_t casio_le16toh OF((casio_uint16_t casio__x));
-extern casio_uint32_t casio_be32toh OF((casio_uint32_t casio__x));
-extern casio_uint32_t casio_le32toh OF((casio_uint32_t casio__x));
+CASIO_EXTERN casio_uint16_t CASIO_EXPORT casio_be16toh
+	OF((casio_uint16_t casio__x));
+CASIO_EXTERN casio_uint16_t CASIO_EXPORT casio_le16toh
+	OF((casio_uint16_t casio__x));
+CASIO_EXTERN casio_uint32_t CASIO_EXPORT casio_be32toh
+	OF((casio_uint32_t casio__x));
+CASIO_EXTERN casio_uint32_t CASIO_EXPORT casio_le32toh
+	OF((casio_uint32_t casio__x));
 
-extern casio_uint16_t casio_htobe16 OF((casio_uint16_t casio__x));
-extern casio_uint16_t casio_htole16 OF((casio_uint16_t casio__x));
-extern casio_uint32_t casio_htobe32 OF((casio_uint32_t casio__x));
-extern casio_uint32_t casio_htole32 OF((casio_uint32_t casio__x));
+CASIO_EXTERN casio_uint16_t CASIO_EXPORT casio_htobe16
+	OF((casio_uint16_t casio__x));
+CASIO_EXTERN casio_uint16_t CASIO_EXPORT casio_htole16
+	OF((casio_uint16_t casio__x));
+CASIO_EXTERN casio_uint32_t CASIO_EXPORT casio_htobe32
+	OF((casio_uint32_t casio__x));
+CASIO_EXTERN casio_uint32_t CASIO_EXPORT casio_htole32
+	OF((casio_uint32_t casio__x));
 
 # if defined(__APPLE__)
 #  include <libkern/OSByteOrder.h>

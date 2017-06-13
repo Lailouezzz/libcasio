@@ -18,15 +18,17 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_ENCODING_H
 # define LIBCASIO_ENCODING_H
-# include <libcasio/cdefs.h>
+# include "cdefs.h"
 
 typedef int casio_encode_string_t OF((void *casio__dest,
 	const void *casio__data, size_t *casio__size));
 
-extern int casio_register_conv OF((const char *casio__to,
-	const char *casio__from, casio_encode_t *casio__encode_from));
+CASIO_EXTERN int CASIO_EXPORT casio_register_conv
+	OF((const char *casio__to, const char *casio__from,
+		casio_encode_t *casio__encode_from));
 
-extern int casio_encode_string OF((void *casio__dest, const void *casio__data,
-	size_t *casio__size));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_string
+	OF((void *casio__dest, const void *casio__data,
+		size_t *casio__size));
 
 #endif /* LIBCASIO_ENCODING_H */

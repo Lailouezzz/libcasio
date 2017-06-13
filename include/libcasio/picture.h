@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_PICTURE_H
 # define LIBCASIO_PICTURE_H
-# include <libcasio/cdefs.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* This file describes the picture formats CASIO has used for various purposes
@@ -38,7 +38,7 @@ typedef casio_uint32_t casio_pixel_t;
  * Do not use the format described above other than to define your own
  * formats, as it might change! */
 
-typedef enum casio_pictureformat_s {
+typedef enum casio_pictureformat_e {
 /* ************************************************************************* */
 /*  Monochrome pictures with fill bits                                       */
 /* ************************************************************************* */
@@ -170,17 +170,20 @@ typedef enum casio_pictureformat_s {
 
 CASIO_BEGIN_DECLS
 
-extern size_t casio_get_picture_size OF((casio_pixel_t **casio__pixels,
-	casio_pictureformat_t casio__format,
-	unsigned int casio__width, unsigned int casio__height));
+CASIO_EXTERN size_t CASIO_EXPORT casio_get_picture_size
+	OF((casio_pixel_t **casio__pixels,
+		casio_pictureformat_t casio__format,
+		unsigned int casio__width, unsigned int casio__height));
 
-extern int casio_decode_picture OF((casio_pixel_t **casio__pixels,
-	const void *casio__raw, casio_pictureformat_t casio__format,
-	unsigned int casio__width, unsigned casio__height));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_picture
+	OF((casio_pixel_t **casio__pixels,
+		const void *casio__raw, casio_pictureformat_t casio__format,
+		unsigned int casio__width, unsigned casio__height));
 
-extern int casio_encode_picture OF((void *casio__raw,
-	const casio_pixel_t **casio__pixels, casio_pictureformat_t casio__format,
-	unsigned int casio__width, unsigned casio__height));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_picture
+	OF((void *casio__raw, const casio_pixel_t **casio__pixels,
+		casio_pictureformat_t casio__format,
+		unsigned int casio__width, unsigned casio__height));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

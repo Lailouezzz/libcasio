@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_STD_MCS_H
 # define LIBCASIO_FORMAT_STD_MCS_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "../../cdefs.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 
@@ -76,9 +75,9 @@ CASIO_END_NAMESPACE
 /* Beneath the file header, the file have different structures according to
  * their group name and MCS type. Pick your poison, once again! */
 
-# include <libcasio/format/mcs/cells.h>
-# include <libcasio/format/mcs/picture.h>
-# include <libcasio/format/mcs/program.h>
-# include <libcasio/format/mcs/setup.h>
-# include <libcasio/format/mcs/spreadsheet.h>
+# include "../mcs/cells.h"
+# include "../mcs/picture.h"
+# include "../mcs/program.h"
+# include "../mcs/setup.h"
+# include "../mcs/spreadsheet.h"
 #endif /* LIBCASIO_FORMAT_STD_MCS_H */

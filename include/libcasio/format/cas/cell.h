@@ -18,6 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_CAS_CELL_H
 # define LIBCASIO_FORMAT_CAS_CELL_H
+# include "../../cdefs.h"
 
 /* Lists, matrixes and variables are sent/stored the same way.
  * Variables are either 1*1 matrixes, or 0*0 matrixes if unused.

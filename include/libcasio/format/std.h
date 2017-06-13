@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_STD_H
 # define LIBCASIO_FORMAT_STD_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "../cdefs.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 
@@ -251,10 +250,10 @@ typedef struct casio_standard_picheader_s {
 
 CASIO_END_NAMESPACE
 # pragma pack()
-# include <libcasio/format/std/addin.h>
-# include <libcasio/format/std/eact.h>
-# include <libcasio/format/std/mcs.h>
-# include <libcasio/format/std/picture.h>
-# include <libcasio/format/std/lang.h>
-# include <libcasio/format/std/fkey.h>
+# include "std/addin.h"
+# include "std/eact.h"
+# include "std/mcs.h"
+# include "std/picture.h"
+# include "std/lang.h"
+# include "std/fkey.h"
 #endif /* LIBCASIO_FORMAT_STD_H */

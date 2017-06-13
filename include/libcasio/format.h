@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_H
 # define LIBCASIO_FORMAT_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "cdefs.h"
 
 /* Welcome on this new episode of the Monster Circus show! Today we'll present
  * to you the different formats surrounding CASIO calculators: open or closed,
@@ -38,7 +37,7 @@
  *
  * You can find its description in the following header: */
 
-# include <libcasio/format/cas.h>
+# include "format/cas.h"
 /* ************************************************************************* */
 /*  The GraphCard (GRC) format                                               */
 /* ************************************************************************* */
@@ -66,7 +65,9 @@
 /* Followed by loads of zero, then, the content. The description of the rest
  * of the format is described in this header: */
 
-/*# include <libcasio/format/fxi.h> -- TODO */
+# if 0
+#  include "format/fxi.h" -- TODO */
+# endif
 /* ************************************************************************* */
 /*  The Casemul format                                                       */
 /* ************************************************************************* */
@@ -84,7 +85,7 @@
 
 /* Discover the rest in its dedicated header: */
 
-# include <libcasio/format/casemul.h>
+# include "format/casemul.h"
 /* ************************************************************************* */
 /*  The G1S format                                                           */
 /* ************************************************************************* */
@@ -92,7 +93,7 @@
  * It won't work with fx-CP or fx-CG calculators, as the storage memory
  * has changed since. */
 
-# include <libcasio/format/storage.h>
+# include "format/storage.h"
 /* ************************************************************************* */
 /*  The standard format                                                      */
 /* ************************************************************************* */
@@ -105,5 +106,5 @@
  * It doesn't have one single magic string, but a few, although the standard
  * header has the same format, so we consider it as the same format. */
 
-# include <libcasio/format/std.h>
+# include "format/std.h"
 #endif /* LIBCASIO_FORMAT_H */

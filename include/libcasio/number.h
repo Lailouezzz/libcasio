@@ -24,8 +24,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_NUMBER_H
 # define LIBCASIO_NUMBER_H
-# include <libcasio/cdefs.h>
-# include <stddef.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 # define CASIO_BCD_MANTISSA_SIZE 16
@@ -39,7 +38,6 @@ CASIO_BEGIN_NAMESPACE
 
 # define CASIO_BCD_GOODBUFSIZE \
 	(2 + CASIO_BCD_MANTISSA_SIZE + 4 + 2 + 1)
-
 /* ************************************************************************* */
 /*  Main type                                                                */
 /* ************************************************************************* */
@@ -117,25 +115,26 @@ typedef struct casio_mcsbcd_s {
 CASIO_BEGIN_DECLS
 
 /* From and to MCS BCD. */
-extern int casio_bcd_frommcs OF((casio_bcd_t *casio__bcd,
-	const casio_mcsbcd_t *casio__raw));
-extern int casio_bcd_tomcs   OF((casio_mcsbcd_t *casio__raw,
-	const casio_bcd_t *casio__bcd));
+CASIO_EXTERN int CASIO_EXPORT casio_bcd_frommcs
+	OF((casio_bcd_t *casio__bcd, const casio_mcsbcd_t *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_bcd_tomcs
+	OF((casio_mcsbcd_t *casio__raw, const casio_bcd_t *casio__bcd));
 
 /* From and to CAS BCD. */
-extern int casio_bcd_fromcas OF((casio_bcd_t *casio__bcd,
-	const casio_casbcd_t *casio__raw));
-extern int casio_bcd_tocas OF((casio_casbcd_t *casio__raw,
-	const casio_bcd_t *casio__bcd));
+CASIO_EXTERN int CASIO_EXPORT casio_bcd_fromcas
+	OF((casio_bcd_t *casio__bcd, const casio_casbcd_t *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_bcd_tocas
+	OF((casio_casbcd_t *casio__raw, const casio_bcd_t *casio__bcd));
 
 /* From and to C-double */
-extern void   casio_bcd_fromdouble OF((casio_bcd_t *casio__bcd,
-	double casio__raw));
-extern double   casio_bcd_todouble OF((const casio_bcd_t *casio__bcd));
+CASIO_EXTERN void   CASIO_EXPORT casio_bcd_fromdouble
+	OF((casio_bcd_t *casio__bcd, double casio__raw));
+CASIO_EXTERN double CASIO_EXPORT casio_bcd_todouble
+	OF((const casio_bcd_t *casio__bcd));
 
 /* Make a string out of a BCD */
-extern size_t casio_bcdtoa OF((char *casio__buf, size_t casio__len,
-	const casio_bcd_t *casio__bcd));
+CASIO_EXTERN size_t CASIO_EXPORT casio_bcdtoa
+	OF((char *casio__buf, size_t casio__len, const casio_bcd_t *casio__bcd));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

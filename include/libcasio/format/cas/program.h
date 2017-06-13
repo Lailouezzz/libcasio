@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_CAS_PROGRAM_H
 # define LIBCASIO_FORMAT_CAS_PROGRAM_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "../../cdefs.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 

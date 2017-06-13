@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_DATE_H
 # define LIBCASIO_DATE_H
-# include <libcasio/cdefs.h>
-# include <time.h>
+# include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 /* CASIO's dates look like 'YYYY.MMDD.HHmm', where 'YYYY' is the major,
@@ -27,10 +26,12 @@ CASIO_BEGIN_NAMESPACE
  * minutes. The date is considered UTC. */
 
 CASIO_BEGIN_DECLS
-extern int casio_decode_date  OF((time_t *casio__date,
-	const char *casio__raw));
-extern int casio_encode_date  OF((char *casio__raw,
-	const time_t *casio__date));
+
+CASIO_EXTERN int CASIO_EXPORT casio_decode_date
+	OF((time_t *casio__date, const char *casio__raw));
+CASIO_EXTERN int CASIO_EXPORT casio_encode_date
+	OF((char *casio__raw, const time_t *casio__date));
+
 CASIO_END_DECLS
 
 CASIO_END_NAMESPACE

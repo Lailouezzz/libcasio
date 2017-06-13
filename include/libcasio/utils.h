@@ -18,14 +18,17 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_UTILS_H
 # define LIBCASIO_UTILS_H 1
+# include "cdefs.h"
 
 /* ASCII-HEX, ASCII-DEC utilities */
-extern void          casio_putascii OF((unsigned char *casio__p,
-	unsigned long casio__i, int casio__n));
-extern unsigned long casio_getascii OF((const unsigned char *casio__p,
-	int casio__n));
+CASIO_EXTERN void          CASIO_EXPORT casio_putascii
+	OF((unsigned char *casio__p, unsigned long casio__i, int casio__n));
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_getascii
+	OF((const unsigned char *casio__p, int casio__n));
 
-extern unsigned long casio_getdec OF((unsigned long casio__h));
-extern unsigned long casio_gethex OF((unsigned long casio__d));
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_getdec
+	OF((unsigned long casio__h));
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_gethex
+	OF((unsigned long casio__d));
 
 #endif /* LIBCASIO_UTILS_H */

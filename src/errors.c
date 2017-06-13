@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
+#define LIBCASIO_NO_STRERROR
 #include "internals.h"
 
 const char *casio_error_strings[128] = {
@@ -69,3 +70,16 @@ const char *casio_error_strings[128] = {
 	"invalid checksum",
 	"was recognized but not one of the allowed file types."
 };
+
+/**
+ *	casio_strerror:
+ *	Get the error string.
+ *
+ *	@arg	error	the error code.
+ *	@return			the error string.
+ */
+
+const char *casio_strerror(int error)
+{
+	return (casio_error_strings[error]);
+}

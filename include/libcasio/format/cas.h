@@ -18,8 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_FORMAT_CAS_H
 # define LIBCASIO_FORMAT_CAS_H
-# include <libcasio/cdefs.h>
-# include <stdint.h>
+# include "../cdefs.h"
 # pragma pack(1)
 CASIO_BEGIN_NAMESPACE
 
@@ -231,10 +230,10 @@ typedef struct casio_cas100info_s {
 
 CASIO_END_NAMESPACE
 # pragma pack()
-# include <libcasio/format/cas/program.h> /* programs, f-mem */
-# include <libcasio/format/cas/cell.h> /* list, matrix, variable */
-# include <libcasio/format/cas/backup.h>
-# include <libcasio/format/cas/picture.h>
-# include <libcasio/format/cas/graph.h>
-# include <libcasio/format/cas/gmem.h>
+# include "cas/program.h" /* programs, f-mem */
+# include "cas/cell.h" /* lists, matrixes, variables */
+# include "cas/backup.h"
+# include "cas/picture.h"
+# include "cas/graph.h"
+# include "cas/gmem.h"
 #endif /* LIBCASIO_FORMAT_CAS_H */

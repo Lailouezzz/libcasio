@@ -42,7 +42,7 @@ int casio_make_mcsfile(casio_mcsfile_t **h, const casio_mcshead_t *rawhead)
 	if (!handle) return (casio_error_alloc);
 
 	/* initialize the handle, copy the head */
-	memset(h, 0, sizeof(casio_mcsfile_t));
+	memset(handle, 0, sizeof(casio_mcsfile_t));
 	memcpy(&handle->casio_mcsfile_head, rawhead, sizeof(casio_mcshead_t));
 	head = &handle->casio_mcsfile_head;
 

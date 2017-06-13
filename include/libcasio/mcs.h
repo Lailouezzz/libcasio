@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * libcasio/format/cas/backup.h -- description of the CAS backup format.
+ * libcasio/mcs.h -- libcasio RAM filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,16 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_FORMAT_CAS_BACKUP_H
-# define LIBCASIO_FORMAT_CAS_BACKUP_H
-# include "../../cdefs.h"
+#ifndef  LIBCASIO_MCS_H
+# define LIBCASIO_MCS_H
+# include "cdefs.h"
+# include "mcsfile.h"
 
-/* Backups are raw backups from the calculator.
- *
- * The CAS40 specific subheader is basically "TYPE<T>".
- * For example, a backup from a CFX-98600G has the "TYPEA" subheader,
- * and the editor filename is "02".
- *
- * TODO: find out the content format. */
+/* TODO: something similar to `fs.h`, but for MCS. */
 
-#endif /* LIBCASIO_FORMAT_CAS_BACKUP_H */
+#endif /* LIBCASIO_MCS_H */

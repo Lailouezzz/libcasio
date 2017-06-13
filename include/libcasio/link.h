@@ -18,11 +18,11 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_LINK_H
 # define LIBCASIO_LINK_H
-# include <libcasio/cdefs.h>
-# include <libcasio/stream.h>
-# include <libcasio/filesystem.h>
-# include <libcasio/version.h>
-# include <libcasio/picture.h>
+# include "cdefs.h"
+# include "stream.h"
+# include "fs.h"
+# include "version.h"
+# include "picture.h"
 CASIO_BEGIN_NAMESPACE
 
 /* ************************************************************************* */
@@ -109,24 +109,24 @@ typedef void casio_link_list_t OF((void *casio__cookie,
 CASIO_BEGIN_DECLS
 
 /* Cross-platform initialization. */
-extern int casio_open_usb  OF((casio_link_t **casio__h,
+CASIO_EXTERN int casio_open_usb  OF((casio_link_t **casio__h,
 	unsigned long casio__flags));
-extern int casio_open_com  OF((casio_link_t **casio__h,
+CASIO_EXTERN int casio_open_com  OF((casio_link_t **casio__h,
 	unsigned long casio__flags, const char *casio__path,
 	const casio_streamattrs_t *casio__attributes));
 
 /* Initialize a handle using a custom stream. */
-extern int casio_open_link OF((casio_link_t **casio__h,
+CASIO_EXTERN int casio_open_link OF((casio_link_t **casio__h,
 	unsigned long casio__flags, casio_stream_t *casio__stream,
 	const casio_streamattrs_t *casio__attributes));
 
 /* Get things. */
 
-extern const casio_link_info_t *casio_get_link_info OF((
+CASIO_EXTERN const casio_link_info_t *casio_get_link_info OF((
 	casio_link_t *casio__handle));
 
 /* De-initialize. */
-extern void casio_close_link OF((casio_link_t *casio__h));
+CASIO_EXTERN void casio_close_link OF((casio_link_t *casio__h));
 /* ************************************************************************* */
 /*  Run servers.                                                             */
 /* ************************************************************************* */
@@ -135,49 +135,53 @@ extern void casio_close_link OF((casio_link_t *casio__h));
 typedef int casio_seven_server_func_t OF((void *casio__cookie,
 	casio_link_t *casio__handle));
 
-extern int casio_seven_serve OF((casio_link_t *casio__handle,
+CASIO_EXTERN int casio_seven_serve OF((casio_link_t *casio__handle,
 	casio_seven_server_func_t **casio__callbacks, void *casio__cookie));
 /* ************************************************************************* */
 /*  General-purpose link operations                                          */
 /* ************************************************************************* */
 /* Set the link settings. */
 
-extern int casio_setlink OF((casio_link_t *casio__handle,
-	const casio_streamattrs_t *casio__attrs));
+CASIO_EXTERN int CASIO_EXPORT casio_setlink
+	OF((casio_link_t *casio__handle, const casio_streamattrs_t *casio__attrs));
 
 /* Set up a screen streaming receiver. */
 
-extern int casio_getscreen OF((casio_link_t *casio__handle,
-	casio_link_screen_t *casio__callback, void *casio__scookie));
+CASIO_EXTERN int CASIO_EXPORT casio_getscreen
+	OF((casio_link_t *casio__handle,
+		casio_link_screen_t *casio__callback, void *casio__scookie));
 
 /* Backup the ROM. */
 
-extern int casio_backup_rom OF((casio_link_t *casio__handle,
-	casio_stream_t *casio__buffer, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_backup_rom
+	OF((casio_link_t *casio__handle,
+		casio_stream_t *casio__buffer, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 
 # ifndef LIBCASIO_DISABLED_FILE
-extern int casio_backup_rom_file OF((casio_link_t *casio__handle,
-	FILE *casio__file, casio_link_progress_t *casio__progress,
-	void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_backup_rom_file
+	OF((casio_link_t *casio__handle,
+		FILE *casio__file, casio_link_progress_t *casio__progress,
+		void *casio__pcookie));
 # endif
 
 /* Upload and run an executable. */
 
-extern int casio_upload_and_run OF((casio_link_t *casio__handle,
-	casio_stream_t *casio__buffer, casio_off_t casio__size,
-	unsigned long casio__loadaddr, unsigned long casio__straddr,
-	casio_link_progress_t *casio__disp, void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_upload_and_run
+	OF((casio_link_t *casio__handle,
+		casio_stream_t *casio__buffer, casio_off_t casio__size,
+		unsigned long casio__loadaddr, unsigned long casio__straddr,
+		casio_link_progress_t *casio__disp, void *casio__pcookie));
 
 # ifndef LIBCASIO_DISABLED_FILE
-extern int casio_upload_and_run_file OF((
-	casio_link_t *casio__handle, FILE *casio__program,
-	unsigned long casio__loadaddr, unsigned long casio__straddr,
-	casio_link_progress_t *casio__disp, void *casio__pcookie));
+CASIO_EXTERN int CASIO_EXPORT casio_upload_and_run_file
+	OF((casio_link_t *casio__handle, FILE *casio__program,
+		unsigned long casio__loadaddr, unsigned long casio__straddr,
+		casio_link_progress_t *casio__disp, void *casio__pcookie));
 # endif
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
-# include <libcasio/protocol/legacy.h>
-# include <libcasio/protocol/seven.h>
+# include "protocol/legacy.h"
+# include "protocol/seven.h"
 #endif /* LIBCASIO_LINK_H */

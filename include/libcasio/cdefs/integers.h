@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_CDEFS_INTEGERS_H
 # define LIBCASIO_CDEFS_INTEGERS_H 1
-# include <libcasio/cdefs.h>
+# include "../cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L

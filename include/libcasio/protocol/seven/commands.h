@@ -16,21 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef    LIBCASIO_PROTOCOL_SEVEN_H
-# include <libcasio/protocol/seven.h>
-#endif
 #ifndef  LIBCASIO_PROTOCOL_SEVEN_COMMANDS_H
 # define LIBCASIO_PROTOCOL_SEVEN_COMMANDS_H
-# include <libcasio/mcsfile.h>
+# include "../seven.h"
+# include "../../mcsfile.h"
 CASIO_BEGIN_NAMESPACE
 CASIO_BEGIN_DECLS
 
 /* Utility for MCS commands */
-extern int casio_seven_send_typical_mcs_command OF((
-	casio_link_t *casio__handle,
-	int casio__code, casio_mcshead_t *casio__head,
-	casio_mcsfile_t *casio__file,
-	int casio__ow));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_typical_mcs_command
+	OF((casio_link_t *casio__handle,
+		int casio__code, casio_mcshead_t *casio__head,
+		casio_mcsfile_t *casio__file,
+		int casio__ow));
 /*
 	size_t sz = casio__file ? get_the_file_size(casio__file) : 0;
 	return (casio_seven_send_cmd_data(casio__handle, casio__code, casio__ow,
@@ -50,9 +48,9 @@ extern int casio_seven_send_typical_mcs_command OF((
 
 /* Set the link settings */
 # define casio_seven_cmdsys_setlink     0x02
-extern int casio_seven_send_cmdsys_setlink OF((
-	casio_link_t *casio__handle,
-	int casio__baudrate, int casio__parity, int casio__stopbits));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmdsys_setlink
+	OF((casio_link_t *casio__handle,
+		int casio__baudrate, int casio__parity, int casio__stopbits));
 /* ************************************************************************* */
 /*  Backup commands                                                          */
 /* ************************************************************************* */
@@ -210,10 +208,10 @@ extern int casio_seven_send_cmdsys_setlink OF((
 /* ************************************************************************* */
 /* Upload and run */
 # define casio_seven_cmdosu_upandrun    0x56
-extern int casio_seven_send_cmdosu_upandrun OF((
-	casio_link_t *casio__handle,
-	unsigned long casio__upsize, unsigned long casio__loadaddr,
-	unsigned long casio__straddr));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmdosu_upandrun
+	OF((casio_link_t *casio__handle,
+		unsigned long casio__upsize, unsigned long casio__loadaddr,
+		unsigned long casio__straddr));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

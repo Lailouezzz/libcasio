@@ -41,7 +41,7 @@ int casio_decode_caspart_program(casio_mcsfile_t *handle,
 
 	/* check the sum */
 	DREAD(checksum)
-	csum = casio_checksum8(handle->casio_mcsfile_content,
+	csum = casio_checksum_cas(handle->casio_mcsfile_content,
 		handle->casio_mcsfile_head.casio_mcshead_size, 0);
 	if (checksum != csum) {
 		msg((ll_error, "Checksum mismatch: expected 0x%02X, got 0x%02X",

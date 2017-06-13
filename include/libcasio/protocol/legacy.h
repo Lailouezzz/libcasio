@@ -23,7 +23,7 @@
  * ************************************************************************* */
 #ifndef  LIBCASIO_PROTOCOL_LEGACY_H
 # define LIBCASIO_PROTOCOL_LEGACY_H
-# include <libcasio/cdefs.h>
+# include "../cdefs.h"
 
 /* In these protocols, there are two types of packets: one-byte packets,
  * and multi-byte packets (headers, headers data, data).
