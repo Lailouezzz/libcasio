@@ -31,7 +31,7 @@
  *	@arg	n		the size of the memory zone
  */
 
-static void log_mem_hex(char *s, const unsigned char *m, size_t n)
+CASIO_LOCAL void log_mem_hex(char *s, const unsigned char *m, size_t n)
 {
 	size_t l = 0;
 	while (l < 8) {
@@ -56,7 +56,7 @@ static void log_mem_hex(char *s, const unsigned char *m, size_t n)
  *	@arg	n		the size of the memory zone
  */
 
-static void log_mem_asc(char *s, const unsigned char *m, size_t n)
+CASIO_LOCAL void log_mem_asc(char *s, const unsigned char *m, size_t n)
 {
 	size_t l = 0;
 	/* for each byte */
@@ -81,7 +81,7 @@ static void log_mem_asc(char *s, const unsigned char *m, size_t n)
  *	@arg	n			the size of the memory zone.
  */
 
-void casio_log_mem(casio_loglevel_t loglevel, const char *func,
+void CASIO_EXPORT casio_log_mem(casio_loglevel_t loglevel, const char *func,
 	const void *m, size_t n)
 {
 	char linebuf[58];

@@ -26,7 +26,7 @@ struct corresp {
 };
 
 /* List of com listing functions. */
-static struct corresp comlists[NUM + 1] = {
+CASIO_LOCAL struct corresp comlists[NUM + 1] = {
 #if   defined(__linux__)
 	{1, casio_comlist_linux},
 #elif defined(__WINDOWS__)
@@ -45,7 +45,7 @@ static struct corresp comlists[NUM + 1] = {
  *	@return				the error code (0 if ok).
  */
 
-int casio_add_default_comlist(casio_comlist_t *function)
+int CASIO_EXPORT casio_add_default_comlist(casio_comlist_t *function)
 {
 	struct corresp *c; int num;
 
@@ -66,7 +66,7 @@ int casio_add_default_comlist(casio_comlist_t *function)
  *	@return				the error (if any).
  */
 
-int casio_comlist(casio_list_com_t callback, void *cookie)
+int CASIO_EXPORT casio_comlist(casio_list_com_t callback, void *cookie)
 {
 	int err; struct corresp *c = comlists;
 

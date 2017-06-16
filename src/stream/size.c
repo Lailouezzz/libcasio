@@ -27,7 +27,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_getsize(casio_stream_t *stream, casio_off_t *size)
+int CASIO_EXPORT casio_getsize(casio_stream_t *stream, casio_off_t *size)
 {
 	int err; casio_off_t initial_offset;
 

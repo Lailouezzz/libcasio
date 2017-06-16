@@ -28,7 +28,8 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_setlink(casio_link_t *handle, const casio_streamattrs_t *uattrs)
+int CASIO_EXPORT casio_setlink(casio_link_t *handle,
+	const casio_streamattrs_t *uattrs)
 {
 	int err; casio_streamattrs_t attrs;
 	unsigned int speed; int stopbits, parity;

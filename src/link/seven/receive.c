@@ -36,7 +36,7 @@
  *	@return				the string
  */
 
-static const char *getcmdstring(unsigned int code)
+CASIO_LOCAL const char *getcmdstring(unsigned int code)
 {
 	static const char *commands[] = {
 		/* system commands */
@@ -119,7 +119,7 @@ static const char *getcmdstring(unsigned int code)
  *	@return				the string
  */
 
-static const char *geterrstring(unsigned int code)
+CASIO_LOCAL const char *geterrstring(unsigned int code)
 {
 	static const char *strings[] = {
 		"default error",
@@ -142,7 +142,7 @@ static const char *geterrstring(unsigned int code)
  *	@return				the string
  */
 
-static const char *gettermstring(casio_seven_term_t code)
+CASIO_LOCAL const char *gettermstring(casio_seven_term_t code)
 {
 	static const char *strings[] = {
 		"default",
@@ -175,7 +175,7 @@ static const char *gettermstring(casio_seven_term_t code)
 		&buffer[received], (size_t)(N)); \
 	received += (N); if (COMP_PACKET_err) return (COMP_PACKET_err); }
 
-static int casio_seven_decode(casio_link_t *handle)
+CASIO_LOCAL int casio_seven_decode(casio_link_t *handle)
 {
 	/* prepare reception */
 	size_t received = 0;
@@ -428,7 +428,7 @@ static int casio_seven_decode(casio_link_t *handle)
  *	@return					if it worked
  */
 
-int casio_seven_receive(casio_link_t *handle, int checksum)
+int CASIO_EXPORT casio_seven_receive(casio_link_t *handle, int checksum)
 {
 	int err, wasresend = 0;
 

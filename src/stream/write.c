@@ -28,7 +28,8 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_write(casio_stream_t *stream, const void *data, size_t size)
+int CASIO_EXPORT casio_write(casio_stream_t *stream,
+	const void *data, size_t size)
 {
 	int err;
 
@@ -58,7 +59,7 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_write_char(casio_stream_t *stream, int car)
+int CASIO_EXPORT casio_write_char(casio_stream_t *stream, int car)
 {
 	char ccar = car;
 

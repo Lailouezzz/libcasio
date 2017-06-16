@@ -35,7 +35,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_make_picture(casio_file_t **h,
+int CASIO_EXPORT casio_make_picture(casio_file_t **h,
 	unsigned int width, unsigned int height)
 {
 	casio_file_t *handle;
@@ -63,27 +63,20 @@ int casio_make_picture(casio_file_t **h,
  *	@return			the error code (0 if ok).
  */
 
-int casio_make_mcs(casio_file_t **h, int count)
+int CASIO_EXPORT casio_make_mcs(casio_file_t **h, int count)
 {
-	casio_file_t *handle;
+	int err; casio_file_t *handle;
+	(void)count; /* TODO: use this parameter? */
 
 	/* make the handle */
 	mkhandle();
 	handle->casio_file_type = casio_filetype_mcs;
 	handle->casio_file_for = casio_filefor_fx;
-	handle->casio_file_count = 0;
-	handle->casio_file__size = 0;
-	handle->casio_file_mcsfiles = NULL;
 
-	/* allocate space */
-	if (count) {
-		handle->casio_file_mcsfiles =
-			malloc(sizeof(casio_mcsfile_t*) * count);
-		if (!handle->casio_file_mcsfiles) goto fail;
-		memset(handle->casio_file_mcsfiles, 0,
-			sizeof(casio_mcsfile_t*) * count);
-		handle->casio_file__size = count;
-	}
+	/* make the MCS */
+	handle->casio_file_mcs = NULL;
+	if ((err = casio_open_local_mcs(&handle->casio_file_mcs)))
+		goto fail;
 
 	/* no error */
 	return (0);
@@ -102,7 +95,8 @@ fail:
  *	@return			the error code (0 if ok).
  */
 
-int casio_make_fkey(casio_file_t **h, casio_filefor_t pf, int count)
+int CASIO_EXPORT casio_make_fkey(casio_file_t **h,
+	casio_filefor_t pf, int count)
 {
 	casio_file_t *handle;
 
@@ -139,7 +133,8 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_make_lang(casio_file_t **h, casio_filefor_t platform, int count)
+int CASIO_EXPORT casio_make_lang(casio_file_t **h,
+	casio_filefor_t platform, int count)
 {
 	casio_file_t *handle;
 
@@ -180,7 +175,8 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_make_addin(casio_file_t **h, casio_filefor_t platform, size_t size,
+int CASIO_EXPORT casio_make_addin(casio_file_t **h,
+	casio_filefor_t platform, size_t size,
 	const char *name, const char *internal,
 	const casio_version_t *version, const time_t *created)
 {
@@ -268,7 +264,7 @@ fail:
  *	@arg	handle		the handle.
  */
 
-void casio_free_file(casio_file_t *handle)
+void CASIO_EXPORT casio_free_file(casio_file_t *handle)
 {
 	int i;
 
@@ -284,18 +280,8 @@ void casio_free_file(casio_file_t *handle)
 
 	/* mcs time! */
 	if (handle->casio_file_type & casio_filetype_mcs) {
-		casio_mcsfile_t **files = handle->casio_file_mcsfiles;
-
-		/* check if mcs */
-		if (!files) return ;
-
-		/* foreach file in mcs */
-		for (i = handle->casio_file_count - 1; i >= 0; i--) {
-			/* free the file if exists */
-			if (files[i]) casio_free_mcsfile(files[i]);
-		}
-		free(handle->casio_file_mcsfiles);
-		handle->casio_file_mcsfiles = NULL;
+		casio_close_mcs(handle->casio_file_mcs);
+		handle->casio_file_mcs = NULL;
 	}
 
 	/* messages time! */

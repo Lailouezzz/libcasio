@@ -448,8 +448,8 @@ static int eact_decode_line(casio_line_t *handle, uint8_t *buf, size_t size,
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_eact(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std)
+int CASIO_EXPORT casio_decode_std_eact(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std)
 {
 	(void)std; int err;
 	/* decode the header */

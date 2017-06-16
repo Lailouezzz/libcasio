@@ -19,7 +19,7 @@
 #define LIBCASIO_NO_STRERROR
 #include "internals.h"
 
-const char *casio_error_strings[128] = {
+const char* CASIO_EXPORT casio_error_strings[128] = {
 /* Miscallaneous errors. */
 
 	"no error has occured",
@@ -79,7 +79,7 @@ const char *casio_error_strings[128] = {
  *	@return			the error string.
  */
 
-const char *casio_strerror(int error)
+const char* CASIO_EXPORT casio_strerror(int error)
 {
 	return (casio_error_strings[error]);
 }

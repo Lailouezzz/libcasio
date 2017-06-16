@@ -35,7 +35,7 @@ struct ext_corresp {
 	int value;
 
 	/* things */
-	casio_mcsinfo_t info;
+	unsigned long info;
 
 	/* app correspondances */
 	const struct app_corresp *apps;
@@ -47,15 +47,15 @@ struct ext_corresp {
  * - Correspondances with a NULL data type means the data type isn't to be
  *   read. */
 
-static const struct app_corresp apps_9850[] = {
+CASIO_LOCAL const struct app_corresp apps_9850[] = {
 	{"TXT"}, /* editor */
 	{"VAL"}, /* RUN? */
 	{"IMG"}, /* screenshooter? */
 	{NULL}};
-static const struct app_corresp apps_end[] = {
+CASIO_LOCAL const struct app_corresp apps_end[] = {
 	{"END"}, /* end packet... used with 9850 packets? */
 	{NULL}};
-static const struct app_corresp apps_g100[] = {
+CASIO_LOCAL const struct app_corresp apps_g100[] = {
 	{"MDL"}, /* Model, initialize */
 	{"END"}, /* Terminate */
 	{"REQ"}, /* Receive */
@@ -65,22 +65,22 @@ static const struct app_corresp apps_g100[] = {
 	{"FCL"}, /* ? */
 	{"MCS"}, /* ? */
 	{NULL}};
-static const struct app_corresp apps_g100b[] = {
+CASIO_LOCAL const struct app_corresp apps_g100b[] = {
 	{"ADN"}, /* Send (bis) */
 	{"REQ"}, /* Request (bis) */
 	{NULL}};
 
-static const struct ext_corresp apps[] = {
+CASIO_LOCAL const struct ext_corresp apps[] = {
 	/* CFX-9850G headers (very first headers with this extension system?) */
-	{casio_casdyn_9850,  casio_mcsinfo_cas50,  apps_9850},
+	{casio_casdyn_9850,  casio_mcsfor_cas50,  apps_9850},
 	/* CFX-9850G header alias, used with the END packet only */
-	{casio_casdyn_end,   casio_mcsinfo_cas50,  apps_end},
+	{casio_casdyn_end,   casio_mcsfor_cas50,  apps_end},
 	/* Graph 100 (Algebra FX) headers */
-	{casio_casdyn_g100,  casio_mcsinfo_cas100, apps_g100},
+	{casio_casdyn_g100,  casio_mcsfor_cas100, apps_g100},
 	/* Graph 100 (Algebra FX) alternate headers */
-	{casio_casdyn_g100b, casio_mcsinfo_cas100, apps_g100b},
+	{casio_casdyn_g100b, casio_mcsfor_cas100, apps_g100b},
 	/* (sentinel) */
-	{0,                  0,                    NULL}
+	{0,                  0,                   NULL}
 };
 /* ************************************************************************* */
 /*  Main functions                                                           */
@@ -95,7 +95,7 @@ static const struct ext_corresp apps[] = {
  *	@return				the error (if any).
  */
 
-int casio_maketype_casapp(casio_mcshead_t *head,
+int CASIO_EXPORT casio_maketype_casapp(casio_mcshead_t *head,
 	int ext, const char *app)
 {
 	const struct ext_corresp *e;
@@ -116,7 +116,7 @@ int casio_maketype_casapp(casio_mcshead_t *head,
 
 	/* copy raw information */
 	memset(head, 0, sizeof(casio_mcshead_t));
-	head->casio_mcshead_info = e->info; /* FIXME */
+	head->casio_mcshead_flags |= e->info; /* FIXME */
 	msg((ll_info, "Head info is 0x%04X", e->info));
 	strncpy((char*)head->casio_mcshead_appname, app, 3);
 	head->casio_mcshead_appname[3] = 0;

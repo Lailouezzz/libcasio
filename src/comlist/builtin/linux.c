@@ -36,7 +36,7 @@
  *	@return					the error.
  */
 
-int casio_comlist_linux(casio_list_com_t *callback, void *cookie)
+int CASIO_EXPORT casio_comlist_linux(casio_list_com_t *callback, void *cookie)
 {
 	char path[PATH_MAX + 1], devname[PATH_MAX + 1], *f, *p;
 	DIR *d; struct dirent *dr; struct stat st;

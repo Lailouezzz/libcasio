@@ -32,16 +32,16 @@ CASIO_BEGIN_NAMESPACE
  *
  * Here are the known packet types: */
 
-typedef enum casio_seven_type_e {
-	casio_seven_type_cmd  = 0x01, /* ask something (initiate packet flow) */
-	casio_seven_type_data = 0x02, /* send some data */
-	casio_seven_type_swp  = 0x03, /* change roles */
-	casio_seven_type_chk  = 0x05, /* check if there is an interlocutor */
-	casio_seven_type_ack  = 0x06, /* acknowledge ('okay') */
-	casio_seven_type_ohp  = 0x0B, /* screenstreaming packet */
-	casio_seven_type_nak  = 0x15, /* acknowledge negatively ('nope') */
-	casio_seven_type_end  = 0x18  /* end the communication */
-} casio_seven_type_t;
+typedef unsigned int casio_seven_type_t;
+
+# define casio_seven_type_cmd  0x01 /* ask something (initiate packet flow) */
+# define casio_seven_type_data 0x02 /* send some data */
+# define casio_seven_type_swp  0x03 /* change roles */
+# define casio_seven_type_chk  0x05 /* check if there is an interlocutor */
+# define casio_seven_type_ack  0x06 /* acknowledge ('okay') */
+# define casio_seven_type_ohp  0x0B /* screenstreaming packet */
+# define casio_seven_type_nak  0x15 /* acknowledge negatively ('nope') */
+# define casio_seven_type_end  0x18 /* end the communication */
 
 /* The subtype has a different meaning according to the type it is used with.
  * For check packets, it can mean: */
@@ -58,24 +58,27 @@ typedef enum casio_seven_type_e {
 
 /* For NAK packets (error packets): */
 
-typedef enum casio_seven_err_e {
-	casio_seven_err_default        = 0x00, /* default error (unused?) */
-	casio_seven_err_resend         = 0x01, /* checksum/timeout error, resend:
-	                                        * please let the library use it. */
-	casio_seven_err_overwrite      = 0x02, /* server response: confirm ow? */
-	casio_seven_err_dont_overwrite = 0x03, /* denial */
-	casio_seven_err_other          = 0x04, /* generic error (other errors) */
-	casio_seven_err_fullmem        = 0x05  /* full memory (terminates!) */
-} casio_seven_err_t;
+typedef unsigned int casio_seven_err_t;
+
+# define casio_seven_err_default        0x00 /* default error (unused?) */
+# define casio_seven_err_resend         0x01 /* checksum/timeout error,
+                                              * resend: please let the
+                                              * library use it. */
+# define casio_seven_err_overwrite      0x02 /* server response:
+                                              * confirm ow? */
+# define casio_seven_err_dont_overwrite 0x03 /* denial */
+# define casio_seven_err_other          0x04 /* generic error
+                                              * (other errors) */
+# define casio_seven_err_fullmem        0x05 /* full memory (terminates!) */
 
 /* For END packets (terminate packets): */
 
-typedef enum casio_seven_term_e {
-	casio_seven_term_default   = 0x00, /* normal termination */
-	casio_seven_term_user      = 0x01, /* user has interrupted comm. */
-	casio_seven_term_timeouts  = 0x02, /* terminated due to timeouts */
-	casio_seven_term_overwrite = 0x03  /* in response to `ow_terminate` */
-} casio_seven_term_t;
+typedef unsigned int casio_seven_term_t;
+
+# define casio_seven_term_default   0x00 /* normal termination */
+# define casio_seven_term_user      0x01 /* user has interrupted comm. */
+# define casio_seven_term_timeouts  0x02 /* terminated due to timeouts */
+# define casio_seven_term_overwrite 0x03 /* in response to `ow_terminate` */
 
 /* I said there was an exception earlier on, I wasn't lying: screenstreaming
  * packets have a different format than other packets. Basically, after the
@@ -111,11 +114,11 @@ typedef enum casio_seven_term_e {
  * The overwrite status (OW) is useful for when sending a file. It can
  * basically say, using the codes: */
 
-typedef enum casio_seven_ow_e {
-	casio_seven_ow_confirm   = 0x00, /* ask for confirmation */
-	casio_seven_ow_terminate = 0x01, /* terminate if the file exists */
-	casio_seven_ow_force     = 0x02  /* force overwriting */
-} casio_seven_ow_t;
+typedef unsigned int casio_seven_ow_t;
+
+# define casio_seven_ow_confirm    0x00 /* ask for confirmation */
+# define casio_seven_ow_terminate  0x01 /* terminate if the file exists */
+# define casio_seven_ow_force      0x02 /* force overwriting */
 
 /* With `casio_ow_confirm`, if the file exists, a
  * `casio_err_overwrite` NAK packet, then, you will either confirm with an

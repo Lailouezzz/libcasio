@@ -27,12 +27,14 @@
 
 /* Get the correspondance. */
 
-extern int casio_maketype_std OF((const char *casio__path,
-	casio_standard_header_t *casio__std, unsigned int *casio__flags,
-	casio_filefor_t *casio__platform, casio_filetype_t *casio__type));
+CASIO_EXTERN int CASIO_EXPORT casio_maketype_std
+	OF((const char *casio__path,
+		casio_standard_header_t *casio__std, unsigned int *casio__flags,
+		casio_filefor_t *casio__platform, casio_filetype_t *casio__type));
 
-extern int casio_maketype_sub OF((casio_standard_subheader_t *casio__sub,
-	unsigned int *casio__flags, casio_filetype_t *casio__type,
-	casio_filefor_t *casio__platform));
+CASIO_EXTERN int CASIO_EXPORT casio_maketype_sub
+	OF((casio_standard_subheader_t *casio__sub,
+		unsigned int *casio__flags, casio_filetype_t *casio__type,
+		casio_filefor_t *casio__platform));
 
 #endif /* LOCAL_FILE_CORRESP_STANDARD_H */

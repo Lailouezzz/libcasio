@@ -48,7 +48,7 @@ struct type_corresp {
 #define CAPT(S, PT)      {S,    noarg, casio_mcstype_capture, PT}
 #define UNIMPLEMENTED(S) {S,    noarg, 0,                     0}
 #define TTERM            {NULL, noarg, 0,                     0}
-static const struct type_corresp cas_groups[] = {
+CASIO_LOCAL const struct type_corresp cas_groups[] = {
 	/* basic things */
 	BASIC("LT",       casio_mcstype_list),
 	BASIC("MT",       casio_mcstype_matrix),
@@ -117,7 +117,7 @@ static const struct type_corresp cas_groups[] = {
  *	@return				if there was an error (0 if ok).
  */
 
-static int get_number(const char *s, int *num)
+CASIO_LOCAL int get_number(const char *s, int *num)
 {
 	if (!(*num = atoi(s))) return (1);
 	return (0);
@@ -132,7 +132,8 @@ static int get_number(const char *s, int *num)
  *	@return				the error (if any).
  */
 
-int casio_maketype_cas(casio_mcshead_t *head, const char *datatype)
+int CASIO_EXPORT casio_maketype_cas(casio_mcshead_t *head,
+	const char *datatype)
 {
 	const struct type_corresp *c;
 	int id = 0;
@@ -177,7 +178,7 @@ notfound:
  *	@return				the error (0 if ok).
  */
 
-int casio_correct_casfile_head(casio_mcshead_t *head)
+int CASIO_EXPORT casio_correct_casfile_head(casio_mcshead_t *head)
 {
 	const struct type_corresp *c;
 

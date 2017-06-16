@@ -25,7 +25,7 @@
  *	The message that should be displayed when the library is executed.
  */
 
-static const char version_message[] =
+CASIO_LOCAL const char version_message[] =
 "libcasio v" LIBCASIO_VERSION " (licensed under LGPL3)\n"
 "Maintained by " LIBCASIO_MAINTAINER ".\n"
 "\n"

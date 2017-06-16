@@ -28,8 +28,8 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_mcs_program(casio_mcsfile_t **h, casio_stream_t *buffer,
-	casio_mcshead_t *head)
+int CASIO_EXPORT casio_decode_mcs_program(casio_mcsfile_t **h,
+	casio_stream_t *buffer, casio_mcshead_t *head)
 {
 	int err;
 	casio_mcs_programheader_t hd;

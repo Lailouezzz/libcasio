@@ -29,7 +29,7 @@
  *	@return				the error.
  */
 
-int casio_comlist_macos(casio_list_com_t *callback, void *cookie)
+int CASIO_EXPORT casio_comlist_macos(casio_list_com_t *callback, void *cookie)
 {
 	char path[PATH_MAX + 1], *f; DIR *d;
 	struct dirent *dr;

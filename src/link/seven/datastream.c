@@ -50,7 +50,7 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-static int casio_seven_data_write(void *vcookie,
+CASIO_LOCAL int casio_seven_data_write(void *vcookie,
 	const unsigned char *data, size_t size)
 {
 	seven_data_cookie_t *cookie = (void*)vcookie;
@@ -139,7 +139,7 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-static int casio_seven_data_close(void *vcookie)
+CASIO_LOCAL int casio_seven_data_close(void *vcookie)
 {
 	seven_data_cookie_t *cookie = (void*)vcookie;
 
@@ -176,7 +176,7 @@ end:
 /* ************************************************************************* */
 /*  Opening functions                                                        */
 /* ************************************************************************* */
-static const casio_streamfuncs_t seven_data_callbacks =
+CASIO_LOCAL const casio_streamfuncs_t seven_data_callbacks =
 casio_stream_callbacks_for_virtual(casio_seven_data_close,
 	NULL, casio_seven_data_write, NULL);
 
@@ -192,7 +192,7 @@ casio_stream_callbacks_for_virtual(casio_seven_data_close,
  *	@return				the error (0 if ok).
  */
 
-int casio_seven_open_data_stream(casio_stream_t **stream,
+int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 	casio_link_t *link, casio_off_t size, casio_link_progress_t *disp,
 	void *dcookie)
 {

@@ -27,7 +27,8 @@
  *	@return			the error code (if any).
  */
 
-int casio_decode_version(casio_version_t *version, const char *raw)
+int CASIO_EXPORT casio_decode_version(casio_version_t *version,
+	const char *raw)
 {
 	/* helper values */
 	const int two = '0' + '0' * 10;

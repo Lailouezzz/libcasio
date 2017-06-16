@@ -37,7 +37,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_comlist_windows(casio_list_com_t callback, void *cookie)
+int CASIO_EXPORT casio_comlist_windows(casio_list_com_t callback, void *cookie)
 {
 	DWORD werr, i, type, valsize, curval, datasize, curdata;
 	HKEY hkey; int hkey_open = 0;

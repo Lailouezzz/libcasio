@@ -52,7 +52,8 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-static int setcomm_for_fd(const int fd, const casio_streamattrs_t *settings)
+CASIO_LOCAL int setcomm_for_fd(const int fd,
+	const casio_streamattrs_t *settings)
 {
 	struct termios term;
 	speed_t speed;
@@ -140,7 +141,7 @@ static int setcomm_for_fd(const int fd, const casio_streamattrs_t *settings)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_streams_setcomm(void *vcookie,
+CASIO_LOCAL int casio_streams_setcomm(void *vcookie,
 	const casio_streamattrs_t *settings)
 {
 	int err; streams_cookie_t *cookie = (streams_cookie_t*)vcookie;
@@ -168,7 +169,8 @@ static int casio_streams_setcomm(void *vcookie,
  *	@return				the error code (0 if ok).
  */
 
-static int casio_streams_settm(void *vcookie, const casio_timeouts_t *timeouts)
+CASIO_LOCAL int casio_streams_settm(void *vcookie,
+	const casio_timeouts_t *timeouts)
 {
 	streams_cookie_t *cookie = (void*)vcookie;
 	struct termios term;
@@ -205,7 +207,7 @@ static int casio_streams_settm(void *vcookie, const casio_timeouts_t *timeouts)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_streams_close(void *vcookie)
+CASIO_LOCAL int casio_streams_close(void *vcookie)
 {
 	streams_cookie_t *cookie = (streams_cookie_t*)vcookie;
 
@@ -233,7 +235,7 @@ static int casio_streams_close(void *vcookie)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_streams_read(void *vcookie,
+CASIO_LOCAL int casio_streams_read(void *vcookie,
 	unsigned char *dest, size_t size)
 {
 	streams_cookie_t *cookie = (streams_cookie_t*)vcookie;
@@ -298,7 +300,7 @@ static int casio_streams_read(void *vcookie,
  *	@return				the error (0 if ok).
  */
 
-static int casio_streams_write(void *vcookie,
+CASIO_LOCAL int casio_streams_write(void *vcookie,
 	const unsigned char *data, size_t size)
 {
 	streams_cookie_t *cookie = (streams_cookie_t*)vcookie;
@@ -338,7 +340,8 @@ static int casio_streams_write(void *vcookie,
  *	@return				the error code (0 if ok).
  */
 
-static int casio_streams_scsi_request(void *vcookie, casio_scsi_t *request)
+CASIO_LOCAL int casio_streams_scsi_request(void *vcookie,
+	casio_scsi_t *request)
 {
 	streams_cookie_t *cookie = (streams_cookie_t*)vcookie;
 
@@ -382,7 +385,7 @@ static int casio_streams_scsi_request(void *vcookie, casio_scsi_t *request)
 /*  Stream initialization                                                    */
 /* ************************************************************************* */
 /* callbacks */
-static const casio_streamfuncs_t casio_streams_callbacks =
+CASIO_LOCAL const casio_streamfuncs_t casio_streams_callbacks =
 casio_stream_callbacks_for_serial(casio_streams_close,
 	casio_streams_setcomm, casio_streams_settm,
 	casio_streams_read, casio_streams_write);
@@ -396,7 +399,7 @@ casio_stream_callbacks_for_serial(casio_streams_close,
  *	@return				the error (0 if ok).
  */
 
-int casio_opencom_streams(casio_stream_t **stream,
+int CASIO_EXPORT casio_opencom_streams(casio_stream_t **stream,
 	const char *path)
 {
 	return (casio_open_stream_streams(stream, path,
@@ -413,7 +416,7 @@ int casio_opencom_streams(casio_stream_t **stream,
  *	@return				the error (0 if ok).
  */
 
-int casio_open_stream_streams(casio_stream_t **stream,
+int CASIO_EXPORT casio_open_stream_streams(casio_stream_t **stream,
 	const char *path, casio_openmode_t mode)
 {
 	int openfd, readfd, writefd, flags;
@@ -470,8 +473,8 @@ int casio_open_stream_streams(casio_stream_t **stream,
  *	@return				the error (0 if ok)
  */
 
-int casio_open_stream_fd(casio_stream_t **stream, int readfd, int writefd,
-	int closeread, int closewrite)
+int CASIO_EXPORT casio_open_stream_fd(casio_stream_t **stream,
+	int readfd, int writefd, int closeread, int closewrite)
 {
 	int err; streams_cookie_t *cookie = NULL;
 	casio_openmode_t mode = CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE;

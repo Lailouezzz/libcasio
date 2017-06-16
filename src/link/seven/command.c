@@ -35,7 +35,7 @@
  *	@return				the string
  */
 
-static const char *getowstring(casio_seven_ow_t code)
+CASIO_LOCAL const char* getowstring(casio_seven_ow_t code)
 {
 	static const char *moo[] = {
 		"request confirmation before overwriting",
@@ -65,7 +65,8 @@ static const char *getowstring(casio_seven_ow_t code)
  *	@return				if it worked
  */
 
-int casio_seven_send_cmd(casio_link_t *handle, unsigned int subtype)
+int CASIO_EXPORT casio_seven_send_cmd(casio_link_t *handle,
+	unsigned int subtype)
 {
 	CHECK_IF_COMMAND_IS_SUPPORTED(subtype)
 
@@ -96,8 +97,9 @@ int casio_seven_send_cmd(casio_link_t *handle, unsigned int subtype)
  *	@return				if it worked
  */
 
-int casio_seven_send_cmd_data(casio_link_t *handle, unsigned int subtype,
-	int overwrite, unsigned int datatype, unsigned long filesize,
+int CASIO_EXPORT casio_seven_send_cmd_data(casio_link_t *handle,
+	unsigned int subtype, int overwrite,
+	unsigned int datatype, unsigned long filesize,
 	const char *arg1, const char *arg2, const char *arg3,
 	const char *arg4, const char *arg5, const char *arg6)
 {
@@ -145,7 +147,6 @@ int casio_seven_send_cmd_data(casio_link_t *handle, unsigned int subtype,
 	return (casio_seven_send_ext(handle,
 		casio_seven_type_cmd, subtype, buf, buflen, 1));
 }
-
 /* ************************************************************************* */
 /*  Special commands                                                         */
 /* ************************************************************************* */
@@ -160,7 +161,7 @@ int casio_seven_send_cmd_data(casio_link_t *handle, unsigned int subtype,
  *	@return				if it worked.
  */
 
-int casio_seven_send_cmdsys_setlink(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_cmdsys_setlink(casio_link_t *handle,
 	int baudrate, int parity, int stopbits)
 {
 	char sbaud[10], sparity[10], sstopbits[2];
@@ -195,7 +196,7 @@ int casio_seven_send_cmdsys_setlink(casio_link_t *handle,
  *	@return				if it worked
  */
 
-int casio_seven_send_cmdosu_upandrun(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_cmdosu_upandrun(casio_link_t *handle,
 	unsigned long upsize, unsigned long loadaddr, unsigned long straddr)
 {
 	unsigned char buf[24];
@@ -238,7 +239,7 @@ int casio_seven_send_cmdosu_upandrun(casio_link_t *handle,
  *	@return				if there was an error
  */
 
-int casio_seven_decode_command(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_decode_command(casio_link_t *handle,
 	const unsigned char *raw, unsigned int raw_size)
 {
 	casio_seven_packet_t *packet = &handle->casio_link_response;

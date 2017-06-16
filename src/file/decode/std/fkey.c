@@ -29,7 +29,7 @@
  *	@return				the "duplicated" function key.
  */
 
-static casio_pixel_t **fkeydup(unsigned char *fkey)
+CASIO_LOCAL casio_pixel_t **fkeydup(unsigned char *fkey)
 {
 	casio_pixel_t **pixels = alloc_pixels(FKEY_WIDTH, FKEY_HEIGHT);
 	if (!pixels) return (NULL);
@@ -48,7 +48,7 @@ static casio_pixel_t **fkeydup(unsigned char *fkey)
  *	@return				the "duplicated" function key.
  */
 
-static casio_pixel_t **fkeydup3(unsigned char *fkey)
+CASIO_LOCAL casio_pixel_t **fkeydup3(unsigned char *fkey)
 {
 	casio_pixel_t **pixels = alloc_pixels(FKEY3_WIDTH, FKEY3_HEIGHT);
 	if (!pixels) return (NULL);
@@ -71,8 +71,8 @@ static casio_pixel_t **fkeydup3(unsigned char *fkey)
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_fkey(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std)
+int CASIO_EXPORT casio_decode_std_fkey(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std)
 {
 	int err = casio_error_alloc;
 	casio_fkey_subheader_t hd; unsigned int num;
@@ -143,9 +143,10 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_cg_fkey(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std, casio_standard_subheader_t *sub,
-	casio_standard_prizm_subheader_t *prizm, casio_uint32_t *check)
+int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std,
+	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm,
+	casio_uint32_t *check)
 {
 	int err = casio_error_alloc;
 	casio_prizm_lang_subheader_t lhd; unsigned int num;

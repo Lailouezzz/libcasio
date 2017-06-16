@@ -29,7 +29,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_open_com(casio_link_t **handle, unsigned long flags,
+int CASIO_EXPORT casio_open_com(casio_link_t **handle, unsigned long flags,
 	const char *path, const casio_streamattrs_t *attrs)
 {
 	int err, failed = 0, tries = 3; casio_stream_t *stream;

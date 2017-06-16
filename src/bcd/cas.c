@@ -29,7 +29,7 @@
  *	@return			the special bit, for simplicity.
  */
 
-int casio_bcd_fromcas(casio_bcd_t *bcd, const casio_casbcd_t *raw)
+int CASIO_EXPORT casio_bcd_fromcas(casio_bcd_t *bcd, const casio_casbcd_t *raw)
 {
 	const unsigned char *bytes = raw->casio_casbcd_mant;
 
@@ -76,7 +76,7 @@ int casio_bcd_fromcas(casio_bcd_t *bcd, const casio_casbcd_t *raw)
  */
 
 # define BCDM casio_bcd_mant
-int casio_bcd_tocas(casio_casbcd_t *raw, const casio_bcd_t *bcd)
+int CASIO_EXPORT casio_bcd_tocas(casio_casbcd_t *raw, const casio_bcd_t *bcd)
 {
 	/* put the exponent */
 	div_t d = div(abs(bcd->casio_bcd_exp), 10);

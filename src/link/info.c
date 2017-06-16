@@ -26,7 +26,7 @@
  *	@return				the link information pointer.
  */
 
-const casio_link_info_t *casio_get_link_info(casio_link_t *handle)
+const casio_link_info_t* CASIO_EXPORT casio_get_link_info(casio_link_t *handle)
 {
 	if (!handle) return (NULL);
 	return (&handle->casio_link_info);

@@ -68,7 +68,7 @@ struct ext_corresp {
 #define cp_magic "\x00\x01\x00\x01\x00"
 #define blank "\xFF\xFF\xFF\xFF\xFF\xFF"
 
-static struct type_info subtypes_usbpower[] = {
+CASIO_LOCAL struct type_info subtypes_usbpower[] = {
 	/* add-ins */
 	{"\xf3" magic_common, "add-in", f_c1 | f_c2,
 		casio_filefor_fx, casio_filetype_addin},
@@ -97,20 +97,20 @@ static struct type_info subtypes_usbpower[] = {
 
 	{NULL, NULL, 0, 0, 0}
 };
-static struct type_info subtypes_ly755[] = {
+CASIO_LOCAL struct type_info subtypes_ly755[] = {
 	{"\x2c" cp_magic, "fx-CG language file", f_c1 | f_c2 | f_sub,
 		casio_filefor_cg, casio_filetype_lang},
 
 	{NULL, NULL, 0, 0, 0}
 };
-static struct type_info subtypes_casio[] = {
+CASIO_LOCAL struct type_info subtypes_casio[] = {
 	{"c2p\0\0\0", "Classpad picture", f_pic,
 		casio_filefor_cp, casio_filetype_pict},
 
 	{NULL, NULL, 0, 0, 0}
 };
 
-static struct main_info standard_types[] = {
+CASIO_LOCAL struct main_info standard_types[] = {
 	/* USBPower (the most common one) */
 	{"USBPower", subtypes_usbpower},
 
@@ -125,7 +125,7 @@ static struct main_info standard_types[] = {
 };
 
 /* Extension correspondances */
-static struct ext_corresp ext_types[] = {
+CASIO_LOCAL struct ext_corresp ext_types[] = {
 	/* fx types */
 	{"g1l", "fx language file",
 		casio_filefor_fx, casio_filetype_lang,  0},
@@ -173,8 +173,9 @@ static struct ext_corresp ext_types[] = {
  *	Get the standard header type information.
  */
 
-int casio_maketype_std(const char *path, casio_standard_header_t *std,
-	unsigned int *flags, casio_filefor_t *platform, casio_filetype_t *type)
+int CASIO_EXPORT casio_maketype_std(const char *path,
+	casio_standard_header_t *std, unsigned int *flags,
+	casio_filefor_t *platform, casio_filetype_t *type)
 {
 	const char blank14[14] =
 		"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF";

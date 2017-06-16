@@ -109,24 +109,27 @@ typedef void casio_link_list_t OF((void *casio__cookie,
 CASIO_BEGIN_DECLS
 
 /* Cross-platform initialization. */
-CASIO_EXTERN int casio_open_usb  OF((casio_link_t **casio__h,
-	unsigned long casio__flags));
-CASIO_EXTERN int casio_open_com  OF((casio_link_t **casio__h,
-	unsigned long casio__flags, const char *casio__path,
-	const casio_streamattrs_t *casio__attributes));
+CASIO_EXTERN int CASIO_EXPORT casio_open_usb
+	OF((casio_link_t **casio__h, unsigned long casio__flags));
+CASIO_EXTERN int CASIO_EXPORT casio_open_com
+	OF((casio_link_t **casio__h,
+		unsigned long casio__flags, const char *casio__path,
+		const casio_streamattrs_t *casio__attributes));
 
 /* Initialize a handle using a custom stream. */
-CASIO_EXTERN int casio_open_link OF((casio_link_t **casio__h,
-	unsigned long casio__flags, casio_stream_t *casio__stream,
-	const casio_streamattrs_t *casio__attributes));
+CASIO_EXTERN int CASIO_EXPORT casio_open_link
+	OF((casio_link_t **casio__h,
+		unsigned long casio__flags, casio_stream_t *casio__stream,
+		const casio_streamattrs_t *casio__attributes));
 
 /* Get things. */
 
-CASIO_EXTERN const casio_link_info_t *casio_get_link_info OF((
-	casio_link_t *casio__handle));
+CASIO_EXTERN const casio_link_info_t* CASIO_EXPORT casio_get_link_info
+	OF((casio_link_t *casio__handle));
 
 /* De-initialize. */
-CASIO_EXTERN void casio_close_link OF((casio_link_t *casio__h));
+CASIO_EXTERN void CASIO_EXPORT casio_close_link
+	OF((casio_link_t *casio__h));
 /* ************************************************************************* */
 /*  Run servers.                                                             */
 /* ************************************************************************* */
@@ -135,8 +138,9 @@ CASIO_EXTERN void casio_close_link OF((casio_link_t *casio__h));
 typedef int casio_seven_server_func_t OF((void *casio__cookie,
 	casio_link_t *casio__handle));
 
-CASIO_EXTERN int casio_seven_serve OF((casio_link_t *casio__handle,
-	casio_seven_server_func_t **casio__callbacks, void *casio__cookie));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_serve
+	OF((casio_link_t *casio__handle,
+		casio_seven_server_func_t **casio__callbacks, void *casio__cookie));
 /* ************************************************************************* */
 /*  General-purpose link operations                                          */
 /* ************************************************************************* */

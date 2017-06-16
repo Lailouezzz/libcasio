@@ -39,7 +39,7 @@
  *	@return				if it worked
  */
 
-int casio_seven_send_data_packet(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_data_packet(casio_link_t *handle,
 	unsigned int total, unsigned int id,
 	const void *data, unsigned int datasize, int resp)
 {
@@ -72,7 +72,7 @@ int casio_seven_send_data_packet(casio_link_t *handle,
  *	@return				if it worked
  */
 
-int casio_seven_send_quick_data_packet(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_quick_data_packet(casio_link_t *handle,
 	unsigned int total, unsigned int id,
 	void *buf, unsigned int datasize, int resp)
 {
@@ -94,7 +94,7 @@ int casio_seven_send_quick_data_packet(casio_link_t *handle,
  *	@return				if it worked
  */
 
-int casio_seven_unshift(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_unshift(casio_link_t *handle)
 {
 	/* truly unshift */
 	int err;
@@ -118,7 +118,7 @@ int casio_seven_unshift(casio_link_t *handle)
  *	@return				if there was an error.
  */
 
-int casio_seven_decode_data(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_decode_data(casio_link_t *handle,
 	const unsigned char *raw, unsigned int raw_size)
 {
 	casio_seven_packet_t *packet = &handle->casio_link_response;

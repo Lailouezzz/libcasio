@@ -27,7 +27,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_open_usb(casio_link_t **handle, unsigned long flags)
+int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
 {
 	int err, failed = 0, tries = 3; casio_stream_t *stream;
 

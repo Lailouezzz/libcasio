@@ -27,7 +27,7 @@
  *	@arg	dbl		the source double.
  */
 
-void casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
+void CASIO_EXPORT casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
 {
 	int neg = 0, exp = 1, i;
 
@@ -67,7 +67,7 @@ void casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
  *	@return			the double.
  */
 
-double casio_bcd_todouble(const casio_bcd_t *bcd)
+double CASIO_EXPORT casio_bcd_todouble(const casio_bcd_t *bcd)
 {
 	/* TODO */
 	(void)bcd;

@@ -51,6 +51,7 @@
 
 # define CASIO_EXTERN extern
 # define CASIO_EXPORT
+# define CASIO_LOCAL  static
 /* ************************************************************************* */
 /*  Function declaration arguments                                           */
 /* ************************************************************************* */

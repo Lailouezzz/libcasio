@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/manage.c -- create, free an MCS file handle.
+ * mcsfile/prepare.c -- prepare, free an MCS file handle.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -19,37 +19,41 @@
 #include "mcsfile.h"
 
 /**
- *	casio_make_mcsfile:
+ *	casio_prepare_mcsfile:
  *	Make an MCS file out of a head.
  *
  *	Will allocate all of the required parts of the MCS file for it to be
  *	filled later.
+ *	FIXME: for security, check the validity bit and free and stuff?
  *
- *	@arg	handle		the file to allocate.
+ *	@arg	h			the file to allocate.
  *	@arg	rawhead		the head to use.
  *	@return				the error (if any).
  */
 
-int casio_make_mcsfile(casio_mcsfile_t **h, const casio_mcshead_t *rawhead)
+int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
+	const casio_mcshead_t *rawhead)
 {
-	casio_mcsfile_t *handle;
 	casio_mcshead_t *head;
 	unsigned int y, wd, ht;
 	int i, j;
 
-	/* allocate the handle */
-	*h = malloc(sizeof(casio_mcsfile_t)); handle = *h;
-	if (!handle) return (casio_error_alloc);
+	/* Check the validity of the handle. */
+	if (!handle) return (casio_error_invalid);
+	head = &handle->casio_mcsfile_head;
+	if (head->casio_mcshead_flags & casio_mcsflag_valid)
+		casio_free_mcsfile(handle);
 
 	/* initialize the handle, copy the head */
 	memset(handle, 0, sizeof(casio_mcsfile_t));
 	memcpy(&handle->casio_mcsfile_head, rawhead, sizeof(casio_mcshead_t));
-	head = &handle->casio_mcsfile_head;
+	head->casio_mcshead_flags &= ~casio_mcsflag_alloc;
+	head->casio_mcshead_flags |=  casio_mcsflag_valid;
 
 	switch (head->casio_mcshead_type) {
 	/* allocate the cells */
 	case casio_mcstype_list: case casio_mcstype_mat:
-	case casio_mcstype_vct: case casio_mcstype_ssheet:
+	case casio_mcstype_vct:  case casio_mcstype_ssheet:
 		wd = head->casio_mcshead_width;
 		ht = head->casio_mcshead_height;
 		msg((ll_info, "Preparing %d*%d matrix", wd, ht));
@@ -132,60 +136,5 @@ int casio_make_mcsfile(casio_mcsfile_t **h, const casio_mcshead_t *rawhead)
 	/* finish */
 	return (0);
 fail:
-	free(*h); *h = NULL;
 	return (casio_error_alloc);
-}
-
-/**
- *	casio_free_mcsfile:
- *	Free an MCS file handle content.
- *
- *	@arg	handle		the handle which has the content to free.
- */
-
-void casio_free_mcsfile(casio_mcsfile_t *handle)
-{
-	int i;
-
-	/* check if exists */
-	if (!handle) return ;
-
-	switch (handle->casio_mcsfile_head.casio_mcshead_type) {
-	/* free the cells */
-	case casio_mcstype_mat: case casio_mcstype_vct:
-	case casio_mcstype_list: case casio_mcstype_ssheet:
-		if (handle->casio_mcsfile_head.casio_mcshead_width
-		 && handle->casio_mcsfile_head.casio_mcshead_height) {
-			free(handle->casio_mcsfile_cells[0]);
-			free(handle->casio_mcsfile_cells);
-		}
-		break;
-
-	/* free the set of pixels */
-	case casio_mcstype_pict: case casio_mcstype_capt:
-		for (i = 0; i < handle->casio_mcsfile_head.casio_mcshead_count; i++)
-			free(handle->casio_mcsfile_pics[i]);
-		if (handle->casio_mcsfile_pics != &handle->casio_mcsfile_pic)
-			free(handle->casio_mcsfile_pics);
-		break;
-
-	/* free the variables */
-	case casio_mcstype_alphamem:
-		if (handle->casio_mcsfile_vars != &handle->casio_mcsfile_var)
-			free(handle->casio_mcsfile_vars);
-		break;
-
-	/* free nothing */
-	case casio_mcstype_end:
-	case casio_mcstype_setup:
-	case casio_mcstype_string: /* TEMPORARY XXX */
-		break;
-
-	/* free the raw content */
-	default:
-		free(handle->casio_mcsfile_content);
-	}
-
-	/* free the content */
-	free(handle);
 }

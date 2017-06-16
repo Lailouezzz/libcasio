@@ -69,24 +69,32 @@ struct casio_link_s {
 };
 
 /* Decode the data field of specific packets. */
-extern int casio_seven_decode_data    OF((casio_link_t *casio__handle,
-	const unsigned char *casio__raw, unsigned int casio__raw_size));
-extern int casio_seven_decode_command OF((casio_link_t *casio__handle,
-	const unsigned char *casio__raw, unsigned int casio__raw_size));
-extern int casio_seven_decode_ack     OF((casio_link_t *casio__handle,
-	const unsigned char *casio__raw, unsigned int casio__raw_size));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_decode_data
+	OF((casio_link_t *casio__handle,
+		const unsigned char *casio__raw, unsigned int casio__raw_size));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_decode_command
+	OF((casio_link_t *casio__handle,
+		const unsigned char *casio__raw, unsigned int casio__raw_size));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_decode_ack
+	OF((casio_link_t *casio__handle,
+		const unsigned char *casio__raw, unsigned int casio__raw_size));
 
 /* Special send functions. */
-extern int casio_seven_send_again OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_again
+	OF((casio_link_t *casio__handle));
 
 /* Special packet functions. */
-extern int casio_seven_send_err_resend    OF((casio_link_t *casio__handle));
-extern int casio_seven_send_timeout_check OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_err_resend
+	OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_timeout_check
+	OF((casio_link_t *casio__handle));
 
 /* Encode and decode raw data. */
-extern unsigned int casio_seven_decoderaw OF((void *casio__dest,
-	const void *casio__encoded, unsigned int casio__size));
-extern unsigned int casio_seven_encoderaw OF((void *casio__dest,
-	const void *casio__raw, unsigned int casio__size));
+CASIO_EXTERN unsigned int CASIO_EXPORT casio_seven_decoderaw
+	OF((void *casio__dest, const void *casio__encoded,
+		unsigned int casio__size));
+CASIO_EXTERN unsigned int CASIO_EXPORT casio_seven_encoderaw
+	OF((void *casio__dest, const void *casio__raw,
+		unsigned int casio__size));
 
 #endif

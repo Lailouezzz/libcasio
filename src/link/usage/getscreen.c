@@ -31,8 +31,8 @@
  *	@return				if it worked.
  */
 
-int casio_getscreen(casio_link_t *handle, casio_link_screen_t *callback,
-	void *cbcookie)
+int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
+	casio_link_screen_t *callback, void *cbcookie)
 {
 	int err = 0, y;
 	uint32_t **pixels = NULL, *base;

@@ -34,7 +34,7 @@
  *	@return			the size.
  */
 
-static size_t getsize(int exp, int neg, int offset, int digits)
+CASIO_LOCAL size_t getsize(int exp, int neg, int offset, int digits)
 {
 	size_t sz = digits;
 	int eexp;
@@ -71,7 +71,7 @@ static size_t getsize(int exp, int neg, int offset, int digits)
  *	@return			the required length if needed, otherwise, zero.
  */
 
-size_t casio_bcdtoa(char *buf, size_t len, const casio_bcd_t *bcd)
+size_t CASIO_EXPORT casio_bcdtoa(char *buf, size_t len, const casio_bcd_t *bcd)
 {
 	int exp, offset, leftdigits, neg, acceptable_alt, origdigits;
 	const char *digits; size_t sz;

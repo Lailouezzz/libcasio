@@ -37,7 +37,7 @@ struct corresp {
 };
 
 /* Correspondances */
-static struct corresp correspondances[] = {
+CASIO_LOCAL struct corresp correspondances[] = {
 #if 0
 	{"g1s", casio_type_storage, casio_decode_storage},
 #endif
@@ -56,7 +56,7 @@ static struct corresp correspondances[] = {
  *	@return			the error code (0 if ok).
  */
 
-static int lookup_extension(const char *path, casio_filetype_t types,
+CASIO_LOCAL int lookup_extension(const char *path, casio_filetype_t types,
 	decode_func **func)
 {
 	char ext[5];
@@ -91,7 +91,7 @@ static int lookup_extension(const char *path, casio_filetype_t types,
  *	@return					the error code (0 if ok).
  */
 
-int casio_decode(casio_file_t **handle, const char *path,
+int CASIO_EXPORT casio_decode(casio_file_t **handle, const char *path,
 	casio_stream_t *buffer, casio_filetype_t expected_types)
 {
 	int err; decode_func *decode;

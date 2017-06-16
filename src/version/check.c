@@ -27,7 +27,7 @@
  *	@return			if there was an error.
  */
 
-int casio_check_version(const char *raw)
+int CASIO_EXPORT casio_check_version(const char *raw)
 {
 	/* check length */
 	if (memchr(raw, 0, 11) != &raw[10]) return (casio_error_op);

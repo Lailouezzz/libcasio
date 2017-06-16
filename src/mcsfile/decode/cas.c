@@ -41,7 +41,7 @@ struct cas_corresp {
 
 /* All correspondances */
 #define TTERM {0, NULL, NULL}
-static struct cas_corresp cas_types[] = {
+CASIO_LOCAL struct cas_corresp cas_types[] = {
 	{casio_mcstype_var,     FUNC(var),     NULL},
 	{casio_mcstype_program, FUNC(program), NULL},
 	{casio_mcstype_matrix,  FUNC(matrix),  NULL},
@@ -58,7 +58,7 @@ static struct cas_corresp cas_types[] = {
  *	@return			the function (NULL if not found).
  */
 
-static decode_func *lookup_cas_decode(casio_mcstype_t type, int heads)
+CASIO_LOCAL decode_func *lookup_cas_decode(casio_mcstype_t type, int heads)
 {
 	/* lookup for the type */
 	struct cas_corresp *c = cas_types;
@@ -84,7 +84,7 @@ static decode_func *lookup_cas_decode(casio_mcstype_t type, int heads)
  *	@return			if there was an error, or not.
  */
 
-static int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
+CASIO_LOCAL int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
 	unsigned char csum)
 {
 	casio_cas50_t hd;
@@ -149,7 +149,8 @@ static int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_casfile_head(casio_mcshead_t *head,
+	casio_stream_t *buffer)
 {
 	unsigned char buf[39], csum;
 	casio_casdyn_t *dhd = (void*)buf;
@@ -163,14 +164,14 @@ int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
 	READ(buf, 4) csum = casio_checksum_cas(buf, 4, 0);
 	if (!casio_maketype_casapp(head, dhd->casio_casdyn_ext,
 	 (char*)dhd->casio_casdyn_app))
-	  switch (head->casio_mcshead_info) {
-		case casio_mcsinfo_cas50:  return (decode_cas50(head, buffer, csum));
+	  switch (head->casio_mcshead_flags & casio_mcsfor_mask) {
+		case casio_mcsfor_cas50:  return (decode_cas50(head, buffer, csum));
 #if 0
-		case casio_mcsinfo_cas100: return (decode_cas100(head, buffer));
+		case casio_mcsfor_cas100: return (decode_cas100(head, buffer));
 #endif
 		default:
-			msg((ll_error, "Platform 0x%04X isn't implemented yet.",
-				head->casio_mcshead_info));
+			msg((ll_error, "Platform 0x%08X isn't implemented yet.",
+				head->casio_mcshead_flags & casio_mcsfor_mask));
 			return (casio_error_op);
 	}
 
@@ -186,7 +187,7 @@ int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
 
 	/* fill the handle */
 	memset(head, 0, sizeof(casio_mcshead_t));
-	head->casio_mcshead_info = casio_mcsinfo_cas40;
+	head->casio_mcshead_flags |= casio_mcsfor_cas40;
 	memcpy(head->casio_mcshead_name, hd->casio_cas40_filename, 12);
 	head->casio_mcshead_name[12] = 0;
 
@@ -212,7 +213,8 @@ int casio_decode_casfile_head(casio_mcshead_t *head, casio_stream_t *buffer)
  *	@return			if there was an error, or not.
  */
 
-int casio_decode_casfile_part(casio_mcsfile_t *file, casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_casfile_part(casio_mcsfile_t *file,
+	casio_stream_t *buffer)
 {
 	cas_decode_function *decode;
 

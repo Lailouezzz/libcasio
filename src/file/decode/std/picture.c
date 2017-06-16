@@ -30,7 +30,7 @@
  *	@arg	n			the buffer size.
  */
 
-static void g3p_deobfuscate(uint8_t *buf, size_t n)
+CASIO_LOCAL void g3p_deobfuscate(uint8_t *buf, size_t n)
 {
 	while (n--) {
 		uint8_t byte = ~*buf;
@@ -51,7 +51,7 @@ static void g3p_deobfuscate(uint8_t *buf, size_t n)
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
+int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	casio_standard_header_t *std, casio_standard_picheader_t *pic)
 {
 	int err = casio_error_alloc, z_err;
@@ -164,7 +164,7 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_c2p(casio_file_t **h, casio_stream_t *buffer,
+int CASIO_EXPORT casio_decode_std_c2p(casio_file_t **h, casio_stream_t *buffer,
 	casio_standard_header_t *std, casio_standard_picheader_t *pic)
 {
 	(void)h; (void)buffer;

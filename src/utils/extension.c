@@ -28,7 +28,7 @@
  *	@return				the size of the extension.
  */
 
-int casio_getext(const char *path, char *buf, size_t n)
+int CASIO_EXPORT casio_getext(const char *path, char *buf, size_t n)
 {
 	const char *filename, *ext;
 	int i;

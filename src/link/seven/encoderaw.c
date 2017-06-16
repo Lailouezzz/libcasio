@@ -32,7 +32,7 @@
  *	@return			the size of the encoded data.
  */
 
-unsigned int casio_seven_encoderaw(void *vdest, const void *vraw,
+unsigned int CASIO_EXPORT casio_seven_encoderaw(void *vdest, const void *vraw,
 	unsigned int size)
 {
 	unsigned char       *dest = (void*)vdest;
@@ -72,7 +72,7 @@ unsigned int casio_seven_encoderaw(void *vdest, const void *vraw,
  *	@return			the raw data size.
  */
 
-unsigned int casio_seven_decoderaw(void *vdest, const void *venc,
+unsigned int CASIO_EXPORT casio_seven_decoderaw(void *vdest, const void *venc,
 	unsigned int size)
 {
 	unsigned char       *dest = (void*)vdest;

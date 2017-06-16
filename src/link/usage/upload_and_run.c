@@ -32,8 +32,9 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_upload_and_run(casio_link_t *handle, casio_stream_t *buffer,
-	casio_off_t size, unsigned long loadaddr, unsigned long straddr,
+int CASIO_EXPORT casio_upload_and_run(casio_link_t *handle,
+	casio_stream_t *buffer, casio_off_t size,
+	unsigned long loadaddr, unsigned long straddr,
 	casio_link_progress_t *disp, void *dcookie)
 {
 	int err, buf_err;
@@ -86,7 +87,7 @@ int casio_upload_and_run(casio_link_t *handle, casio_stream_t *buffer,
  *	@return				the error code (0 if ok).
  */
 
-int casio_upload_and_run_file(casio_link_t *handle, FILE *file,
+int CASIO_EXPORT casio_upload_and_run_file(casio_link_t *handle, FILE *file,
 	unsigned long loadaddr, unsigned long straddr,
 	casio_link_progress_t *disp, void *dcookie)
 {

@@ -38,7 +38,7 @@ typedef casio_uint32_t casio_pixel_t;
  * Do not use the format described above other than to define your own
  * formats, as it might change! */
 
-typedef enum casio_pictureformat_e {
+typedef unsigned int casio_pictureformat_t;
 /* ************************************************************************* */
 /*  Monochrome pictures with fill bits                                       */
 /* ************************************************************************* */
@@ -51,8 +51,8 @@ typedef enum casio_pictureformat_e {
  * An off bit (0b0) represents a white pixel, and an on bit (0b1) represents
  * a black pixel. Reverse white and black in the `_r` special type. */
 
-	casio_pictureformat_1bit   = 0x0100,
-	casio_pictureformat_1bit_r = 0x0101,
+# define casio_pictureformat_1bit   0x0100
+# define casio_pictureformat_1bit_r 0x0101
 
 /* To calculate the size, it's simple: just calculate the number of bytes
  * a line occupies, then multiply it by the number of lines. */
@@ -66,8 +66,8 @@ typedef enum casio_pictureformat_e {
  *
  * The navigation to a line is less easy as it takes at least one division. */
 
-	casio_pictureformat_1bit_packed   = 0x0110,
-	casio_pictureformat_1bit_packed_r = 0x0111,
+# define casio_pictureformat_1bit_packed   0x0110
+# define casio_pictureformat_1bit_packed_r 0x0111
 
 /* To calculate the size, find out the number of occupied bits, divide by
  * eight to get the bytes, and make sure to keep an extra byte if there are
@@ -80,7 +80,7 @@ typedef enum casio_pictureformat_e {
  * that it starts with the last byte (where the bits are in left to right
  * order), but then it goes from right to left, and from bottom to top. */
 
-	casio_pictureformat_1bit_old = 0x0120,
+# define casio_pictureformat_1bit_old 0x0120
 
 /* The size is the same as for normal 1-bit monochrome pictures, only the
  * byte order changes. */
@@ -92,7 +92,7 @@ typedef enum casio_pictureformat_e {
  * It is basically gray pictures, with white, light gray, dark gray and
  * black. */
 
-	casio_pictureformat_2bit_dual = 0x0200,
+# define casio_pictureformat_2bit_dual 0x0200
 
 /* To calculate the size, well, we just have two monochrome screens. */
 /* ************************************************************************* */
@@ -105,8 +105,8 @@ typedef enum casio_pictureformat_e {
  * - one bit for blue  (OR by 0x0000FF);
  * - one alignment bit. */
 
-	casio_pictureformat_4bit     = 0x0400,
-	casio_pictureformat_4bit_rgb = 0x0400,
+# define casio_pictureformat_4bit     0x0400
+# define casio_pictureformat_4bit_rgb 0x0400
 
 /* Calculating the size is trivial: just divide the number of pixels by two. */
 /* ************************************************************************* */
@@ -125,7 +125,7 @@ typedef enum casio_pictureformat_e {
 
 /* Here is the encoding code: */
 
-	casio_pictureformat_4bit_code = 0x0410,
+# define casio_pictureformat_4bit_code 0x0410
 
 /* The size is calculated the same way as previously. */
 /* ************************************************************************* */
@@ -136,8 +136,8 @@ typedef enum casio_pictureformat_e {
  * - for the `color` variant: [orange, green, blue, white (bg)]
  * - for the `mono` variant:  [(unused), (unused), black, white (bg)] */
 
-	casio_pictureformat_4bit_color = 0x0420,
-	casio_pictureformat_4bit_mono  = 0x0421,
+# define casio_pictureformat_4bit_color 0x0420
+# define casio_pictureformat_4bit_mono  0x0421
 
 /* To get the size, just multiply the size of a VRAM by four. */
 /* ************************************************************************* */
@@ -147,7 +147,7 @@ typedef enum casio_pictureformat_e {
  * It is basically arbitrary color codes, where, for example, 1 is orange.
  * You can check the full color codes in `src/picture.c`. */
 
-	casio_pictureformat_casemul = 0x0800,
+# define casio_pictureformat_casemul 0x0800
 
 /* Each pixel takes one byte. */
 /* ************************************************************************* */
@@ -159,8 +159,7 @@ typedef enum casio_pictureformat_e {
  * the last five bits represent the high five (re-clap!) bits of the blue
  * part. */
 
-	casio_pictureformat_16bit = 0x1000
-} casio_pictureformat_t;
+# define casio_pictureformat_16bit 0x1000
 
 /* Two bytes per pixel. */
 /* ************************************************************************* */

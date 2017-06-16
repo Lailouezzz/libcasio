@@ -22,7 +22,7 @@
 /*  Constants                                                                */
 /* ************************************************************************* */
 /* The dual 2-bit format colors */
-static casio_uint32_t dual2b_colors[] = {
+CASIO_LOCAL casio_uint32_t dual2b_colors[] = {
 	0xFFFFFF,
 	0xAAAAAA,
 	0x777777,
@@ -30,7 +30,7 @@ static casio_uint32_t dual2b_colors[] = {
 };
 
 /* prizm colors */
-static const casio_uint32_t prizm_colors[16] = {
+CASIO_LOCAL const casio_uint32_t prizm_colors[16] = {
 	/* [casio_color_black]   = */ 0x000000,
 	/* [casio_color_blue]    = */ 0x0000ff,
 	/* [casio_color_green]   = */ 0x00ff00,
@@ -43,7 +43,7 @@ static const casio_uint32_t prizm_colors[16] = {
 };
 
 /* Colors used in Casemul pictures. */
-static const casio_uint32_t casemul_colors[256] = {
+CASIO_LOCAL const casio_uint32_t casemul_colors[256] = {
 	0xFFFFFF, /* white */
 	0xFF8000, /* orange */
 	0x00FF00, /* green */
@@ -65,7 +65,7 @@ static const casio_uint32_t casemul_colors[256] = {
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_picture(casio_pixel_t **pixels,
+int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 	const void *vraw, casio_pictureformat_t format,
 	unsigned int width, unsigned int height)
 {

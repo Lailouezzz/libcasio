@@ -31,7 +31,7 @@
  *	@arg	func		the function name.
  */
 
-void casio_log_prefix(casio_loglevel_t loglevel, const char *func)
+void CASIO_EXPORT casio_log_prefix(casio_loglevel_t loglevel, const char *func)
 {
 	if (func && !strncmp(func, "casio_", 6))
 		func = &func[6];
@@ -51,7 +51,7 @@ void casio_log_prefix(casio_loglevel_t loglevel, const char *func)
  *	@arg	...			the arguments.
  */
 
-void casio_log_msg(casio_loglevel_t loglevel,
+void CASIO_EXPORT casio_log_msg(casio_loglevel_t loglevel,
 	const char *func, const char *format, ...)
 {
 	va_list args;

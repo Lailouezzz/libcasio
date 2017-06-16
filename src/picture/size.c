@@ -29,7 +29,7 @@
  *	@return			the raw size.
  */
 
-size_t casio_get_picture_size(casio_pixel_t **pixels,
+size_t CASIO_EXPORT casio_get_picture_size(casio_pixel_t **pixels,
 	casio_pictureformat_t fmt, unsigned int width, unsigned int height)
 {
 	(void)pixels;

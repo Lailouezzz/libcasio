@@ -28,7 +28,7 @@
  *	@return				the error.
  */
 
-int casio_seven_serve(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_serve(casio_link_t *handle,
 	casio_seven_server_func_t **callbacks, void *cookie)
 {
 	int err;

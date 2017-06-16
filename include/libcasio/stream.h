@@ -55,6 +55,7 @@ typedef struct casio_scsi_s         casio_scsi_t;
  * is directly linked to the stream type you pass to it. */
 
 typedef unsigned int casio_streamtype_t;
+
 # define casio_streamtype_virtual 0x0000
 # define casio_streamtype_serial  0x0001
 # define casio_streamtype_scsi    0x0002
@@ -62,10 +63,10 @@ typedef unsigned int casio_streamtype_t;
 
 /* Here are the open modes: */
 
-typedef enum casio_openmode_e {
-	CASIO_OPENMODE_READ  = 0x0001, /* the stream is readable. */
-	CASIO_OPENMODE_WRITE = 0x0002  /* the stream is writable. */
-} casio_openmode_t;
+typedef unsigned int casio_openmode_t;
+
+# define CASIO_OPENMODE_READ  0x0001 /* the stream is readable. */
+# define CASIO_OPENMODE_WRITE 0x0002 /* the stream is writable. */
 
 /* Here is the offset type, to move within a stream: */
 
@@ -109,15 +110,20 @@ struct casio_streamfuncs_s {
 
 /* And here are some macros, for better API compatibility */
 
-# define casio_stream_callbacks_for_serial(CASIO__CLOSE, \
-	CASIO__SETCOMM, CASIO__SETTM, CASIO__READ, CASIO__WRITE) \
-{CASIO__CLOSE, CASIO__SETCOMM, CASIO__SETTM, \
-	CASIO__READ, CASIO__WRITE, NULL, NULL}
+# define casio_stream_callbacks_for_serial(CASIO__CLOSE, CASIO__SETCOMM, \
+	CASIO__SETTM, CASIO__READ, CASIO__WRITE) \
+{(casio_stream_close_t*)(CASIO__CLOSE), \
+ (casio_stream_setattrs_t*)(CASIO__SETCOMM), \
+ (casio_stream_settm_t*)(CASIO__SETTM), \
+ (casio_stream_read_t*)(CASIO__READ), \
+ (casio_stream_write_t*)(CASIO__WRITE), NULL, NULL}
 
 # define casio_stream_callbacks_for_virtual(CASIO__CLOSE, \
 	CASIO__READ, CASIO__WRITE, CASIO__SEEK) \
-{CASIO__CLOSE, NULL, NULL, CASIO__READ, \
-	CASIO__WRITE, CASIO__SEEK, NULL}
+{(casio_stream_close_t*)(CASIO__CLOSE), NULL, NULL, \
+ (casio_stream_read_t*)(CASIO__READ), \
+ (casio_stream_write_t*)(CASIO__WRITE), \
+ (casio_stream_seek_t*)(CASIO__SEEK), NULL}
 /* ************************************************************************* */
 /*  Stream settings values and flags                                         */
 /* ************************************************************************* */

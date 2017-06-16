@@ -27,7 +27,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_init_timeouts(casio_stream_t *stream)
+int CASIO_EXPORT casio_init_timeouts(casio_stream_t *stream)
 {
 	static const casio_timeouts_t timeouts = {0, 0, 0};
 
@@ -43,7 +43,7 @@ int casio_init_timeouts(casio_stream_t *stream)
  *	@return				the error code (0 if ok).
  */
 
-int casio_set_timeouts(casio_stream_t *stream,
+int CASIO_EXPORT casio_set_timeouts(casio_stream_t *stream,
 	const casio_timeouts_t *timeouts)
 {
 	int err; casio_stream_settm_t *s;

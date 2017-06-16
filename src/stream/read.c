@@ -28,7 +28,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_read(casio_stream_t *stream, void *dest, size_t size)
+int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
 {
 	int err;
 

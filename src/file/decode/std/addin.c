@@ -30,8 +30,8 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_addin(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std)
+int CASIO_EXPORT casio_decode_std_addin(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std)
 {
 	int err = 0;
 	casio_addin_subheader_t hd; size_t content_size;
@@ -101,9 +101,10 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_cp_addin(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std, casio_standard_subheader_t *sub,
-	casio_standard_classpad_subheader_t *cp, casio_uint32_t *check)
+int CASIO_EXPORT casio_decode_std_cp_addin(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std,
+	casio_standard_subheader_t *sub, casio_standard_classpad_subheader_t *cp,
+	casio_uint32_t *check)
 {
 	int err = 0;
 	casio_file_t *handle;
@@ -176,9 +177,10 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_cg_addin(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std, casio_standard_subheader_t *sub,
-	casio_standard_prizm_subheader_t *prizm, casio_uint32_t *check)
+int CASIO_EXPORT casio_decode_std_cg_addin(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std,
+	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm,
+	casio_uint32_t *check)
 {
 	int err = 0;
 	casio_prizm_addin_subheader_t cghd; size_t content_size;

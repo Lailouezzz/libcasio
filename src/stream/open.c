@@ -32,7 +32,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_open(casio_stream_t **pstream, casio_openmode_t mode,
+int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
 	casio_streamtype_t type, void *cookie,
 	const casio_streamfuncs_t *callbacks)
 {
@@ -87,7 +87,7 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_close(casio_stream_t *stream)
+int CASIO_EXPORT casio_close(casio_stream_t *stream)
 {
 	casio_stream_close_t *c;
 

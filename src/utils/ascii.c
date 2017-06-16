@@ -31,7 +31,7 @@
  *	@arg	n		the size of the field
  */
 
-void casio_putascii(unsigned char *p, unsigned long i, int n)
+void CASIO_EXPORT casio_putascii(unsigned char *p, unsigned long i, int n)
 {
 	p += (n - 1);
 	while (n--) {
@@ -50,7 +50,7 @@ void casio_putascii(unsigned char *p, unsigned long i, int n)
  *	@return			the number
  */
 
-unsigned long casio_getascii(const unsigned char *p, int n)
+unsigned long CASIO_EXPORT casio_getascii(const unsigned char *p, int n)
 {
 	unsigned long i = 0;
 
@@ -72,7 +72,7 @@ unsigned long casio_getascii(const unsigned char *p, int n)
  *	@return			the decimal number.
  */
 
-unsigned long casio_getdec(unsigned long h)
+unsigned long CASIO_EXPORT casio_getdec(unsigned long h)
 {
 	return ((h & 15) + ((h >> 4) & 15) * 10
 		+ ((h >> 8) & 15) * 100 + ((h >> 12) & 15) * 1000
@@ -88,7 +88,7 @@ unsigned long casio_getdec(unsigned long h)
  *	@return			the hex number.
  */
 
-unsigned long casio_gethex(unsigned long d)
+unsigned long CASIO_EXPORT casio_gethex(unsigned long d)
 {
 	return ((d % 10) + ((d / 10 % 10) << 4)
 		+ ((d / 100 % 10) << 8) + ((d / 1000 % 10) << 12)

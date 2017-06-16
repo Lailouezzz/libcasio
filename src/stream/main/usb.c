@@ -26,7 +26,7 @@ struct corresp {
 };
 
 /* List of streams. */
-static struct corresp openusbs[NUM + 1] = {
+CASIO_LOCAL struct corresp openusbs[NUM + 1] = {
 #if   !defined(LIBCASIO_DISABLED_LIBUSB)
 	{1, casio_openusb_libusb},
 #endif
@@ -44,7 +44,7 @@ static struct corresp openusbs[NUM + 1] = {
  *	@return				the error code (0 if ok).
  */
 
-int casio_add_default_usb_stream(casio_openusbstream_t *function)
+int CASIO_EXPORT casio_add_default_usb_stream(casio_openusbstream_t *function)
 {
 	struct corresp *c; int num;
 
@@ -64,7 +64,7 @@ int casio_add_default_usb_stream(casio_openusbstream_t *function)
  *	@return				the error code (0 if ok).
  */
 
-int casio_open_usb_stream(casio_stream_t **stream)
+int CASIO_EXPORT casio_open_usb_stream(casio_stream_t **stream)
 {
 	int err; struct corresp *c = openusbs;
 

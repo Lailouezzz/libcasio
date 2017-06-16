@@ -19,7 +19,7 @@
 #ifndef  LIBCASIO_FILE_H
 # define LIBCASIO_FILE_H
 # include "cdefs.h"
-# include "mcsfile.h"
+# include "mcs.h"
 # include "version.h"
 # include "date.h"
 
@@ -74,9 +74,11 @@ typedef struct casio_file_s {
 	/* Lists for various purposes */
 	int               casio_file_count;
 	int               casio_file__size;
-	casio_mcsfile_t **casio_file_mcsfiles;
 	char            **casio_file_messages;
 	casio_pixel_t  ***casio_file_fkeys;
+
+	/* Main memory */
+	casio_mcs_t    *casio_file_mcs;
 
 	/* Picture-related data (also used for add-in icons) */
 	int             casio_file_width;
@@ -98,27 +100,23 @@ typedef struct casio_file_s {
 CASIO_EXTERN int CASIO_EXPORT casio_make_picture
 	OF((casio_file_t **casio__handle,
 		unsigned int casio__width, unsigned int casio__height));
+
 CASIO_EXTERN int CASIO_EXPORT casio_make_mcs
 	OF((casio_file_t **casio__handle, int casio__count));
+
 CASIO_EXTERN int CASIO_EXPORT casio_make_fkey
 	OF((casio_file_t **casio__handle,
 		casio_filefor_t casio__for, int casio__count));
+
 CASIO_EXTERN int CASIO_EXPORT casio_make_lang
 	OF((casio_file_t **casio__handle,
 		casio_filefor_t casio__for, int casio__count));
+
 CASIO_EXTERN int CASIO_EXPORT casio_make_addin
 	OF((casio_file_t **casio__handle,
 		casio_filefor_t casio__for, size_t casio__size,
 		const char *casio__name, const char *casio__internal,
 		const casio_version_t *casio__version, const time_t *casio__created));
-
-/* Manage an MCS archive. */
-
-CASIO_EXTERN int CASIO_EXPORT casio_mcs_insert
-	OF((casio_file_t *handle, casio_mcsfile_t **tofile,
-		const casio_mcshead_t *head));
-CASIO_EXTERN int CASIO_EXPORT casio_mcs_sort
-	OF((casio_file_t *handle));
 
 /* Free a file. */
 

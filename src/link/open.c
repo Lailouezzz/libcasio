@@ -36,7 +36,7 @@
  *	@return					the error (0 if ok)
  */
 
-int casio_open_link(casio_link_t **h, unsigned long flags,
+int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 	casio_stream_t *stream, const casio_streamattrs_t *settings)
 {
 	int err = 0;
@@ -98,7 +98,7 @@ fail:
  *	@arg	handle		the handle to free.
  */
 
-void casio_close_link(casio_link_t *handle)
+void CASIO_EXPORT casio_close_link(casio_link_t *handle)
 {
 	/* check if handle is already freed */
 	if (!handle) return ;

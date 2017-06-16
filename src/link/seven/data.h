@@ -22,15 +22,18 @@
 # define LOCAL_LINK_SEVEN_DATA_H 1
 # include "../link.h"
 
-extern int casio_seven_send_data_packet OF((casio_link_t *casio__handle,
-	unsigned int casio__total, unsigned int casio__id,
-	const void *casio__data, unsigned int casio__datasize,
-	int casio__resp));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_data_packet
+	OF((casio_link_t *casio__handle,
+		unsigned int casio__total, unsigned int casio__id,
+		const void *casio__data, unsigned int casio__datasize,
+		int casio__resp));
 
-extern int casio_seven_send_quick_data_packet OF((casio_link_t *casio__handle,
-	unsigned int casio__total, unsigned int casio__id,
-	void *casio__buf, unsigned int casio__datasize, int casio__resp));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_send_quick_data_packet
+	OF((casio_link_t *casio__handle,
+		unsigned int casio__total, unsigned int casio__id,
+		void *casio__buf, unsigned int casio__datasize, int casio__resp));
 
-extern int casio_seven_unshift OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_unshift
+	OF((casio_link_t *casio__handle));
 
 #endif /* LOCAL_LINK_SEVEN_DATA_H */

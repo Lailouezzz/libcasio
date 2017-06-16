@@ -73,7 +73,7 @@ typedef struct {
  *	@arg	data		the raw version data ("xx.xx.xx" + type)
  */
 
-static void version_of_string(casio_version_t *ver, const unsigned char *data)
+CASIO_LOCAL void version_of_string(casio_version_t *ver, const unsigned char *data)
 {
 	casio_decode_version(ver, (const char*)data);
 }
@@ -86,7 +86,8 @@ static void version_of_string(casio_version_t *ver, const unsigned char *data)
  *	@arg	data	the raw version data destination ("xx.xx.xx" + type).
  */
 
-static void string_of_version(unsigned char *data, const casio_version_t *ver)
+CASIO_LOCAL void string_of_version(unsigned char *data,
+	const casio_version_t *ver)
 {
 	casio_encode_version((char*)data, ver);
 	memset(&data[10], '\xFF', 6);
@@ -103,7 +104,8 @@ static void string_of_version(unsigned char *data, const casio_version_t *ver)
  *	@return				the error code (0 if ok)
  */
 
-int casio_seven_send_eack(casio_link_t *handle, casio_link_info_t *info)
+int CASIO_EXPORT casio_seven_send_eack(casio_link_t *handle,
+	casio_link_info_t *info)
 {
 	packetdata_ackext_t raw;
 
@@ -167,7 +169,7 @@ int casio_seven_send_eack(casio_link_t *handle, casio_link_info_t *info)
  *	@arg	n			the maximum size of the string.
  */
 
-static void cpy_string(char *dest, const char *src, size_t n)
+CASIO_LOCAL void cpy_string(char *dest, const char *src, size_t n)
 {
 	const char *l = memchr(src, 0xFF, n);
 
@@ -187,7 +189,7 @@ static void cpy_string(char *dest, const char *src, size_t n)
  *	@return				if there was an error
  */
 
-int casio_seven_decode_ack(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_decode_ack(casio_link_t *handle,
 	const unsigned char *data, unsigned int data_size)
 {
 	casio_seven_packet_t *packet = &handle->casio_link_response;

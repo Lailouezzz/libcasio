@@ -102,19 +102,21 @@
  * `msg` and `mem` macros as they are sensible to the fact that logging
  * is enabled or not. */
 
-extern int casio_islog OF((casio_loglevel_t casio__level,
-	const char *casio__func));
-extern void casio_log_prefix OF((casio_loglevel_t casio__loglevel,
-	const char *casio__func));
+CASIO_EXTERN int  CASIO_EXPORT casio_islog
+	OF((casio_loglevel_t casio__level, const char *casio__func));
+CASIO_EXTERN void CASIO_EXPORT casio_log_prefix
+	OF((casio_loglevel_t casio__loglevel, const char *casio__func));
 
 #  if defined(__STDC__) && __STDC__
-extern void casio_log_msg(casio_loglevel_t casio__loglevel,
-	const char *casio__func, const char *casio__format, ...);
-extern void casio_log_mem(casio_loglevel_t casio__loglevel,
-	const char *casio__func, const void *casio__m, size_t casio__n);
+CASIO_EXTERN void CASIO_EXPORT casio_log_msg
+	(casio_loglevel_t casio__loglevel, const char *casio__func,
+	const char *casio__format, ...);
+CASIO_EXTERN void CASIO_EXPORT casio_log_mem
+	(casio_loglevel_t casio__loglevel, const char *casio__func,
+	const void *casio__m, size_t casio__n);
 #  else
-extern void casio_log_msg();
-extern void casio_log_mem();
+CASIO_EXTERN void CASIO_EXPORT casio_log_msg();
+CASIO_EXTERN void CASIO_EXPORT casio_log_mem();
 #  endif
 # endif
 

@@ -40,18 +40,19 @@ typedef struct {
  *	casio_file_read:
  *	Read from a FILE.
  *
- *	@arg	vcookie		the cookie (uncasted)
+ *	@arg	cookie		the cookie.
  *	@arg	data		the data pointer
  *	@arg	size		the data size.
  *	@return				the error code (0 if ok).
  */
 
-static int casio_file_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_file_read(file_cookie_t *cookie,
+	unsigned char *dest, size_t size)
 {
-	file_cookie_t *cookie = (file_cookie_t*)vcookie;
+	size_t recv;
 
 	/* main receiving loop */
-	size_t recv = 0;
+	recv = 0;
 	do {
 		/* read */
 		recv = fread(dest, 1, size, cookie->_rstream);
@@ -76,6 +77,11 @@ static int casio_file_read(void *vcookie, unsigned char *dest, size_t size)
 
 	/* check error */
 	if (!recv) switch (errno) {
+		/* end of file */
+		case 0:
+			msg((ll_error, "encountered an end of file"));
+			return (casio_error_eof);
+
 		/* - timeout - */
 		case EINTR: /* alarm */
 		case ETIMEDOUT:
@@ -103,22 +109,27 @@ static int casio_file_read(void *vcookie, unsigned char *dest, size_t size)
  *	casio_file_write:
  *	Write to a FILE.
  *
- *	@arg	vcookie		the cookie (uncasted)
+ *	@arg	cookie		the cookie.
  *	@arg	data		the source
  *	@arg	size		the source size
  *	@return				the error code (0 if ok)
  */
 
-static int casio_file_write(void *vcookie,
+CASIO_LOCAL int casio_file_write(file_cookie_t *cookie,
 	const unsigned char *data, size_t size)
 {
-	file_cookie_t *cookie = (file_cookie_t*)vcookie;
+	size_t sent;
 
 	/* main sending */
-	size_t sent = fwrite(data, size, 1, cookie->_wstream);
+	sent = fwrite(data, size, 1, cookie->_wstream);
 
 	/* check the error */
 	if (!sent) switch (errno) {
+		/* end of file */
+		case 0:
+			msg((ll_error, "encountered an end of file"));
+			return (casio_error_eof);
+
 		/* - timeout error - */
 		case EINTR: /* alarm */
 		case ETIMEDOUT:
@@ -147,19 +158,19 @@ static int casio_file_write(void *vcookie,
  *	casio_file_seek:
  *	Seek within a file.
  *
- *	@arg	vcookie		the cookie (uncasted).
+ *	@arg	cookie		the cookie.
  *	@arg	offset		the offset.
  *	@arg	whence		the whence.
  *	@return				the error code (0 if ok).
  */
 
-static int casio_file_seek(void *vcookie, casio_off_t *offset,
+CASIO_LOCAL int casio_file_seek(file_cookie_t *cookie, casio_off_t *offset,
 	casio_whence_t whence)
 {
-	file_cookie_t *cookie = (file_cookie_t*)vcookie;
+	int wh;
 
 	/* Seek. */
-	int wh = whence == CASIO_SEEK_SET ? SEEK_SET
+	wh = whence == CASIO_SEEK_SET ? SEEK_SET
 		: whence == CASIO_SEEK_CUR ? SEEK_CUR
 		: SEEK_END;
 	if (fseek(cookie->_rstream, (long)*offset, wh) < 0)
@@ -174,14 +185,12 @@ static int casio_file_seek(void *vcookie, casio_off_t *offset,
  *	casio_file_close:
  *	Close a FILE cookie.
  *
- *	@arg	vcookie		the cookie (uncasted)
+ *	@arg	vcookie		the cookie.
  *	@return				the error code (0 if ok)
  */
 
-static int casio_file_close(void *vcookie)
+CASIO_LOCAL int casio_file_close(file_cookie_t *cookie)
 {
-	file_cookie_t *cookie = (file_cookie_t*)vcookie;
-
 	if (cookie->_rstream && cookie->_rstream_cl)
 		fclose(cookie->_rstream);
 	if (cookie->_wstream && cookie->_wstream != cookie->_rstream
@@ -193,7 +202,7 @@ static int casio_file_close(void *vcookie)
 /* ************************************************************************* */
 /*  Opening functions                                                        */
 /* ************************************************************************* */
-static const casio_streamfuncs_t casio_file_callbacks =
+CASIO_LOCAL const casio_streamfuncs_t casio_file_callbacks =
 casio_stream_callbacks_for_virtual(casio_file_close, casio_file_read,
 	casio_file_write, casio_file_seek);
 
@@ -209,7 +218,7 @@ casio_stream_callbacks_for_virtual(casio_file_close, casio_file_read,
  *	@return				the error (0 if ok).
  */
 
-int casio_open_stream_file(casio_stream_t **stream,
+int CASIO_EXPORT casio_open_stream_file(casio_stream_t **stream,
 	FILE *rstream, FILE *wstream, int rstream_cl, int wstream_cl)
 {
 	file_cookie_t *cookie = NULL;

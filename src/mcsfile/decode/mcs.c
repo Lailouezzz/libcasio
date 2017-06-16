@@ -34,7 +34,7 @@ struct mcs_corresp {
 
 /* All correspondances */
 #define TTERM {0, NULL}
-static struct mcs_corresp mcs_types[] = {
+CASIO_LOCAL struct mcs_corresp mcs_types[] = {
 	{casio_mcstype_program,     FUNC(program)},
 	{casio_mcstype_list,        FUNC(cells)},
 	{casio_mcstype_mat,         FUNC(cells)},
@@ -57,7 +57,7 @@ static struct mcs_corresp mcs_types[] = {
  *	@return				the function (NULL if not found).
  */
 
-static mcs_decode_func_t *lookup_mcsfile_decode(casio_mcstype_t type)
+CASIO_LOCAL mcs_decode_func_t *lookup_mcsfile_decode(casio_mcstype_t type)
 {
 	struct mcs_corresp *c;
 
@@ -83,7 +83,7 @@ static mcs_decode_func_t *lookup_mcsfile_decode(casio_mcstype_t type)
  *	@return				0 if the head was filled with success, -1 otherwise.
  */
 
-int casio_decode_mcsfile_head(casio_mcshead_t *head,
+int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
 	int raw_type, const unsigned char *groupname,
 	const unsigned char *dirname, const unsigned char *filename,
 	uint_fast32_t filesize)
@@ -121,8 +121,8 @@ int casio_decode_mcsfile_head(casio_mcshead_t *head,
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_mcsfile(casio_mcsfile_t **handle, const casio_mcshead_t *head,
-	casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
+	const casio_mcshead_t *head, casio_stream_t *buffer)
 {
 	int err = 0;
 	mcs_decode_func_t *decode;
@@ -190,7 +190,7 @@ fail:
  *	@return				the error.
  */
 
-int casio_decode_mcsfile_data(casio_mcsfile_t **handle,
+int CASIO_EXPORT casio_decode_mcsfile_data(casio_mcsfile_t **handle,
 	const casio_mcshead_t *head, const void *data, size_t size)
 {
 	int err; casio_stream_t *membuf;

@@ -27,7 +27,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_skip(casio_stream_t *stream, size_t size)
+int CASIO_EXPORT casio_skip(casio_stream_t *stream, size_t size)
 {
 	unsigned char buf[128];
 

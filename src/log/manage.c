@@ -25,7 +25,7 @@
 /*  Interact with the log settings at runtime                                */
 /* ************************************************************************* */
 /* The log setting */
-static casio_loglevel_t log_setting = LOGLEVEL;
+CASIO_LOCAL casio_loglevel_t log_setting = LOGLEVEL;
 
 /**
  *	casio_setlog:
@@ -34,7 +34,7 @@ static casio_loglevel_t log_setting = LOGLEVEL;
  *	@arg	level	the level to set.
  */
 
-void casio_setlog(casio_loglevel_t level)
+void CASIO_EXPORT casio_setlog(casio_loglevel_t level)
 {
 	log_setting = level;
 }
@@ -46,7 +46,7 @@ void casio_setlog(casio_loglevel_t level)
  *	@return			the current level.
  */
 
-casio_loglevel_t casio_getlog(void)
+casio_loglevel_t CASIO_EXPORT casio_getlog(void)
 {
 	return (log_setting);
 }
@@ -61,7 +61,7 @@ casio_loglevel_t casio_getlog(void)
  *	@return			the string.
  */
 
-const char *casio_loglevel_tostring(casio_loglevel_t level)
+const char* CASIO_EXPORT casio_loglevel_tostring(casio_loglevel_t level)
 {
 	if (level >= 0  && level < 10)
 		return ("info");
@@ -82,7 +82,7 @@ const char *casio_loglevel_tostring(casio_loglevel_t level)
  *	@return			the log level.
  */
 
-casio_loglevel_t casio_loglevel_fromstring(const char *string)
+casio_loglevel_t CASIO_EXPORT casio_loglevel_fromstring(const char *string)
 {
 	if (!strcmp(string, "info"))
 		return (casio_loglevel_info);
@@ -103,7 +103,7 @@ casio_loglevel_t casio_loglevel_fromstring(const char *string)
  *	@arg	cookie		the callback cookie.
  */
 
-void casio_listlog(casio_log_list_t *callback, void *cookie)
+void CASIO_EXPORT casio_listlog(casio_log_list_t *callback, void *cookie)
 {
 	(*callback)(cookie, "info");
 	(*callback)(cookie, "warn");
@@ -120,7 +120,7 @@ void casio_listlog(casio_log_list_t *callback, void *cookie)
  *	@return				the loglevel.
  */
 
-int casio_islog(casio_loglevel_t level, const char *func)
+int CASIO_EXPORT casio_islog(casio_loglevel_t level, const char *func)
 {
 	return (islog(level));
 }

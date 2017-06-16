@@ -37,7 +37,7 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-static int casio_limited_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest, size_t size)
 {
 	int err; limited_cookie_t *cookie = (void*)vcookie;
 
@@ -63,14 +63,14 @@ static int casio_limited_read(void *vcookie, unsigned char *dest, size_t size)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_limited_close(void *vcookie)
+CASIO_LOCAL int casio_limited_close(void *vcookie)
 {
 	free(vcookie);
 	return (0);
 }
 
 /* Callbacks. */
-static const casio_streamfuncs_t casio_limited_callbacks =
+CASIO_LOCAL const casio_streamfuncs_t casio_limited_callbacks =
 casio_stream_callbacks_for_virtual(casio_limited_close,
 	casio_limited_read, NULL, NULL);
 /* ************************************************************************* */
@@ -86,7 +86,7 @@ casio_stream_callbacks_for_virtual(casio_limited_close,
  *	@return				the error (0 if ok).
  */
 
-int casio_open_limited(casio_stream_t **stream,
+int CASIO_EXPORT casio_open_limited(casio_stream_t **stream,
 	casio_stream_t *original, size_t size)
 {
 	limited_cookie_t *cookie = NULL;
@@ -114,7 +114,7 @@ int casio_open_limited(casio_stream_t **stream,
  *	@return				the error code (0 if ok).
  */
 
-int casio_empty_limited(casio_stream_t *stream)
+int CASIO_EXPORT casio_empty_limited(casio_stream_t *stream)
 {
 	int err; limited_cookie_t *cookie = (void*)casio_get_cookie(stream);
 

@@ -39,8 +39,9 @@
  *	@return				the error (0 if ok)
  */
 
-int casio_seven_send_buffer(casio_link_t *handle, casio_stream_t *buffer,
-	casio_off_t size, int shift, casio_link_progress_t *disp, void *dcookie)
+int CASIO_EXPORT casio_seven_send_buffer(casio_link_t *handle,
+	casio_stream_t *buffer, casio_off_t size, int shift,
+	casio_link_progress_t *disp, void *dcookie)
 {
 	int err, stream_err, resp; unsigned char buf[8 + BUFSIZE];
 	unsigned int id, total, lastsize, datasize;
@@ -112,8 +113,9 @@ fail:
  *	@return				the error (0 if ok)
  */
 
-int casio_seven_get_buffer(casio_link_t *handle, casio_stream_t *buffer,
-	casio_off_t size, int shift, casio_link_progress_t *disp, void *dcookie)
+int CASIO_EXPORT casio_seven_get_buffer(casio_link_t *handle,
+	casio_stream_t *buffer, casio_off_t size, int shift,
+	casio_link_progress_t *disp, void *dcookie)
 {
 	int err, buf_err; unsigned char buf[BUFSIZE];
 	unsigned char *p = buf; size_t ps = 0;
@@ -204,7 +206,7 @@ fail:
  *	@return				the error code (0 if ok)
  */
 
-int casio_seven_send_data(casio_link_t *handle, const void *vbuf,
+int CASIO_EXPORT casio_seven_send_data(casio_link_t *handle, const void *vbuf,
 	casio_off_t size, int shift, casio_link_progress_t *disp,
 	void *dcookie)
 {
@@ -231,7 +233,7 @@ int casio_seven_send_data(casio_link_t *handle, const void *vbuf,
  *	@return				the error code (0 if ok).
  */
 
-int casio_seven_get_data(casio_link_t *handle, void *vbuf,
+int CASIO_EXPORT casio_seven_get_data(casio_link_t *handle, void *vbuf,
 	casio_off_t size, int shift, casio_link_progress_t disp, void *dcookie)
 {
 	int err = 0;

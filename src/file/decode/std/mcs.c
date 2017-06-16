@@ -28,14 +28,15 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
-	casio_standard_header_t *std)
+int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
+	casio_stream_t *buffer, casio_standard_header_t *std)
 {
 	int err = casio_error_alloc;
 	/* get number of subparts from the standard header */
 	unsigned int num = std->casio_standard_header_number;
 	unsigned long i;
 	casio_mcshead_t head; casio_file_t *handle;
+	casio_mcsfile_t *mcsfile;
 
 	/* make the handle */
 	err = casio_make_mcs(h, num);
@@ -44,7 +45,7 @@ int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
 
 	/* read all of the parts */
 	msg((ll_info, "%" PRIuFAST16 " total mcs files to browse", num));
-	for (handle->casio_file_count = 0; handle->casio_file_count < (int)num;) {
+	while (num) {
 		casio_mcs_subheader_t hd;
 
 		/* get the subheader */
@@ -86,12 +87,11 @@ int casio_decode_std_mcs(casio_file_t **h, casio_stream_t *buffer,
 				datalength);
 
 			/* decode */
-			handle->casio_file_mcsfiles[handle->casio_file_count] = NULL;
-			err = casio_decode_mcsfile(
-				&handle->casio_file_mcsfiles[handle->casio_file_count],
-				&head, buffer);
+			mcsfile = NULL;
+			err = casio_decode_mcsfile(&mcsfile, &head, buffer);
 			if (err) goto fail;
-			handle->casio_file_count++;
+			err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
+			if (err) goto fail;
 		}
 	}
 

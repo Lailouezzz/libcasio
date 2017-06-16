@@ -28,7 +28,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_seek(casio_stream_t *stream, casio_off_t offset,
+int CASIO_EXPORT casio_seek(casio_stream_t *stream, casio_off_t offset,
 	casio_whence_t whence)
 {
 	int err; casio_stream_seek_t *s;
@@ -55,7 +55,7 @@ fail:
  *	@return				the position.
  */
 
-casio_off_t casio_tell(casio_stream_t *stream)
+casio_off_t CASIO_EXPORT casio_tell(casio_stream_t *stream)
 {
 	return (stream->casio_stream_offset);
 }

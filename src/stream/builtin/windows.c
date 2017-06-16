@@ -47,7 +47,7 @@ typedef struct {
  *	@return			the allocated path of the device if found, NULL otherwise
  */
 
-static char *wfind(unsigned int vid, unsigned int pid)
+CASIO_LOCAL char *wfind(unsigned int vid, unsigned int pid)
 {
 	int i; DWORD werr;
 	char *devpath = NULL, vidpid[20];
@@ -143,7 +143,7 @@ static char *wfind(unsigned int vid, unsigned int pid)
  *	@return				the error (0 if ok)
  */
 
-static int casio_win_setcomm(void *vcookie,
+CASIO_LOCAL int casio_win_setcomm(void *vcookie,
 	const casio_streamattrs_t *settings)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
@@ -244,7 +244,8 @@ static int casio_win_setcomm(void *vcookie,
  *	@return				the error (0 if ok).
  */
 
-static int casio_win_settm(void *vcookie, const casio_timeouts_t *timeouts)
+CASIO_LOCAL int casio_win_settm(void *vcookie,
+	const casio_timeouts_t *timeouts)
 {
 	win_cookie_t *cookie = (void*)vcookie;
 
@@ -267,7 +268,7 @@ static int casio_win_settm(void *vcookie, const casio_timeouts_t *timeouts)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_win_close(void *vcookie)
+CASIO_LOCAL int casio_win_close(void *vcookie)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
 	CloseHandle(cookie->_handle);
@@ -285,7 +286,7 @@ static int casio_win_close(void *vcookie)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_win_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_win_read(void *vcookie, unsigned char *dest, size_t size)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
 	DWORD werr, wsuccess, recv; size_t tocopy;
@@ -344,7 +345,7 @@ static int casio_win_read(void *vcookie, unsigned char *dest, size_t size)
  *	@arg
  */
 
-static int casio_win_seek(void *vcookie, casio_off_t *offset,
+CASIO_LOCAL int casio_win_seek(void *vcookie, casio_off_t *offset,
 	casio_whence_t whence)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
@@ -375,7 +376,7 @@ static int casio_win_seek(void *vcookie, casio_off_t *offset,
  *	@return				the error code (0 if ok).
  */
 
-static int casio_win_write(void *vcookie,
+CASIO_LOCAL int casio_win_write(void *vcookie,
 	const unsigned char *data, size_t size)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
@@ -412,7 +413,7 @@ static int casio_win_write(void *vcookie,
 /*  Initialization function                                                  */
 /* ************************************************************************* */
 /* Callbacks */
-static const casio_streamfuncs_t casio_windows_callbacks = {
+CASIO_LOCAL const casio_streamfuncs_t casio_windows_callbacks = {
 	casio_win_close,
 	casio_win_setcomm, casio_win_settm,
 	casio_win_read, casio_win_write, casio_win_seek,
@@ -427,7 +428,7 @@ static const casio_streamfuncs_t casio_windows_callbacks = {
  *	@return				the error code (0 if you're ugly).
  */
 
-int casio_openusb_windows(casio_stream_t **stream)
+int CASIO_EXPORT casio_openusb_windows(casio_stream_t **stream)
 {
 	int err; char *p = NULL;
 
@@ -448,7 +449,8 @@ int casio_openusb_windows(casio_stream_t **stream)
  *	@return				the error code (0 if you're a psychopath).
  */
 
-int casio_opencom_windows(casio_stream_t **stream, const char *path)
+int CASIO_EXPORT casio_opencom_windows(casio_stream_t **stream,
+	const char *path)
 {
 	int err = 0; DWORD werr;
 	HANDLE fhandle = INVALID_HANDLE_VALUE;

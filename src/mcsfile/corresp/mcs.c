@@ -66,97 +66,97 @@ struct group_corresp {
  *	  with the dirname being the internal name of the related application. */
 
 #define TTERM {0, NULL, 0, NULL, NULL, 0}
-static const struct type_corresp types_setup[] = {
+CASIO_LOCAL const struct type_corresp types_setup[] = {
 	{0x14, "SETUP", 0, "$GLOBAL",
 		"setup", casio_mcstype_setup},
 	{0x00, "SETUP", 0, "$GLOBAL", /* setup is also with 0x00...? */
 		"setup", casio_mcstype_setup},
 	TTERM};
-static const struct type_corresp types_alphamem[] = {
+CASIO_LOCAL const struct type_corresp types_alphamem[] = {
 	{0x00, "ALPHA MEM", 0, "$GLOBAL",
 		"alpha memory", casio_mcstype_alphamem},
 	{0x00, "", arg | arg_is_let, "$GLOBAL",
 		"variable", casio_mcstype_variable},
 	TTERM};
-static const struct type_corresp types_string[] = {
+CASIO_LOCAL const struct type_corresp types_string[] = {
 	{0x04, "STR", arg | arg_is_num, "main",
 		"string", casio_mcstype_string},
 	TTERM};
-static const struct type_corresp types_list[] = {
+CASIO_LOCAL const struct type_corresp types_list[] = {
 	{0x05, "1LIST", arg | arg_is_num, "main",
 		"list", casio_mcstype_list},
 	TTERM};
-static const struct type_corresp types_listfile[] = {
+CASIO_LOCAL const struct type_corresp types_listfile[] = {
 	{0x05, "1LIST", arg | arg_is_num | weight_by_gid, "main",
 		"list", casio_mcstype_list},
 	TTERM};
-static const struct type_corresp types_mat[] = {
+CASIO_LOCAL const struct type_corresp types_mat[] = {
 	{0x06, "MAT_", arg | arg_is_let, "main",
 		"matrix", casio_mcstype_mat},
 	TTERM};
-static const struct type_corresp types_vct[] = {
+CASIO_LOCAL const struct type_corresp types_vct[] = {
 	{0x06, "VCT_", arg | arg_is_let, "main",
 		"vector", casio_mcstype_vct},
 	TTERM};
-static const struct type_corresp types_program[] = {
+CASIO_LOCAL const struct type_corresp types_program[] = {
 	{0x01, NULL, 0, "system",
 		"program", casio_mcstype_program},
 	TTERM};
-static const struct type_corresp types_yeqdata[] = {
+CASIO_LOCAL const struct type_corresp types_yeqdata[] = {
 	{0x02, NULL /* e.g. "1" */, 0, "main",
 		"unknown", 0x00},
 	{0x05, NULL /* "VWIN" */, 0, "main",
 		"unknown", 0x00},
 	TTERM};
-static const struct type_corresp types_vwin[] = {
+CASIO_LOCAL const struct type_corresp types_vwin[] = {
 	{0x05, "VMEM", arg | arg_is_num, "main",
 		"unknown", 0x00},
 	TTERM};
-static const struct type_corresp types_picture[] = {
+CASIO_LOCAL const struct type_corresp types_picture[] = {
 	{0x07, "PICT", arg | arg_is_num, "main",
 		"picture", casio_mcstype_pict},
 	TTERM};
-static const struct type_corresp types_capt[] = {
+CASIO_LOCAL const struct type_corresp types_capt[] = {
 	{0x0A, "CAPT", arg | arg_is_num, "@REV2",
 		"capture", casio_mcstype_capt},
 	TTERM};
-static const struct type_corresp types_system[] = {
+CASIO_LOCAL const struct type_corresp types_system[] = {
 	{0xFE, NULL /* REPLAY/RUN2D1 */, 0, "@RUNMAT",
 		"replay", 0x00},
 	{0x0A, NULL /* CLIP/NAT_CLIP */, 0, "@REV2",
 		"clip", 0x00},
 	TTERM};
-static const struct type_corresp types_ssheet[] = {
+CASIO_LOCAL const struct type_corresp types_ssheet[] = {
 	{0xFE, "@SNAME", 0, "@SSHEET",
 		"spreadsheet name?", 0x00},
 	{0xFE, NULL, 0, "@SSHEET",
 		"spreadsheet", casio_mcstype_spreadsheet},
 	TTERM};
-static const struct type_corresp types_conics[] = {
+CASIO_LOCAL const struct type_corresp types_conics[] = {
 	{0xFE, NULL /* "conicmem" */, 0, "@CONICS",
 		"conics data", 0x00},
 	TTERM};
-static const struct type_corresp types_dynamem[] = {
+CASIO_LOCAL const struct type_corresp types_dynamem[] = {
 	{0xFE, NULL /* "COND" */, 0, "@DYNA",
 		"dyna data", 0x00},
 	TTERM};
-static const struct type_corresp types_econ3now[] = {
+CASIO_LOCAL const struct type_corresp types_econ3now[] = {
 	{0xFE, NULL /* "Econ3Now" */, 0, "@E-CON2",
 		"econ3 data", 0x00},
 	TTERM};
-static const struct type_corresp types_econ4[] = {
+CASIO_LOCAL const struct type_corresp types_econ4[] = {
 	{0xFE, "Econ4N", arg | arg_is_num, "@E-CON2",
 		"econ4 data", 0x00},
 	TTERM};
-static const struct type_corresp types_financial[] = {
+CASIO_LOCAL const struct type_corresp types_financial[] = {
 	{0xFE, NULL /* "fina_mem" */, 0, "@FINANCE",
 		"financial data", 0x00},
 	TTERM};
-static const struct type_corresp types_recursion[] = {
+CASIO_LOCAL const struct type_corresp types_recursion[] = {
 	{0xFE, NULL /* "RECRG" */, 0, "@RECUR",
 		"recursion data", 0x00},
 	TTERM};
-static const struct type_corresp types_stat[] = {
+CASIO_LOCAL const struct type_corresp types_stat[] = {
 	{0xFE, "G_CND", 0, "@STAT",
 		"stat data?", 0x00},
 	{0xFE, "G_CNDEX", 0, "@STAT",
@@ -170,11 +170,11 @@ static const struct type_corresp types_stat[] = {
 	{0x05, "STATV", arg | arg_is_num, "main",
 		"stat data?", 0x00},
 	TTERM};
-static const struct type_corresp types_table[] = {
+CASIO_LOCAL const struct type_corresp types_table[] = {
 	{0xFE, "RANGE", 0, "@TABLE",
 		"range data?", 0x00},
 	TTERM};
-static const struct type_corresp types_3dgraph[] = {
+CASIO_LOCAL const struct type_corresp types_3dgraph[] = {
 	{0xFE, "AREACOL", 0, "@3DGRAPH",
 		"???", 0x00},
 	{0xFE, "LINECOL", 0, "@3DGRAPH",
@@ -192,11 +192,11 @@ static const struct type_corresp types_3dgraph[] = {
 	{0xFE, "Z", arg | arg_is_num /* 1 to 3 */, "@3DGRAPH",
 		"???", 0x00},
 	TTERM};
-static const struct type_corresp types_geom[] = {
+CASIO_LOCAL const struct type_corresp types_geom[] = {
 	{0xFE, NULL, 0, "@GEOM",
 		"???", 0x00},
 	TTERM};
-static const struct type_corresp types_probsim[] = {
+CASIO_LOCAL const struct type_corresp types_probsim[] = {
 	{0xFE, "ProbRand", 0, "@PROBSIM",
 		"???", 0x00},
 	{0xFE, "ProbAdv", 0, "@PROBSIM",
@@ -208,7 +208,7 @@ static const struct type_corresp types_probsim[] = {
 	{0xFE, "ProbVer", 0, "@PROBSIM",
 		"???", 0x00},
 	TTERM};
-static const struct type_corresp types_pictplot[] = {
+CASIO_LOCAL const struct type_corresp types_pictplot[] = {
 	{0x05, "PGRAPH", arg | arg_is_num /* 0 to 3 */, "main",
 		"???", 0x00},
 	{0xFE, "PATH", 0, "@PICTPLT",
@@ -225,7 +225,7 @@ static const struct type_corresp types_pictplot[] = {
 
 /* And the main tab. */
 
-static const struct group_corresp mcs_groups[] = {
+CASIO_LOCAL const struct group_corresp mcs_groups[] = {
 	/* Main Memory */
 	{"SETUP",     noarg,                            types_setup},
 	{"ALPHA MEM", noarg,                            types_alphamem},
@@ -273,7 +273,7 @@ static const struct group_corresp mcs_groups[] = {
  *	@return				if there was an error (0 if ok).
  */
 
-static int get_number(const char *s, int *num, int isnum)
+CASIO_LOCAL int get_number(const char *s, int *num, int isnum)
 {
 	if (!strcmp(s, "Ans"))
 		*num = casio_ans;
@@ -291,7 +291,6 @@ static int get_number(const char *s, int *num, int isnum)
 	return (0);
 }
 
-
 /**
  *	casio_maketype_mcs:
  *	Get libcasio type from rawtype.
@@ -304,7 +303,7 @@ static int get_number(const char *s, int *num, int isnum)
  *	@return				if the type was not found (0 if yes).
  */
 
-int casio_maketype_mcs(casio_mcshead_t *head,
+int CASIO_EXPORT casio_maketype_mcs(casio_mcshead_t *head,
 	const char *gname, const char *dname,
 	const char *fname, unsigned int rawtype)
 {
@@ -318,7 +317,7 @@ int casio_maketype_mcs(casio_mcshead_t *head,
 
 	/* copy raw information */
 	memset(head, 0, sizeof(casio_mcshead_t));
-	head->casio_mcshead_info = casio_mcsinfo_mcs;
+	head->casio_mcshead_flags |= casio_mcsfor_mcs;
 	memcpy(head->casio_mcshead_name, fname, 8);
 	head->casio_mcshead_name[8] = 0;
 	memcpy(head->casio_mcshead_group, gname, 16);
@@ -389,7 +388,7 @@ notfound:
  *	@return				if an error was encountered.
  */
 
-int casio_correct_mcsfile_head(casio_mcshead_t *head)
+int CASIO_EXPORT casio_correct_mcsfile_head(casio_mcshead_t *head)
 {
 	const struct group_corresp *g;
 	const struct type_corresp *t;
@@ -474,24 +473,23 @@ found:
  *	Find offset in a group.
  *
  *	@arg	group	the group correspondance.
- *	@arg	file	the file.
+ *	@arg	head	the head.
  *	@return			the offset (-1 if not there).
  */
 
-static int find_offset_in_group(const struct group_corresp *g,
-	const casio_mcsfile_t *file)
+CASIO_LOCAL int find_offset_in_group(const struct group_corresp *g,
+	const casio_mcshead_t *head)
 {
 	int i; const struct type_corresp *f;
 
 	/* group check */
-	if (strcmp((char*)file->casio_mcsfile_head.casio_mcshead_group, g->name))
+	if (strcmp((char*)head->casio_mcshead_group, g->name))
 		return (-1);
 
 	/* file check */
 	for (f = g->types, i = 0; f->info; f++, i++) {
-		if (strcmp((char*)file->casio_mcsfile_head.casio_mcshead_group,
-		   f->name)
-		 || file->casio_mcsfile_head.casio_mcshead_rawtype != f->rawtype)
+		if (strcmp((char*)head->casio_mcshead_group, f->name)
+		 || head->casio_mcshead_rawtype != f->rawtype)
 			continue;
 
 		return (i);
@@ -505,14 +503,14 @@ static int find_offset_in_group(const struct group_corresp *g,
  *	casio_compare_mcsfiles:
  *	Compare MCS files using their heads, for sorting.
  *
- *	@arg	first	the first file.
- *	@arg	second	the second file.
+ *	@arg	first	the first head.
+ *	@arg	second	the second head.
  *	@return			negative value if the 1st is considered less than the 2nd,
  *					positive value otherwise.
  */
 
-int casio_compare_mcsfiles(const casio_mcsfile_t *first,
-	const casio_mcsfile_t *second)
+int CASIO_EXPORT casio_compare_mcsfiles(casio_mcshead_t *first,
+	casio_mcshead_t *second)
 {
 	/* find the group correspondance */
 	int offset1 = -1, offset2 = -1;

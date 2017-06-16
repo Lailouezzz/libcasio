@@ -29,7 +29,7 @@
  *	@arg	height		the picture height.
  */
 
-int casio_encode_picture(void *vraw,
+int CASIO_EXPORT casio_encode_picture(void *vraw,
 	const casio_pixel_t **pixels, casio_pictureformat_t format,
 	unsigned int width, unsigned int height)
 {

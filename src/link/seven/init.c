@@ -26,7 +26,7 @@
  *	@return				the error, if any.
  */
 
-int casio_seven_start(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_start(casio_link_t *handle)
 {
 	/* start */
 	int err = 0;
@@ -79,7 +79,7 @@ int casio_seven_start(casio_link_t *handle)
  *	@return				the error code (0 if none).
  */
 
-int casio_seven_end(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_end(casio_link_t *handle)
 {
 	int err;
 

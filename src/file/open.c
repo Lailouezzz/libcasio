@@ -31,7 +31,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_open_file(casio_file_t **handle, const char *path,
+int CASIO_EXPORT casio_open_file(casio_file_t **handle, const char *path,
 	casio_filetype_t expected_types)
 {
 	int err; FILE *file = NULL;

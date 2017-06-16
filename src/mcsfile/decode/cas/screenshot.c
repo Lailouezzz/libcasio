@@ -27,7 +27,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_caspart_capture(casio_mcsfile_t *handle,
+int CASIO_EXPORT casio_decode_caspart_capture(casio_mcsfile_t *handle,
 	casio_stream_t *buffer)
 {
 	int err;

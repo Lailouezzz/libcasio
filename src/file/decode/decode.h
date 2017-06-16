@@ -25,45 +25,52 @@
 /*  Main decoding utilities                                                  */
 /* ************************************************************************* */
 /* Main decoding functions with expected types. */
-extern int casio_decode_std OF((casio_file_t **casio__handle,
-	const char *casio__path, casio_stream_t *casio__buffer,
-	casio_standard_header_t *casio__standard,
-	casio_filetype_t casio__expected_types));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std
+	OF((casio_file_t **casio__handle,
+		const char *casio__path, casio_stream_t *casio__buffer,
+		casio_standard_header_t *casio__standard,
+		casio_filetype_t casio__expected_types));
 
 /* Main decoding functions w/o expected types. */
-extern int casio_decode_casemul OF((casio_file_t **casio__handle,
-	casio_stream_t *casio__buffer, int casio__big_endian));
-extern int casio_decode_storage OF((casio_file_t **casio__handle,
-	casio_stream_t *casio__buffer));
-extern int casio_decode_cas     OF((casio_file_t **casio__handle,
-	casio_stream_t *casio__buffer));
-extern int casio_decode_grc     OF((casio_file_t **casio__handle,
-	casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_casemul
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer,
+		int casio__big_endian));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_storage
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_cas
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_grc
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer));
 /* ************************************************************************* */
 /*  "Standard"-specific decoding functions                                   */
 /* ************************************************************************* */
 /* Schemes */
 # define CASIO_STDFUNC(CASIO__NAME) \
-extern int casio_decode_std_##CASIO__NAME \
-OF((casio_file_t **casio__file, \
-	casio_stream_t *casio__buffer, casio_standard_header_t *casio__std));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std_##CASIO__NAME \
+	OF((casio_file_t **casio__file, casio_stream_t *casio__buffer, \
+		casio_standard_header_t *casio__std));
+
 # define CASIO_PRIZMFUNC(CASIO__NAME) \
-extern int casio_decode_std_cg_##CASIO__NAME \
-OF((casio_file_t **casio__file, \
-	casio_stream_t *casio__buffer, casio_standard_header_t *casio__std, \
-	casio_standard_subheader_t *casio__sub, \
-	casio_standard_prizm_subheader_t *casio__pzm, uint32_t *casio__check));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std_cg_##CASIO__NAME \
+	OF((casio_file_t **casio__file, casio_stream_t *casio__buffer, \
+		casio_standard_header_t *casio__std, \
+		casio_standard_subheader_t *casio__sub, \
+		casio_standard_prizm_subheader_t *casio__pzm, \
+		uint32_t *casio__check));
+
 # define CASIO_CPFUNC(CASIO__NAME) \
-extern int casio_decode_std_cp_##CASIO__NAME \
-OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer, \
-	casio_standard_header_t *casio__std, \
-	casio_standard_subheader_t *casio__sub, \
-	casio_standard_classpad_subheader_t *casio__cp, uint32_t *casio__check));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std_cp_##CASIO__NAME \
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer, \
+		casio_standard_header_t *casio__std, \
+		casio_standard_subheader_t *casio__sub, \
+		casio_standard_classpad_subheader_t *casio__cp, \
+		uint32_t *casio__check));
+
 # define CASIO_PICFUNC(CASIO__NAME) \
-extern int casio_decode_std_##CASIO__NAME \
-OF((casio_file_t **casio__handle, \
-	casio_stream_t *casio__buffer, casio_standard_header_t *casio__std, \
-	casio_standard_picheader_t *casio__pic));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std_##CASIO__NAME \
+	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer, \
+		casio_standard_header_t *casio__std, \
+		casio_standard_picheader_t *casio__pic));
 
 /* Prototypes */
 CASIO_STDFUNC(mcs)

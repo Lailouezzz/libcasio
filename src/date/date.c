@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * utils/date.c -- decode and encode a date.
+ * date/decode.c -- decode a date.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -28,7 +28,7 @@
  *	@return			the error code (0 if ok).
  */
 
-int casio_decode_date(time_t *t, const char *c)
+int CASIO_EXPORT casio_decode_date(time_t *t, const char *c)
 {
 	const int two = '0' + '0' * 10, four = two + '0' * 100 + '0' * 1000;
 	struct tm date;
@@ -43,25 +43,5 @@ int casio_decode_date(time_t *t, const char *c)
 
 	/* set the timestamp, return */
 	*t = mktime(&date);
-	return (0);
-}
-
-/**
- *	casio_encode_date:
- *	Encode a date from a string.
- *
- *	@arg	t		the source timestamp.
- *	@arg	c		the destination string.
- *	@return			the error code (0 if ok).
- */
-
-int casio_encode_date(char *c, const time_t *t)
-{
-	/* helper values */
-	struct tm *date = gmtime(t);
-	char buf[15]; sprintf(buf, "%04u.%02u%02u.%02u%02u",
-		min(date->tm_year + 1900, 9999), date->tm_mon + 1, date->tm_mday,
-		date->tm_hour, date->tm_min);
-	memcpy(c, buf, 14);
 	return (0);
 }

@@ -41,7 +41,7 @@ typedef struct {
 #define MASK_OSUPDATE_2 128
 
 /* supported commands */
-static unsigned int command_masks[] = {
+CASIO_LOCAL unsigned int command_masks[] = {
 	/* [SYSTEM COMMANDS] */
 	/* restart/reset */
 	MASK_RESET,
@@ -175,7 +175,7 @@ static unsigned int command_masks[] = {
  * - Critor (quite a few models);
  * - Lephenixnoir, Hackcell (some but less models). */
 
-static env_corresp_t known_environments[] = {
+CASIO_LOCAL env_corresp_t known_environments[] = {
 	/* bootcodes */
 	{"Gy362000", {"fx-7400GII/fx-9860GII bootcode", MASK_ALL}},
 	{"Gy363000", {"fx-9750GII-2/fx-9860GII(-2) bootcode", MASK_ALL}},
@@ -220,7 +220,7 @@ static env_corresp_t known_environments[] = {
  *	@return				if the given environment is the default one.
  */
 
-int casio_seven_getenv(casio_seven_env_t *env, const char *model)
+int CASIO_EXPORT casio_seven_getenv(casio_seven_env_t *env, const char *model)
 {
 	env_corresp_t *e;
 
@@ -238,7 +238,7 @@ int casio_seven_getenv(casio_seven_env_t *env, const char *model)
  *	@return				if it is supported (0 if not)
  */
 
-int casio_seven_command_is_supported(const casio_seven_env_t *env,
+int CASIO_EXPORT casio_seven_command_is_supported(const casio_seven_env_t *env,
 	unsigned int code)
 {
 	if (command_masks[code] & MASK_ALL) return (1); /* all devices. */

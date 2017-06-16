@@ -36,7 +36,7 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-static int casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
 
@@ -63,7 +63,7 @@ static int casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_memory_write(void *vcookie, const unsigned char *data,
+CASIO_LOCAL int casio_memory_write(void *vcookie, const unsigned char *data,
 	size_t size)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
@@ -91,7 +91,7 @@ static int casio_memory_write(void *vcookie, const unsigned char *data,
  *	@return				the error code (0 if ok).
  */
 
-static int casio_memory_seek(void *vcookie, casio_off_t *offset,
+CASIO_LOCAL int casio_memory_seek(void *vcookie, casio_off_t *offset,
 	casio_whence_t whence)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
@@ -121,14 +121,14 @@ static int casio_memory_seek(void *vcookie, casio_off_t *offset,
  *	@return				the error code (0 if ok)
  */
 
-static int casio_memory_close(void *vcookie)
+CASIO_LOCAL int casio_memory_close(void *vcookie)
 {
 	free(vcookie);
 	return (0);
 }
 
 /* Callbacks. */
-static const casio_streamfuncs_t casio_memory_callbacks =
+CASIO_LOCAL const casio_streamfuncs_t casio_memory_callbacks =
 casio_stream_callbacks_for_virtual(casio_memory_close,
 	casio_memory_read, casio_memory_write, casio_memory_seek);
 /* ************************************************************************* */
@@ -144,7 +144,8 @@ casio_stream_callbacks_for_virtual(casio_memory_close,
  *	@return				the error (0 if ok).
  */
 
-int casio_open_memory(casio_stream_t **stream, const void *memory, size_t size)
+int CASIO_EXPORT casio_open_memory(casio_stream_t **stream,
+	const void *memory, size_t size)
 {
 	memory_cookie_t *cookie = NULL;
 

@@ -34,7 +34,7 @@ struct decode_corresp {
 };
 
 /* The correspondances */
-static struct decode_corresp decode_functions[] = {
+CASIO_LOCAL struct decode_corresp decode_functions[] = {
 	/* add-ins */
 	{casio_filefor_fx, casio_filetype_addin,     FUNC(addin)},
 	{casio_filefor_cp, casio_filetype_addin,     FUNC(cp_addin)},
@@ -67,7 +67,7 @@ static struct decode_corresp decode_functions[] = {
  *	@return				the error code (0 if ok).
  */
 
-static int find_decode_function(casio_filefor_t platform,
+CASIO_LOCAL int find_decode_function(casio_filefor_t platform,
 	casio_filetype_t type, decode_func **rd)
 {
 	struct decode_corresp *c;
@@ -105,7 +105,7 @@ static int find_decode_function(casio_filefor_t platform,
  *	@return					the error code (0 if ok).
  */
 
-int casio_decode_std(casio_file_t **h, const char *path,
+int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 	casio_stream_t *buffer, casio_standard_header_t *std,
 	casio_filetype_t expected_types)
 {

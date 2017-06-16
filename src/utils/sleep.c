@@ -25,7 +25,7 @@
 # define default_callback &casio_winsleep
 # include <windows.h>
 
-static void casio_winsleep(unsigned long ms)
+CASIO_LOCAL void casio_winsleep(unsigned long ms)
 {
 	Sleep(ms);
 }
@@ -37,7 +37,7 @@ static void casio_winsleep(unsigned long ms)
 # include <unistd.h>
 # include <time.h>
 
-static void casio_unixsleep(unsigned long ms)
+CASIO_LOCAL void casio_unixsleep(unsigned long ms)
 {
 	struct timespec requested_timestamp;
 
@@ -51,7 +51,7 @@ static void casio_unixsleep(unsigned long ms)
 #else
 # define default_callback NULL
 #endif
-static casio_sleep_t *casio_sleep_callback = default_callback;
+CASIO_LOCAL casio_sleep_t *casio_sleep_callback = default_callback;
 
 /**
  *	casio_set_sleep:
@@ -60,7 +60,7 @@ static casio_sleep_t *casio_sleep_callback = default_callback;
  *	@arg	func	the function to set.
  */
 
-void casio_set_sleep(casio_sleep_t *func)
+void CASIO_EXPORT casio_set_sleep(casio_sleep_t *func)
 {
 	casio_sleep_callback = func;
 }
@@ -72,7 +72,7 @@ void casio_set_sleep(casio_sleep_t *func)
  *	@arg	ms		the milliseconds.
  */
 
-int casio_sleep(unsigned long ms)
+int CASIO_EXPORT casio_sleep(unsigned long ms)
 {
 	if (!casio_sleep_callback)
 		return (casio_error_op);

@@ -29,7 +29,7 @@
  *	@return		the converted integer.
  */
 
-casio_uint16_t casio_be16toh(casio_uint16_t x)
+casio_uint16_t CASIO_EXPORT casio_be16toh(casio_uint16_t x)
 {
 #ifdef casio_int_be16toh
 	return (casio_int_be16toh(x));
@@ -52,7 +52,7 @@ casio_uint16_t casio_be16toh(casio_uint16_t x)
  *	@return		the converted integer.
  */
 
-casio_uint16_t casio_le16toh(casio_uint16_t x)
+casio_uint16_t CASIO_EXPORT casio_le16toh(casio_uint16_t x)
 {
 #ifdef casio_le16toh
 	return (casio_int_le16toh(x));
@@ -75,7 +75,7 @@ casio_uint16_t casio_le16toh(casio_uint16_t x)
  *	@return		the converted integer.
  */
 
-casio_uint32_t casio_be32toh(casio_uint32_t x)
+casio_uint32_t CASIO_EXPORT casio_be32toh(casio_uint32_t x)
 {
 #ifdef casio_int_be32toh
 	return (casio_int_be32toh(x));
@@ -99,7 +99,7 @@ casio_uint32_t casio_be32toh(casio_uint32_t x)
  *	@return		the converted integer.
  */
 
-casio_uint32_t casio_le32toh(casio_uint32_t x)
+casio_uint32_t CASIO_EXPORT casio_le32toh(casio_uint32_t x)
 {
 #ifdef casio_int_le32toh
 	return (casio_int_le32toh(x));
@@ -123,7 +123,7 @@ casio_uint32_t casio_le32toh(casio_uint32_t x)
  *	@return		the converted integer.
  */
 
-casio_uint16_t casio_htobe16(casio_uint16_t x)
+casio_uint16_t CASIO_EXPORT casio_htobe16(casio_uint16_t x)
 {
 #ifdef casio_int_htobe16
 	return (casio_int_htobe16(x));
@@ -147,7 +147,7 @@ casio_uint16_t casio_htobe16(casio_uint16_t x)
  *	@return		the converted integer.
  */
 
-casio_uint16_t casio_htole16(casio_uint16_t x)
+casio_uint16_t CASIO_EXPORT casio_htole16(casio_uint16_t x)
 {
 #ifdef casio_int_htole16
 	return (casio_int_htole16(x));
@@ -171,7 +171,7 @@ casio_uint16_t casio_htole16(casio_uint16_t x)
  *	@return		the converted integer.
  */
 
-casio_uint32_t casio_htobe32(casio_uint32_t x)
+casio_uint32_t CASIO_EXPORT casio_htobe32(casio_uint32_t x)
 {
 #ifdef casio_int_htobe32
 	return (casio_int_htobe32(x));
@@ -197,7 +197,7 @@ casio_uint32_t casio_htobe32(casio_uint32_t x)
  *	@return		the converted integer.
  */
 
-casio_uint32_t casio_htole32(casio_uint32_t x)
+casio_uint32_t CASIO_EXPORT casio_htole32(casio_uint32_t x)
 {
 #ifdef casio_int_htole32
 	return (casio_int_htole32(x));

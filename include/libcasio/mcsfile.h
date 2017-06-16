@@ -41,34 +41,68 @@ CASIO_BEGIN_NAMESPACE
 /* ************************************************************************* */
 /* Here are all the file types that are managed by libcasio. */
 
-typedef long unsigned int    casio_mcsfile_type_t;
-typedef casio_mcsfile_type_t casio_mcstype_t;
+typedef unsigned long casio_mcsfile_type_t;
+typedef unsigned long casio_mcstype_t;
 
-# define casio_mcstype_unknown      0x00000000
-# define casio_mcstype_program      0x00000001
-# define casio_mcstype_list         0x00000002
-# define casio_mcstype_mat          0x00000004
-# define casio_mcstype_pict         0x00000008
-# define casio_mcstype_capt         0x00000010
-# define casio_mcstype_ssheet       0x00000020
-# define casio_mcstype_string       0x00000040
-# define casio_mcstype_setup        0x00000080
-# define casio_mcstype_var          0x00000100
-# define casio_mcstype_vct          0x00000200
-# define casio_mcstype_end          0x00000400
+# define casio_mcstype_unknown     0x00000000,
 
-/* And here are aliases, to ease the access to those. */
+/* A program. */
 
-# define casio_mcstype_matrix       casio_mcstype_mat
-# define casio_mcstype_pic          casio_mcstype_pict
-# define casio_mcstype_picture      casio_mcstype_pict
-# define casio_mcstype_capture      casio_mcstype_capt
-# define casio_mcstype_spreadsheet  casio_mcstype_ssheet
-# define casio_mcstype_vector       casio_mcstype_vct
-# define casio_mcstype_alpha        casio_mcstype_var
-# define casio_mcstype_alphamem     casio_mcstype_var
-# define casio_mcstype_variable     casio_mcstype_var
-# define casio_mcstype_variables    casio_mcstype_var
+# define casio_mcstype_prog        0x00000001
+# define casio_mcstype_program     0x00000001
+
+/* A list. */
+
+# define casio_mcstype_lst         0x00000002
+# define casio_mcstype_list        0x00000002
+
+/* A matrix. */
+
+# define casio_mcstype_mat         0x00000004
+# define casio_mcstype_matrix      0x00000004
+
+/* A picture (double-side capture). */
+
+# define casio_mcstype_pic         0x00000008
+# define casio_mcstype_pict        0x00000008
+# define casio_mcstype_picture     0x00000008
+
+/* A capture. */
+
+# define casio_mcstype_capt        0x00000010
+# define casio_mcstype_capture     0x00000010
+
+/* A spreadsheet. */
+
+# define casio_mcstype_ssheet      0x00000020
+# define casio_mcstype_spreadsheet 0x00000020
+
+/* A string. */
+
+# define casio_mcstype_str         0x00000040
+# define casio_mcstype_string      0x00000040
+
+/* A settings file. */
+
+# define casio_mcstype_setup       0x00000080
+# define casio_mcstype_settings    0x00000080
+
+/* Variable(s). */
+
+# define casio_mcstype_var         0x00000100
+# define casio_mcstype_alpha       0x00000100
+# define casio_mcstype_variable    0x00000100
+# define casio_mcstype_alphamem    0x00000100
+# define casio_mcstype_variables   0x00000100
+
+/* A vector. */
+
+# define casio_mcstype_vct         0x00000200
+# define casio_mcstype_vector      0x00000200
+
+/* An end packet (link-specific). */
+
+# define casio_mcstype_end         0x00000400
 
 /* Macros to check if the type uses the ID, and to interact with it */
 # define casio_mcshead_uses_id(CASIO__H) (((CASIO__H)->casio_mcshead_type & (\
@@ -79,25 +113,37 @@ typedef casio_mcsfile_type_t casio_mcstype_t;
 # define casio_get_id_major(CASIO__I) ((CASIO__I) >> 6)
 # define casio_get_id_minor(CASIO__I) ((CASIO__I) & 0x3F)
 /* ************************************************************************* */
-/*  Main memory platforms                                                    */
+/*  Main memory flags and platforms                                          */
 /* ************************************************************************* */
-/* There are several situations where we can find main memory files.
+/* Main memory files in libcasio have various options.
+ * Here are the core flags: */
+
+# define casio_mcsflag_valid      0x00000001 /* the file is valid. */
+# define casio_mcsflag_alloc      0x00000002 /* file was/shall be allocated. */
+
+# define casio_mcsflag_unfinished 0x00000008 /* still parts to read. */
+# define casio_mcsflag_multiple   0x00000010 /* is a set of files */
+# define casio_mcsflag_request    0x00000020 /* is a request (link) */
+
+/* Then comes the platform for which the MCS file is made.
  * The most obvious one is the entries in an MCS archive (G1M, G1R), but
  * others are directly linked to the protocol and header type with which
  * the file is described -- see `libcasio/format/cas.h`. */
 
 typedef unsigned int casio_mcsinfo_t;
 
-# define casio_mcsinfo_none       0x0000 /* no specific platform */
-# define casio_mcsinfo_mcs        0x0001 /* standard MCS archive */
-# define casio_mcsinfo_cas40      0x0002 /* legacy CAS40  header */
-# define casio_mcsinfo_cas50      0x0004 /* legacy CAS50  header */
-# define casio_mcsinfo_cas100     0x0008 /* legacy CAS100 header */
+# define casio_mcsfor_mask      0x7F000000
+
+# define casio_mcsfor_none      0x00000000 /* no specific platform */
+# define casio_mcsfor_mcs       0x01000000 /* standard MCS archive */
+# define casio_mcsfor_cas40     0x02000000 /* legacy CAS40  header */
+# define casio_mcsfor_cas50     0x04000000 /* legacy CAS50  header */
+# define casio_mcsfor_cas100    0x08000000 /* legacy CAS100 header */
 
 /* Aliases */
-# define casio_mcsinfo_cas        casio_mcsinfo_cas40
-# define casio_mcsinfo_caspro     casio_mcsinfo_cas50
-# define casio_mcsinfo_graph100   casio_mcsinfo_cas100
+# define casio_mcsfor_cas       casio_mcsfor_cas40
+# define casio_mcsfor_caspro    casio_mcsfor_cas50
+# define casio_mcsfor_graph100  casio_mcsfor_cas100
 /* ************************************************************************* */
 /*  MCS cell                                                                 */
 /* ************************************************************************* */
@@ -176,14 +222,14 @@ typedef struct casio_mcscell_s {
 /* Here are the function types you can encounter/use.
  * TODO: why are they here? */
 
-# define casio_functype_yequ      0x00 /* Y= */
-# define casio_functype_requ      0x01 /* r= */
-# define casio_functype_param     0x02 /* Param */
-# define casio_functype_xequc     0x03 /* X=c */
-# define casio_functype_ygt       0x04 /* Y> */
-# define casio_functype_ylt       0x05 /* Y< */
-# define casio_functype_yge       0x06 /* Y>= */
-# define casio_functype_yle       0x07 /* Y<= */
+# define casio_functype_yequ      0 /* Y= */
+# define casio_functype_requ      1 /* r= */
+# define casio_functype_param     2 /* Param */
+# define casio_functype_xequc     3 /* X=c */
+# define casio_functype_ygt       4 /* Y> */
+# define casio_functype_ylt       5 /* Y< */
+# define casio_functype_yge       6 /* Y>= */
+# define casio_functype_yle       7 /* Y<= */
 
 /* Main structure */
 typedef struct casio_setup_s {
@@ -208,21 +254,13 @@ typedef struct casio_setup_s {
  * Remember that heads are not only used to characterize files, but can also
  * contain various information, depending on the protocol it is used with.
  *
- * First, here are the flags: */
-
-# define casio_mcsflag_unfinished 0x8000 /* is there still parts to read? */
-# define casio_mcsflag_multiple   0x4000 /* is a group */
-# define casio_mcsflag_request    0x2000 /* is a request */
-
-# define casio_mcsflag_complex    0x0001 /* is a complex variable */
-
-/* And here is the main structure. Don't be afraid, it doesn't bite. */
+ * Here is the main structure. Don't be afraid, it doesn't bite. */
 
 typedef struct casio_mcshead_s {
+	unsigned long    casio_mcshead_flags;
+
 	/* file main information */
 	casio_mcstype_t  casio_mcshead_type;
-	casio_mcsinfo_t  casio_mcshead_info;
-	unsigned int     casio_mcshead_flags;
 	unsigned int     casio_mcshead_id;
 
 	/* content size */
@@ -278,12 +316,24 @@ typedef struct casio_mcsfile_s {
 /*  Utilities                                                                */
 /* ************************************************************************* */
 CASIO_BEGIN_DECLS
-/* Manage a main memory file from a head, and free a main memory file. */
+/* Make a main memory file, prepare it, and free it. */
+
+/* Manage a main memory file from a head, duplicate an existing main memory
+ * file, and free a main memory file. */
 
 CASIO_EXTERN int  CASIO_EXPORT casio_make_mcsfile
 	OF((casio_mcsfile_t **casio__handle, const casio_mcshead_t *casio__head));
+CASIO_EXTERN int  CASIO_EXPORT casio_prepare_mcsfile
+	OF((casio_mcsfile_t  *casio__handle, const casio_mcshead_t *casio__head));
 CASIO_EXTERN void CASIO_EXPORT casio_free_mcsfile
 	OF((casio_mcsfile_t  *casio__handle));
+
+/* Copy or duplicate a main memory file. */
+
+CASIO_EXTERN int  CASIO_EXPORT casio_duplicate_mcsfile
+	OF((casio_mcsfile_t **casio__handle, casio_mcsfile_t *casio__old));
+CASIO_EXTERN int  CASIO_EXPORT casio_copy_mcsfile
+	OF((casio_mcsfile_t  *casio__handle, casio_mcsfile_t *casio__old));
 
 /* Decode and encode an MCS file from an MCS archive. */
 
@@ -327,8 +377,10 @@ CASIO_EXTERN int CASIO_EXPORT casio_correct_casfile_head
 
 /* Compare MCS files (for ordering). */
 
+CASIO_EXTERN int CASIO_EXPORT casio_match_mcsfiles
+	OF((casio_mcshead_t *casio__first, casio_mcshead_t *casio__second));
 CASIO_EXTERN int CASIO_EXPORT casio_compare_mcsfiles
-	OF((const casio_mcsfile_t *first, const casio_mcsfile_t *second));
+	OF((casio_mcshead_t *casio__first, casio_mcshead_t *casio__second));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

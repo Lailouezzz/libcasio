@@ -32,7 +32,7 @@
  *	@return				the error code (0 if ok).
  */
 
-static int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
+CASIO_LOCAL int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
 	unsigned int *x, unsigned int *y)
 {
 	unsigned char csum = 0, checksum;
@@ -77,7 +77,7 @@ static int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_caspart_matrix(casio_mcsfile_t *handle,
+int CASIO_EXPORT casio_decode_caspart_matrix(casio_mcsfile_t *handle,
 	casio_stream_t *buffer)
 {
 	int err; casio_mcscell_t cell;
@@ -109,7 +109,8 @@ int casio_decode_caspart_matrix(casio_mcsfile_t *handle,
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_caspart_var(casio_mcsfile_t *handle, casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_caspart_var(casio_mcsfile_t *handle,
+	casio_stream_t *buffer)
 {
 	int err; unsigned int x, y;
 

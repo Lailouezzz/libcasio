@@ -47,7 +47,7 @@
  *	@return			the error.
  */
 
-static int decode_cas(casio_file_t **h, casio_stream_t *buffer, int grc)
+CASIO_LOCAL int decode_cas(casio_file_t **h, casio_stream_t *buffer, int grc)
 {
 	int err; casio_file_t *handle;
 
@@ -58,7 +58,7 @@ static int decode_cas(casio_file_t **h, casio_stream_t *buffer, int grc)
 
 	/* read each */
 	for (handle->casio_file_count = 0;;) {
-		int j; casio_mcsfile_t *file; casio_mcshead_t head;
+		int j; casio_mcsfile_t *mcsfile; casio_mcshead_t head;
 
 		/* read the head */
 		msg((ll_info, "Reading the next head."));
@@ -67,20 +67,24 @@ static int decode_cas(casio_file_t **h, casio_stream_t *buffer, int grc)
 
 		/* prepare the file */
 		msg((ll_info, "Preparing the file."));
-		err = casio_mcs_insert(handle, &file, &head);
+		err = casio_make_mcsfile(&mcsfile, &head);
 		if (err) goto fail;
 
 		/* read each part */
-		for (j = 1; file->casio_mcsfile_head.casio_mcshead_flags
+		for (j = 1; mcsfile->casio_mcsfile_head.casio_mcshead_flags
 		   & casio_mcsflag_unfinished; j++) {
 			/* initialize */
 			msg((ll_info, "Reading part #%d", j));
 			READCOLON()
 
 			/* read the part */
-			err = casio_decode_casfile_part(file, buffer);
+			err = casio_decode_casfile_part(mcsfile, buffer);
 			if (err) goto fail;
 		}
+
+		/* put the file into the MCS */
+		err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
+		if (err) goto fail;
 
 		/* read first colon of the next part */
 		READCOLON()
@@ -110,7 +114,8 @@ fail:
  *	@return			the error.
  */
 
-int casio_decode_cas(casio_file_t **handle, casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_cas(casio_file_t **handle,
+	casio_stream_t *buffer)
 {
 	return (decode_cas(handle, buffer, 0));
 }
@@ -124,7 +129,8 @@ int casio_decode_cas(casio_file_t **handle, casio_stream_t *buffer)
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_grc(casio_file_t **handle, casio_stream_t *buffer)
+int CASIO_EXPORT casio_decode_grc(casio_file_t **handle,
+	casio_stream_t *buffer)
 {
 	return (decode_cas(handle, buffer, 1));
 }

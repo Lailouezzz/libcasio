@@ -46,16 +46,15 @@
  */
 
 #define deobf(S, N) obf(S, N)
-static void obf(unsigned char *s, size_t n)
+CASIO_LOCAL void obf(unsigned char *s, size_t n)
 {
 	while (n--)
 		*s++ ^= ~24;
 }
-
 /* ************************************************************************* */
 /*  File header                                                              */
 /* ************************************************************************* */
-static unsigned char header =
+static unsigned char header[] =
 	"\xD5\xD7\x1F" "f" "FX-INTERFACE - YELLOW COMPUTING" /* 35 */
 
 	"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" /* 20 */

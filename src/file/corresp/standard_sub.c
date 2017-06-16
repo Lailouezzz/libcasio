@@ -42,7 +42,7 @@ struct type_info {
 /*  Correspondances                                                          */
 /* ************************************************************************* */
 /* Main types */
-static struct type_info types[] = {
+CASIO_LOCAL struct type_info types[] = {
 	/* fx-CP types */
 	{p_cp, t_addin, casio_filefor_cp, casio_filetype_addin},
 
@@ -67,7 +67,7 @@ static struct type_info types[] = {
  *	@return				If there was an error.
  */
 
-int casio_maketype_sub(casio_standard_subheader_t *sub,
+int CASIO_EXPORT casio_maketype_sub(casio_standard_subheader_t *sub,
 	unsigned int *flags, casio_filetype_t *type, casio_filefor_t *platform)
 {
 	struct type_info *c;

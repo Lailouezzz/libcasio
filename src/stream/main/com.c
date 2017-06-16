@@ -26,7 +26,7 @@ struct corresp {
 };
 
 /* List of streams. */
-static struct corresp opencoms[NUM + 1] = {
+CASIO_LOCAL struct corresp opencoms[NUM + 1] = {
 #if   !defined(LIBCASIO_DISABLED_STREAMS)
 	{1, casio_opencom_streams},
 #endif
@@ -44,7 +44,7 @@ static struct corresp opencoms[NUM + 1] = {
  *	@return				the error code (0 if ok).
  */
 
-int casio_add_default_com_stream(casio_opencomstream_t *function)
+int CASIO_EXPORT casio_add_default_com_stream(casio_opencomstream_t *function)
 {
 	struct corresp *c; int num;
 
@@ -65,7 +65,8 @@ int casio_add_default_com_stream(casio_opencomstream_t *function)
  *	@return				the error code (0 if ok).
  */
 
-int casio_open_com_stream(casio_stream_t **stream, const char *path)
+int CASIO_EXPORT casio_open_com_stream(casio_stream_t **stream,
+	const char *path)
 {
 	int err; struct corresp *c = opencoms;
 

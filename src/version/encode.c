@@ -27,7 +27,8 @@
  *	@return			the error code (if any).
  */
 
-int casio_encode_version(char *raw, const casio_version_t *version)
+int CASIO_EXPORT casio_encode_version(char *raw,
+	const casio_version_t *version)
 {
 	/* make buffer */
 	char buf[20]; sprintf(buf, "%02u.%02u.%c%c%c%c",

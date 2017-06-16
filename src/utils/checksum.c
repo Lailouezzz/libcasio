@@ -28,7 +28,7 @@
  *	@return			the new checksum.
  */
 
-int casio_checksum_cas(void *mem, size_t size, int cs)
+int CASIO_EXPORT casio_checksum_cas(void *mem, size_t size, int cs)
 {
 	unsigned char *m = mem;
 
@@ -47,7 +47,7 @@ int casio_checksum_cas(void *mem, size_t size, int cs)
  *	@return			the new checksum.
  */
 
-int casio_checksum_sub(void *mem, size_t size, int cs)
+int CASIO_EXPORT casio_checksum_sub(void *mem, size_t size, int cs)
 {
 	unsigned char *m = mem;
 
@@ -66,7 +66,7 @@ int casio_checksum_sub(void *mem, size_t size, int cs)
  *	@return			the new checksum.
  */
 
-casio_uint32_t casio_checksum32(void *mem, size_t size,
+casio_uint32_t CASIO_EXPORT casio_checksum32(void *mem, size_t size,
 	casio_uint32_t cs)
 {
 	casio_uint8_t *m = mem;

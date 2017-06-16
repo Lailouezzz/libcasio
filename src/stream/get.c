@@ -28,7 +28,7 @@
  *	@return				the type.
  */
 
-casio_streamtype_t casio_get_type(casio_stream_t *stream)
+casio_streamtype_t CASIO_EXPORT casio_get_type(casio_stream_t *stream)
 {
 	if (!stream) return (0);
 	return (stream->casio_stream_type);
@@ -42,7 +42,7 @@ casio_streamtype_t casio_get_type(casio_stream_t *stream)
  *	@return				the type.
  */
 
-casio_openmode_t casio_get_openmode(casio_stream_t *stream)
+casio_openmode_t CASIO_EXPORT casio_get_openmode(casio_stream_t *stream)
 {
 	if (!stream) return (0);
 	return (stream->casio_stream_mode);
@@ -56,7 +56,7 @@ casio_openmode_t casio_get_openmode(casio_stream_t *stream)
  *	@return				the type.
  */
 
-int casio_isreadable(casio_stream_t *stream)
+int CASIO_EXPORT casio_isreadable(casio_stream_t *stream)
 {
 	return (casio_get_openmode(stream) & CASIO_OPENMODE_READ);
 }
@@ -69,7 +69,7 @@ int casio_isreadable(casio_stream_t *stream)
  *	@return				the type.
  */
 
-int casio_iswritable(casio_stream_t *stream)
+int CASIO_EXPORT casio_iswritable(casio_stream_t *stream)
 {
 	return (casio_get_openmode(stream) & CASIO_OPENMODE_WRITE);
 }
@@ -82,7 +82,7 @@ int casio_iswritable(casio_stream_t *stream)
  *	@return				the cookie.
  */
 
-void *casio_get_cookie(casio_stream_t *stream)
+void* CASIO_EXPORT casio_get_cookie(casio_stream_t *stream)
 {
 	if (!stream) return (NULL);
 	return (stream->casio_stream_cookie);
@@ -96,7 +96,7 @@ void *casio_get_cookie(casio_stream_t *stream)
  *	@return				the last error.
  */
 
-int casio_get_lasterr(casio_stream_t *stream)
+int CASIO_EXPORT casio_get_lasterr(casio_stream_t *stream)
 {
 	if (!stream) return (0);
 	return (stream->casio_stream_lasterr);
@@ -111,7 +111,8 @@ int casio_get_lasterr(casio_stream_t *stream)
  *	@return				the error code (0 if ok).
  */
 
-int casio_get_attrs(casio_stream_t *stream, casio_streamattrs_t *attrs)
+int CASIO_EXPORT casio_get_attrs(casio_stream_t *stream,
+	casio_streamattrs_t *attrs)
 {
 	if (!getcb(stream, setattrs)) return (casio_error_op);
 	memcpy(attrs, &stream->casio_stream_attrs,
@@ -128,7 +129,8 @@ int casio_get_attrs(casio_stream_t *stream, casio_streamattrs_t *attrs)
  *	@return				the error code (0 if ok).
  */
 
-int casio_get_timeouts(casio_stream_t *stream, casio_timeouts_t *timeouts)
+int CASIO_EXPORT casio_get_timeouts(casio_stream_t *stream,
+	casio_timeouts_t *timeouts)
 {
 	if (!getcb(stream, settm)) return (casio_error_op);
 	memcpy(timeouts, &stream->casio_stream_timeouts,

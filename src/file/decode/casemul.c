@@ -34,7 +34,7 @@
 /* This utility comes from Microsoft Windows.
  * It makes a 32-bit integer out of two 16-bit integers. */
 
-static casio_uint32_t makelong_le(casio_uint16_t one, casio_uint16_t two)
+CASIO_LOCAL casio_uint32_t makelong_le(casio_uint16_t one, casio_uint16_t two)
 {
 	union {
 		casio_uint16_t b8[4];
@@ -48,7 +48,7 @@ static casio_uint32_t makelong_le(casio_uint16_t one, casio_uint16_t two)
 	return (tmp.b32);
 }
 
-static casio_uint32_t makelong_be(casio_uint16_t one, casio_uint16_t two)
+CASIO_LOCAL casio_uint32_t makelong_be(casio_uint16_t one, casio_uint16_t two)
 {
 	union {
 		casio_uint16_t b8[4];
@@ -79,7 +79,7 @@ static casio_uint32_t makelong_be(casio_uint16_t one, casio_uint16_t two)
  *	@return				the error (if any).
  */
 
-static int read_internal(casio_stream_t *buffer, casio_uint32_t signature,
+CASIO_LOCAL int read_internal(casio_stream_t *buffer, casio_uint32_t signature,
 	casio_uint32_t version)
 {
 	casio_casemul_intheader_t hd;
@@ -122,8 +122,8 @@ static int read_internal(casio_stream_t *buffer, casio_uint32_t signature,
  *	@return				the error code.
  */
 
-static int read_top(casio_stream_t *buffer, char *name, casio_uint32_t *length,
-	int big_endian)
+CASIO_LOCAL int read_top(casio_stream_t *buffer, char *name,
+	casio_uint32_t *length, int big_endian)
 {
 	casio_uint32_t name_length;
 	unsigned char rawname[8];
@@ -161,7 +161,7 @@ static int read_top(casio_stream_t *buffer, char *name, casio_uint32_t *length,
  *	@return				the error (if occured).
  */
 
-static int read_picture(casio_mcsfile_t **pfile, casio_stream_t *buffer,
+CASIO_LOCAL int read_picture(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	int big_endian)
 {
 	int err; char name[13]; casio_uint32_t record_length;
@@ -222,7 +222,7 @@ fail:
  *	@return				the error that occured.
  */
 
-static int read_matrix(casio_mcsfile_t **pfile, casio_stream_t *buffer,
+CASIO_LOCAL int read_matrix(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	int big_endian)
 {
 	int err; char name[13];
@@ -301,7 +301,7 @@ fail:
  *	@return				the error that occured.
  */
 
-static int read_list(casio_mcsfile_t **pfile, casio_stream_t *buffer,
+CASIO_LOCAL int read_list(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	int big_endian)
 {
 	int err, len, x; char name[13]; casio_uint32_t record_length;
@@ -378,13 +378,14 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-int casio_decode_casemul(casio_file_t **h, casio_stream_t *buffer,
+int CASIO_EXPORT casio_decode_casemul(casio_file_t **h, casio_stream_t *buffer,
 	int big_endian)
 {
 	int err, i;
 	casio_casemul_header_t glb;
 	casio_casemul_source_header_t src;
 	casio_file_t *handle;
+	casio_mcsfile_t *mcsfile;
 
 	/* read the overall (global) header */
 	DREAD(glb)
@@ -434,33 +435,33 @@ int casio_decode_casemul(casio_file_t **h, casio_stream_t *buffer,
 	for (i = 0; i < src.casio_casemul_source_header_pictures; i++) {
 		msg((ll_info, "Reading picture #%d", i + 1));
 
-		err = read_picture(
-			&handle->casio_file_mcsfiles[handle->casio_file_count],
-			buffer, big_endian);
+		mcsfile = NULL;
+		err = read_picture(&mcsfile, buffer, big_endian);
 		if (err) goto fail;
-		handle->casio_file_count++;
+		err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
+		if (err) goto fail;
 	}
 
 	/* read each matrix */
 	for (i = 0; i < src.casio_casemul_source_header_matrixes; i++) {
 		msg((ll_info, "Reading matrix #%d", i + 1));
 
-		err = read_matrix(
-			&handle->casio_file_mcsfiles[handle->casio_file_count],
-			buffer, big_endian);
+		mcsfile = NULL;
+		err = read_matrix(&mcsfile, buffer, big_endian);
 		if (err) goto fail;
-		handle->casio_file_count++;
+		err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
+		if (err) goto fail;
 	}
 
 	/* read each list */
 	for (i = 0; i < src.casio_casemul_source_header_lists; i++) {
 		msg((ll_info, "Reading list #%d", i + 1));
 
-		err = read_list(
-			&handle->casio_file_mcsfiles[handle->casio_file_count],
-			buffer, big_endian);
+		mcsfile = NULL;
+		err = read_list(&mcsfile, buffer, big_endian);
 		if (err) goto fail;
-		handle->casio_file_count++;
+		err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
+		if (err) goto fail;
 	}
 
 	/* TODO: skip compiled part? */

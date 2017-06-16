@@ -45,7 +45,7 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-static int casio_libusb_settm(void *vcookie, const casio_timeouts_t *timeouts)
+CASIO_LOCAL int casio_libusb_settm(void *vcookie, const casio_timeouts_t *timeouts)
 {
 	libusb_cookie_t *cookie = (void*)vcookie;
 
@@ -65,7 +65,7 @@ static int casio_libusb_settm(void *vcookie, const casio_timeouts_t *timeouts)
  *	@return				the error code (0 if ok).
  */
 
-static int casio_libusb_close(void *vcookie)
+CASIO_LOCAL int casio_libusb_close(void *vcookie)
 {
 	libusb_cookie_t *cookie = (libusb_cookie_t*)vcookie;
 
@@ -88,7 +88,7 @@ static int casio_libusb_close(void *vcookie)
  */
 
 # define ENDPOINT_IN (LIBUSB_ENDPOINT_IN | LIBUSB_TRANSFER_TYPE_BULK)
-static int casio_libusb_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_libusb_read(void *vcookie, unsigned char *dest, size_t size)
 {
 	int libusberr; libusb_cookie_t *cookie = (libusb_cookie_t*)vcookie;
 	size_t tocopy;
@@ -157,7 +157,7 @@ static int casio_libusb_read(void *vcookie, unsigned char *dest, size_t size)
  */
 
 # define ENDPOINT_OUT (LIBUSB_ENDPOINT_OUT | LIBUSB_TRANSFER_TYPE_ISOCHRONOUS)
-static int casio_libusb_write(void *vcookie,
+CASIO_LOCAL int casio_libusb_write(void *vcookie,
 	const unsigned char *data, size_t size)
 {
 	libusb_cookie_t *cookie = (libusb_cookie_t*)vcookie;
@@ -189,7 +189,7 @@ static int casio_libusb_write(void *vcookie,
 # include <string.h>
 
 /* libusb callbacks. */
-static const casio_streamfuncs_t casio_libusb_callbacks = {
+CASIO_LOCAL const casio_streamfuncs_t casio_libusb_callbacks = {
 	casio_libusb_close,
 	NULL, casio_libusb_settm,
 	casio_libusb_read,
@@ -206,7 +206,7 @@ static const casio_streamfuncs_t casio_libusb_callbacks = {
  *	@return				the error code (0 if you're a knoop).
  */
 
-int casio_openusb_libusb(casio_stream_t **stream)
+int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 {
 	int err = 0, uerr, id, device_count;
 	libusb_context *context = NULL;

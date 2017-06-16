@@ -34,7 +34,7 @@ struct thecookie {
  *	@return				the return thingy.
  */
 
-static int get_rom(void *vcookie, casio_link_t *handle)
+CASIO_LOCAL int get_rom(void *vcookie, casio_link_t *handle)
 {
 	struct thecookie *cookie = (void*)vcookie;
 
@@ -60,7 +60,7 @@ static int get_rom(void *vcookie, casio_link_t *handle)
  *	@return				the error code (0 if ok).
  */
 
-int casio_backup_rom(casio_link_t *handle, casio_stream_t *buffer,
+int CASIO_EXPORT casio_backup_rom(casio_link_t *handle, casio_stream_t *buffer,
 	casio_link_progress_t *disp, void *dcookie)
 {
 	int err; struct thecookie cookie;
@@ -114,7 +114,7 @@ int casio_backup_rom(casio_link_t *handle, casio_stream_t *buffer,
  *	@return				the error code (0 if ok).
  */
 
-int casio_backup_rom_file(casio_link_t *handle, FILE *file,
+int CASIO_EXPORT casio_backup_rom_file(casio_link_t *handle, FILE *file,
 	casio_link_progress_t *disp, void *dcookie)
 {
 	int err, buf_err;

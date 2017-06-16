@@ -50,7 +50,7 @@
  *	@return				if worked (0 if none)
  */
 
-static int casio_seven_send_buf(casio_link_t *handle,
+CASIO_LOCAL int casio_seven_send_buf(casio_link_t *handle,
 	const unsigned char *buf, size_t bufsize, int resp)
 {
 	int err; int wasresend = 0, resp_err = 0, retries = 3;
@@ -124,7 +124,7 @@ static int casio_seven_send_buf(casio_link_t *handle,
  *	@return				if worked (0 if none)
  */
 
-int casio_seven_send_basic(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_basic(casio_link_t *handle,
 	casio_seven_type_t type, unsigned int subtype, int resp)
 {
 	/* change buffer and prepare packet */
@@ -157,7 +157,7 @@ int casio_seven_send_basic(casio_link_t *handle,
  *	@return				if it worked
  */
 
-int casio_seven_send_ext(casio_link_t *handle,
+int CASIO_EXPORT casio_seven_send_ext(casio_link_t *handle,
 	casio_seven_type_t type, unsigned int subtype,
 	const void *data, unsigned int size, int resp)
 {
@@ -199,7 +199,7 @@ int casio_seven_send_ext(casio_link_t *handle,
  *	@return				if it worked
  */
 
-int casio_seven_send_again(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_send_again(casio_link_t *handle)
 {
 	/* log packet */
 	msg((ll_info, "sending again the following packet :"));
@@ -219,7 +219,7 @@ int casio_seven_send_again(casio_link_t *handle)
  *	@return				the error code (0 if ok).
  */
 
-int casio_seven_send_err_resend(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_send_err_resend(casio_link_t *handle)
 {
 	static const unsigned char resend_buf[] =
 		{casio_seven_type_nak, '0', '1', '0', '6', 'F', 0};
@@ -238,7 +238,7 @@ int casio_seven_send_err_resend(casio_link_t *handle)
  *	@return				the error code (0 if ok).
  */
 
-int casio_seven_send_timeout_check(casio_link_t *handle)
+int CASIO_EXPORT casio_seven_send_timeout_check(casio_link_t *handle)
 {
 	static const unsigned char check_buf[] =
 		{casio_seven_type_chk, '0', '1', '0', '6', 'F', 0};

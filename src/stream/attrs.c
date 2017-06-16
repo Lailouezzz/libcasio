@@ -30,7 +30,7 @@
  *	@return			the error code (0 if ok).
  */
 
-int casio_make_attrs(casio_streamattrs_t *attrs, const char *raw)
+int CASIO_EXPORT casio_make_attrs(casio_streamattrs_t *attrs, const char *raw)
 {
 	unsigned int speed; char par; int stop;
 
@@ -88,7 +88,7 @@ int casio_make_attrs(casio_streamattrs_t *attrs, const char *raw)
  *	@return			the error.
  */
 
-int casio_init_attrs(casio_stream_t *stream)
+int CASIO_EXPORT casio_init_attrs(casio_stream_t *stream)
 {
 	int err; casio_stream_setattrs_t *s;
 	casio_streamattrs_t attrs;
@@ -114,7 +114,8 @@ int casio_init_attrs(casio_stream_t *stream)
  *	@return				the error code (0 if ok).
  */
 
-int casio_set_attrs(casio_stream_t *stream, const casio_streamattrs_t *attrs)
+int CASIO_EXPORT casio_set_attrs(casio_stream_t *stream,
+	const casio_streamattrs_t *attrs)
 {
 	int err; casio_stream_setattrs_t *s;
 
