@@ -38,4 +38,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_list
 	OF((sevenmcs_t *casio__cookie, casio_mcslist_t  *casio__mcslist,
 		void *casio__mcslist_cookie));
 
+/* Other globals. */
+
+CASIO_EXTERN const casio_mcshead_t CASIO_EXPORT
+	casio_sevenmcs_list_setup_entry;
+CASIO_EXTERN const casio_mcshead_t CASIO_EXPORT
+	casio_sevenmcs_list_alpha_entry;
+
 #endif /* LINK_SEVEN_MCS_H */

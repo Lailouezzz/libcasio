@@ -274,7 +274,7 @@ CASIO_LOCAL const struct group_corresp mcs_groups[] = {
 
 CASIO_LOCAL int get_number(const char *s, int *num, int isnum)
 {
-	if (!strcmp(s, "Ans"))
+	if (!strcmp(s, "\xC0") || !strcmp(s, "Ans"))
 		*num = casio_ans;
 	else if (!strcmp(s, "\xCE"))
 		*num = casio_theta;

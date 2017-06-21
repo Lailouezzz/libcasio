@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * libcasio/mutex.h -- libcasio mutexes.
+ * setup/init.c -- initialize the setup.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,21 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_MUTEX_H
-# define LIBCASIO_MUTEX_H 1
-# include <libcasio/cdefs.h>
+#include "setup.h"
 
-typedef int casio_mutex_t;
+/**
+ *	casio_init_setup:
+ *	Initialize a setup.
+ *
+ *	@arg	setup		the setup object.
+ */
 
-CASIO_EXTERN void CASIO_EXPORT casio_init_lock
-	OF((casio_mutex_t *casio__mutex));
-
-CASIO_EXTERN int  CASIO_EXPORT casio_lock
-	OF((casio_mutex_t *casio__mutex));
-CASIO_EXTERN int  CASIO_EXPORT casio_trylock
-	OF((casio_mutex_t *casio__mutex));
-
-CASIO_EXTERN void CASIO_EXPORT casio_unlock
-	OF((casio_mutex_t *casio__mutex));
-
-#endif /* LIBCASIO_MUTEX_H */
+void CASIO_EXPORT casio_init_setup(casio_setup_t *setup)
+{
+	memset(setup, 0, sizeof(casio_setup_t));
+}

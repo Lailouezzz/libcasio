@@ -112,6 +112,14 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmdsys_setlink
 
 /* Send one file's information */
 # define casio_seven_cmdmcs_fileinfo    0x2E
+
+/* Send a setup entry */
+# define casio_seven_cmdmcs_putsetup    0x32
+
+/* Request all setup entries. */
+# define casio_seven_cmdmcs_reqallsetup 0x33
+# define casio_seven_send_cmdmcs_reqallsetup(CASIO__HANDLE) \
+	casio_seven_send_cmd(CASIO__HANDLE, 0x33)
 /* ************************************************************************* */
 /*  Storage commands                                                         */
 /* ************************************************************************* */

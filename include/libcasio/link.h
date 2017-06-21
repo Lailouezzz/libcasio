@@ -106,7 +106,6 @@ typedef void casio_link_list_t OF((void *casio__cookie,
 # define CASIO_LINKFLAG_TERM   0x00000004 /* terminate */
 # define CASIO_LINKFLAG_NODISC 0x00000008 /* if we are checking,
                                            * no environment discovery */
-
 CASIO_BEGIN_DECLS
 
 /* Cross-platform initialization. */
@@ -123,14 +122,24 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_link
 		unsigned long casio__flags, casio_stream_t *casio__stream,
 		const casio_streamattrs_t *casio__attributes));
 
-/* Get things. */
+/* De-initialize. */
+
+CASIO_EXTERN void CASIO_EXPORT casio_close_link
+	OF((casio_link_t *casio__h));
+
+/* Lock and unlock the associated mutex. */
+
+CASIO_EXTERN int  CASIO_EXPORT casio_lock_link
+	OF((casio_link_t *casio__h));
+CASIO_EXTERN int  CASIO_EXPORT casio_trylock_link
+	OF((casio_link_t *casio__h));
+CASIO_EXTERN void CASIO_EXPORT casio_unlock_link
+	OF((casio_link_t *casio__h));
+
+/* Getters. */
 
 CASIO_EXTERN const casio_link_info_t* CASIO_EXPORT casio_get_link_info
 	OF((casio_link_t *casio__handle));
-
-/* De-initialize. */
-CASIO_EXTERN void CASIO_EXPORT casio_close_link
-	OF((casio_link_t *casio__h));
 /* ************************************************************************* */
 /*  Run servers.                                                             */
 /* ************************************************************************* */

@@ -19,26 +19,26 @@
 #include "../internals.h"
 
 /**
- *	casio_init_mutex:
+ *	casio_init_lock:
  *	Initialize a mutex.
  *
  *	@arg	mutex		the mutex to initialize.
  */
 
-void CASIO_EXPORT casio_init_mutex(casio_mutex_t *mutex)
+void CASIO_EXPORT casio_init_lock(casio_mutex_t *mutex)
 {
 	*mutex = 0;
 }
 
 /**
- *	casio_lock_mutex:
+ *	casio_lock:
  *	Lock a mutex.
  *
  *	@arg	mutex		the mutex to lock.
  *	@return				the error code (0 if ok).
  */
 
-int  CASIO_EXPORT casio_lock_mutex(casio_mutex_t *mutex)
+int  CASIO_EXPORT casio_lock(casio_mutex_t *mutex)
 {
 	int err;
 
@@ -53,14 +53,14 @@ unlocked:
 }
 
 /**
- *	casio_trylock_mutex:
+ *	casio_trylock:
  *	Try to lock a mutex.
  *
  *	@arg	mutex		the mutex to lock.
  *	@return				the error code (0 if ok).
  */
 
-int  CASIO_EXPORT casio_trylock_mutex(casio_mutex_t *mutex)
+int  CASIO_EXPORT casio_trylock(casio_mutex_t *mutex)
 {
 	if (*mutex) return (casio_error_lock);
 	*mutex = 1;
@@ -74,7 +74,7 @@ int  CASIO_EXPORT casio_trylock_mutex(casio_mutex_t *mutex)
  *	@arg	mutex		the mutex to unlock.
  */
 
-void CASIO_EXPORT casio_unlock_mutex(casio_mutex_t *mutex)
+void CASIO_EXPORT casio_unlock(casio_mutex_t *mutex)
 {
 	*mutex = 0;
 }

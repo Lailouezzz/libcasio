@@ -46,6 +46,9 @@ struct casio_link_s {
 	/* stream settings */
 	casio_stream_t      *casio_link_stream;
 
+	/* lock */
+	casio_mutex_t        casio_link_lock;
+
 	/* protocol 7.00-related core things */
 	casio_seven_env_t    casio_link_env; /* see `protocol/seven/devices.c` */
 	casio_seven_packet_t casio_link_response;

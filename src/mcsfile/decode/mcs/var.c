@@ -47,6 +47,9 @@ int CASIO_EXPORT casio_decode_mcs_var(casio_mcsfile_t **handle,
 	if (err) return (err);
 	h = *handle;
 
+	/* check the count */
+	ifmsg(head->casio_mcshead_count, (ll_info, "Is a single variable!"));
+
 	/* copy */
 	for (b = (void*)buf, i = 0; i < head->casio_mcshead_count; i++) {
 		casio_bcd_frommcs(&h->casio_mcsfile_vars[i].casio_mcscell_real, b++);

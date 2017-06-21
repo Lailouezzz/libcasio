@@ -21,6 +21,7 @@
 # include "cdefs.h"
 # include "number.h"
 # include "picture.h"
+# include "setup.h"
 
 # define casio_theta 27
 # define casio_r     28
@@ -162,82 +163,6 @@ typedef struct casio_mcscell_s {
 	casio_bcd_t  casio_mcscell_real;
 	casio_bcd_t  casio_mcscell_imgn;
 } casio_mcscell_t;
-/* ************************************************************************* */
-/*  Setup                                                                    */
-/* ************************************************************************* */
-/* The real setup from the calculator is either a group of 100/200 entries,
- * or a string-byte map (e.g. "Axes" -> 0x01). This structure reduces this
- * big bulky thing to a single usable structure.
- *
- * There are different type of flags and options.
- * First, the input flags. */
-
-# define casio_setupiflag_shift    0x0001 /* SHIFT is pressed */
-# define casio_setupiflag_alpha    0x0002 /* ALPHA is pressed */
-# define casio_setupiflag_insert   0x0004 /* Insert/overwrite mode */
-# define casio_setupiflag_math     0x0008 /* Math input mode, not linear */
-
-/* Then, the window flags. */
-
-# define casio_setupwflag_grid     0x0001 /* Grid */
-# define casio_setupwflag_axes     0x0002 /* Axes */
-# define casio_setupwflag_plot     0x0004 /* Draw Plot Type instead of Con */
-# define casio_setupwflag_coord    0x0010 /* Coord */
-# define casio_setupwflag_sigma    0x0020 /* Sigma Display */
-# define casio_setupwflag_stat     0x0040 /* Stat Window */
-# define casio_setupwflag_graph    0x0080 /* Graph Function */
-# define casio_setupwflag_simul    0x0100 /* Simul Graph */
-# define casio_setupwflag_slope    0x0200 /* Slope */
-
-/* Then, miscallaneous flags. */
-
-# define casio_setupmflag_deriv    0x0001 /* Derivative */
-# define casio_setupmflag_label    0x0002 /* label */
-# define casio_setupmflag_date360  0x0004 /* 360 Date Mode, instead of 365 */
-# define casio_setupmflag_complex  0x0008 /* Complex answer instead of real */
-# define casio_setupmflag_simp     0x0010 /* Auto Simplify (not Manual) */
-# define casio_setupmflag_dynamic  0x0020 /* Continue Dynamic Type
-                                           * (not Stop) */
-# define casio_setupmflag_payment  0x0040 /* Begin Payment (not End) */
-# define casio_setupmflag_autocalc 0x0080 /* Auto Calc */
-# define casio_setupmflag_cformula 0x0100 /* Show Cell Formula (not Value) */
-# define casio_setupmflag_dpfix    0x1000 /* Display Fix instead of Sci */
-# define casio_setupmflag_dpnorm   0x2000 /* Display Norm */
-# define casio_setupmflag_dpemode  0x4000 /* Toggle /E-mode */
-
-/* Here are some values that cannot be reduced to simple flags.
- * It works just as the `c_cc` member in termios, where `NCCS` is
- * `casio_setup_nvals`. */
-
-# define casio_setup_nvals         6
-
-# define casio_setupval_number     0 /* 0 being comp, 2,8,10,16 being
-                                      * the base */
-# define casio_setupval_function   1 /* -> 0x18 */
-# define casio_setupval_listfile   2 /* List File 1-6, 0 being none */
-# define casio_setupval_bg         3 /* Background picture ID, 0 being none */
-# define casio_setupval_dispid     4 /* Display ID, see dpfix/dpnorm/dpemode */
-# define casio_setupval_residlist  5 /* Resid List */
-
-/* Here are the function types you can encounter/use.
- * TODO: why are they here? */
-
-# define casio_functype_yequ      0 /* Y= */
-# define casio_functype_requ      1 /* r= */
-# define casio_functype_param     2 /* Param */
-# define casio_functype_xequc     3 /* X=c */
-# define casio_functype_ygt       4 /* Y> */
-# define casio_functype_ylt       5 /* Y< */
-# define casio_functype_yge       6 /* Y>= */
-# define casio_functype_yle       7 /* Y<= */
-
-/* Main structure */
-typedef struct casio_setup_s {
-	unsigned int  casio_setup_iflags;
-	unsigned int  casio_setup_wflags;
-	unsigned int  casio_setup_mflags;
-	unsigned char casio_setup_vals[casio_setup_nvals];
-} casio_setup_t;
 /* ************************************************************************* */
 /*  Main memory file head                                                    */
 /* ************************************************************************* */

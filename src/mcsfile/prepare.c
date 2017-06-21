@@ -121,9 +121,13 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 				head->casio_mcshead_width, head->casio_mcshead_height)
 		break;
 
+	/* prepare setup */
+	case casio_mcstype_setup:
+		casio_init_setup(&handle->casio_mcsfile_setup);
+		break;
+
 	/* allocate nothing */
 	case casio_mcstype_end:
-	case casio_mcstype_setup:
 	case casio_mcstype_string: /* TEMPORARY XXX */
 		break;
 

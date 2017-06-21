@@ -56,7 +56,7 @@ int CASIO_EXPORT casio_decode_mcs_setup(casio_mcsfile_t **h,
 	/* get window flags */
 	if (content[0x1C]) sp->casio_setup_wflags |= casio_setupwflag_grid;
 	if (content[0x1D]) sp->casio_setup_wflags |= casio_setupwflag_axes;
-	if (content[0x19]) sp->casio_setup_wflags |= casio_setupwflag_plot;
+	sp->casio_setup_vals[casio_setupval_draw] = content[0x19];
 
 	/* TODO: decode more options! */
 	/* no error! */

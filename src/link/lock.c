@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * libcasio/mutex.h -- libcasio mutexes.
- * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * link/lock.c -- manage the link lock.
+ * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,21 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_MUTEX_H
-# define LIBCASIO_MUTEX_H 1
-# include <libcasio/cdefs.h>
+#include "link.h"
 
-typedef int casio_mutex_t;
+/**
+ *	casio_lock_link:
+ *	Lock a link.
+ *
+ *	@arg	handle		the link handle to lock.
+ *	@return				the error code (0 if ok).
+ */
 
-CASIO_EXTERN void CASIO_EXPORT casio_init_lock
-	OF((casio_mutex_t *casio__mutex));
+int  CASIO_EXPORT casio_lock_link(casio_link_t *handle)
+{
+	return (casio_lock(&handle->casio_link_lock));
+}
 
-CASIO_EXTERN int  CASIO_EXPORT casio_lock
-	OF((casio_mutex_t *casio__mutex));
-CASIO_EXTERN int  CASIO_EXPORT casio_trylock
-	OF((casio_mutex_t *casio__mutex));
+/**
+ *	casio_trylock_link:
+ *	Try to lock a link.
+ *
+ *	@arg	handle		the link handle to lock.
+ *	@return				the error code (0 if ok).
+ */
 
-CASIO_EXTERN void CASIO_EXPORT casio_unlock
-	OF((casio_mutex_t *casio__mutex));
+int  CASIO_EXPORT casio_trylock_link(casio_link_t *handle)
+{
+	return (casio_trylock(&handle->casio_link_lock));
+}
 
-#endif /* LIBCASIO_MUTEX_H */
+/**
+ *	casio_unlock_link:
+ *	Unlock a link.
+ *
+ *	@arg	handle		the link handle.
+ */
+
+void CASIO_EXPORT casio_unlock_link(casio_link_t *handle)
+{
+	casio_unlock(&handle->casio_link_lock);
+}

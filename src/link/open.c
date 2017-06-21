@@ -52,6 +52,7 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 
 	/* initialize handle */
 	handle = *h; memset(handle, 0, sizeof(casio_link_t)); /* important! */
+	casio_init_lock(&handle->casio_link_lock);
 	handle->casio_link_stream = stream;
 
 	/* initialize flags */

@@ -28,7 +28,7 @@ typedef int mcs_decode_func_t OF((casio_mcsfile_t**, casio_stream_t*,
 
 /* Correspondance type */
 struct mcs_corresp {
-	unsigned int       type;
+	casio_mcstype_t    type;
 	mcs_decode_func_t *decode;
 };
 
@@ -131,39 +131,41 @@ int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
  */
 
 int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
-	const casio_mcshead_t *head, casio_stream_t *buffer)
+	const casio_mcshead_t *mcshead, casio_stream_t *buffer)
 {
 	int err = 0;
 	mcs_decode_func_t *decode;
-	casio_mcshead_t h;
+	casio_mcshead_t head;
 
-	/* check that the head is there */
-	if (!head) return (casio_error_op);
-	h = *head;
+	/* check that the head is there, correct it */
+	if (!mcshead) return (casio_error_op);
+	memcpy(&head, mcshead, sizeof(casio_mcshead_t));
+	casio_correct_mcshead(&head, 0);
 
 	/* look for the decoding function */
-	decode = lookup_mcsfile_decode(head->casio_mcshead_type);
+	decode = lookup_mcsfile_decode(head.casio_mcshead_type);
 	if (!decode) {
 		msg((ll_error,
-			"No dedicated decoding function for this type was found!"));
+			"No dedicated decoding function for type 0x%08lX was found!",
+			head.casio_mcshead_type));
 		goto notparsing;
 	}
 
 	/* decode */
-	if (!head->casio_mcshead_size)
-		err = (*decode)(handle, buffer, &h);
+	if (!head.casio_mcshead_size)
+		err = (*decode)(handle, buffer, &head);
 	else {
 		casio_stream_t *lbuf;
 		int alterr;
 
 		/* Open the limited buffer. */
 		msg((ll_info, "Making a limited buffer out of the buffer."));
-		err = casio_open_limited(&lbuf, buffer, head->casio_mcshead_size);
+		err = casio_open_limited(&lbuf, buffer, head.casio_mcshead_size);
 		if (err) goto fail;
 
 		/* Call the decode error. */
 		msg((ll_info, "Decoding the file with the specific function."));
-		err = (*decode)(handle, lbuf, &h);
+		err = (*decode)(handle, lbuf, &head);
 		alterr = casio_empty_limited(lbuf);
 		casio_close(lbuf);
 
@@ -178,15 +180,15 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 
 notparsing:
 	/* allocate enough space */
-	if ((err = casio_make_mcsfile(handle, &h)))
+	if ((err = casio_make_mcsfile(handle, &head)))
 		return (err);
 
 	/* read the content */
-	GREAD((*handle)->casio_mcsfile_content, h.casio_mcshead_size)
+	GREAD((*handle)->casio_mcsfile_content, head.casio_mcshead_size)
 
 	/* log */
 	msg((ll_info, "File content:"));
-	mem((ll_info, (*handle)->casio_mcsfile_content, h.casio_mcshead_size));
+	mem((ll_info, (*handle)->casio_mcsfile_content, head.casio_mcshead_size));
 
 	/* saved normally */
 	return (0);
