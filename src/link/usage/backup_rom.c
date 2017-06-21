@@ -31,7 +31,7 @@ struct thecookie {
  *
  *	@arg	vcookie		the cookie (uncasted).
  *	@arg	handle		the link handle.
- *	@return				the return thingy.
+ *	@return				the error code (0 if ok).
  */
 
 CASIO_LOCAL int get_rom(void *vcookie, casio_link_t *handle)

@@ -65,10 +65,10 @@ CASIO_EXTERN casio_uint32_t CASIO_EXPORT casio_htole32
 #  include <sys/param.h>
 
 #  if BYTE_ORDER == LITTLE_ENDIAN
-#   define casio_int_be16toh(x) ntohs(CASIO__X)
-#   define casio_int_le16toh(x) (CASIO__X)
-#   define casio_int_be32toh(x) ntohl(CASIO__X)
-#   define casio_int_le32toh(x) (CASIO__X)
+#   define casio_int_be16toh(CASIO__X) ntohs(CASIO__X)
+#   define casio_int_le16toh(CASIO__X) (CASIO__X)
+#   define casio_int_be32toh(CASIO__X) ntohl(CASIO__X)
+#   define casio_int_le32toh(CASIO__X) (CASIO__X)
 
 #   define casio_int_htobe16(CASIO__X) htons(CASIO__X)
 #   define casio_int_htole16(CASIO__X) (CASIO__X)

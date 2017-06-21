@@ -30,7 +30,7 @@
 int CASIO_EXPORT casio_localmcs_list(localmcs_t *cookie,
 	casio_mcslist_t *mcslist, void *mcookie)
 {
-	int err, i, count = cookie->localmcs_count;
+	int i, count = cookie->localmcs_count;
 
 	for (i = 0; count && i < cookie->localmcs_size; i++) {
 		casio_mcsfile_t *file = cookie->localmcs_files[i];
@@ -42,8 +42,7 @@ int CASIO_EXPORT casio_localmcs_list(localmcs_t *cookie,
 		count--;
 
 		/* Call back the callback. */
-		err = (*mcslist)(mcookie, &file->casio_mcsfile_head);
-		if (err) return (err);
+		(*mcslist)(mcookie, &file->casio_mcsfile_head);
 	}
 
 	/* Everything went well :) */

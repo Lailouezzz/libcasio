@@ -1,12 +1,12 @@
 #!/usr/bin/make -f
-#******************************************************************************#
-# Include variables and message subsystem                                      #
-#******************************************************************************#
+#*****************************************************************************#
+# Include variables and message subsystem                                     #
+#*****************************************************************************#
 include Makefile.vars Makefile.msg
 
-#******************************************************************************#
-# General targets                                                              #
-#******************************************************************************#
+#*****************************************************************************#
+# General targets                                                             #
+#*****************************************************************************#
 # Build everything.
 all: all-lib $(if $(INSTALL_MANPAGES),all-doc)
 
@@ -52,9 +52,9 @@ dist: mrproper
 
 .PHONY: all mostlyclean mclean clean fclean mrproper re
 .PHONY: dist install uninstall reinstall
-#******************************************************************************#
-# Configuration (version) checking dependencies                                #
-#******************************************************************************#
+#*****************************************************************************#
+# Configuration (version) checking dependencies                               #
+#*****************************************************************************#
 # Define the dependencies.
  CHECKCFG := $(if $(shell test -f Makefile.cfg || echo y),check-config, \
 	$(if $(shell [ "$(VERSION)" = "$(CONFIG_VERSION)" ] || echo y), \
@@ -71,9 +71,9 @@ dist: mrproper
 	@false
 
 .PHONY: check-config check-config-version
-#******************************************************************************#
-# Information getting from the Makefile variables                              #
-#******************************************************************************#
+#*****************************************************************************#
+# Information getting from the Makefile variables                             #
+#*****************************************************************************#
 # Get the project name.
  getname:
 	@echo lib$(NAME)
@@ -87,9 +87,9 @@ dist: mrproper
 	@echo "$(MAINTAINER_NAME) <$(MAINTAINER_MAIL)>"
 
 .PHONY: getname getauthor getmail getversion
-#******************************************************************************#
-# Library-specific targets                                                     #
-#******************************************************************************#
+#*****************************************************************************#
+# Library-specific targets                                                    #
+#*****************************************************************************#
 # Make the library.
  all-lib: $(CHECKCFG) $(if $(STATIC),$(ANAME),$(SONAME))
 
@@ -128,7 +128,8 @@ $(eval $(call make-obj-rule,$(src))))
  re-lib: clean-lib all-lib
 
 # Install the library and development files.
- LINK_TO_MAJOR := $(if $(INSTALL_DEVEL),$(if $(STATIC),,$(if $(FOR_WINDOWS),,y)))
+ LINK_TO_MAJOR := $(if $(INSTALL_DEVEL),$(if $(STATIC),,\
+	$(if $(FOR_WINDOWS),,y)))
  IWINDLL := $(if $(FOR_WINDOWS),$(if $(STATIC),,y))
  install-lib: all-lib $(if $(INSTALL_DEVEL),install-cfgtool)
 	$(call imsg,Installing the library.)
@@ -171,9 +172,9 @@ $(eval $(call make-obj-rule,$(src))))
 
 .PHONY: all-lib mostlyclean-lib mclean-lib clean-lib re-lib
 .PHONY: install-lib uninstall-lib reinstall-lib
-#******************************************************************************#
-# Configuration tools-related                                                  #
-#******************************************************************************#
+#*****************************************************************************#
+# Configuration tools-related                                                 #
+#*****************************************************************************#
 # Install it.
  install-cfgtool: $(CHECKCFG)
 	$(call imsg,Installing the configuration tool.)
@@ -185,7 +186,8 @@ $(eval $(call make-obj-rule,$(src))))
 		&& chmod 755 "$(IBINDIR)/lib$(NAME)-config")
 	$(if $(TARGET),$(call qcmd,$(INST) -m 755 -d "$(HBINDIR)"))
 	$(if $(TARGET),$(call qcmd,$(LN) -r \
-		"$(IBINDIR)/lib$(NAME)-config" "$(HBINDIR)/$(TARGET)lib$(NAME)-config"))
+		"$(IBINDIR)/lib$(NAME)-config" \
+		"$(HBINDIR)/$(TARGET)lib$(NAME)-config"))
 	
 	$(call imsg,Installing the pkg-config configuration.)
 	$(call qcmd,$(INST) -m 755 -d "$(IPKGDIR)")
@@ -205,9 +207,9 @@ $(eval $(call make-obj-rule,$(src))))
 		$(if $(TARGET),"$(HBINDIR)/$(TARGET)lib$(NAME)-config"))
 
 .PHONY: install-cfgtool uninstall-cfgtool
-#******************************************************************************#
-# Documentation-related                                                        #
-#******************************************************************************#
+#*****************************************************************************#
+# Documentation-related                                                       #
+#*****************************************************************************#
 # Make all manpages.
  all-doc: $(foreach s,$(MAN_SECTIONS), $(MAN_$(s):%=$(MANDIR)/man$(s)/%.$(s)))
 

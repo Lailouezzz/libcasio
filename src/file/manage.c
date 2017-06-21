@@ -19,7 +19,8 @@
 #include "file.h"
 #include <ctype.h>
 #define mkhandle() \
-	if (!(*(h) = malloc(sizeof(casio_file_t)))) return (casio_error_alloc); \
+	if (!(*(h) = casio_alloc(1, sizeof(casio_file_t)))) \
+		return (casio_error_alloc); \
 	handle = *h; memset(handle, 0, sizeof(casio_file_t))
 
 /* ************************************************************************* */
@@ -47,7 +48,7 @@ int CASIO_EXPORT casio_make_picture(casio_file_t **h,
 	handle->casio_file_height = height;
 	handle->casio_file_pixels = alloc_pixels(width, height);
 	if (!handle->casio_file_pixels) {
-		free(*h); *h = NULL; return (casio_error_alloc); }
+		casio_free(*h); *h = NULL; return (casio_error_alloc); }
 	prepare_pixels(handle->casio_file_pixels, width, height)
 
 	/* everything went well! */
@@ -110,7 +111,7 @@ int CASIO_EXPORT casio_make_fkey(casio_file_t **h,
 
 	/* allocate index */
 	if (count) {
-		handle->casio_file_fkeys = malloc(sizeof(uint32_t**) * count);
+		handle->casio_file_fkeys = casio_alloc(count, sizeof(uint32_t**));
 		if (!handle->casio_file_fkeys) goto fail;
 		memset(handle->casio_file_fkeys, 0, sizeof(uint32_t**) * count);
 		handle->casio_file__size = count;
@@ -148,7 +149,7 @@ int CASIO_EXPORT casio_make_lang(casio_file_t **h,
 
 	/* allocate index */
 	if (count) {
-		handle->casio_file_messages = malloc(sizeof(char*) * count);
+		handle->casio_file_messages = casio_alloc(count, sizeof(char*));
 		if (!handle->casio_file_messages) goto fail;
 		memset(handle->casio_file_messages, 0, sizeof(char*) * count);
 		handle->casio_file__size = count;
@@ -202,7 +203,7 @@ int CASIO_EXPORT casio_make_addin(casio_file_t **h,
 	handle->casio_file_size = size;
 
 	/* allocate the content */
-	handle->casio_file_content = malloc(size);
+	handle->casio_file_content = casio_alloc(size, 1);
 	if (!handle->casio_file_content) goto fail;
 
 	/* check the platform */
@@ -273,9 +274,9 @@ void CASIO_EXPORT casio_free_file(casio_file_t *handle)
 
 	/* addin time! */
 	if (handle->casio_file_type & casio_filetype_addin) {
-		free(handle->casio_file_content);
-		free(handle->casio_file_icon_unsel);
-		free(handle->casio_file_icon_sel);
+		casio_free(handle->casio_file_content);
+		casio_free(handle->casio_file_icon_unsel);
+		casio_free(handle->casio_file_icon_sel);
 	}
 
 	/* mcs time! */
@@ -288,26 +289,26 @@ void CASIO_EXPORT casio_free_file(casio_file_t *handle)
 	if (handle->casio_file_type & casio_filetype_lang
 	 && handle->casio_file_messages) {
 		for (i = 0; i < handle->casio_file_count; i++)
-			free(handle->casio_file_messages[i]);
-		free(handle->casio_file_messages);
+			casio_free(handle->casio_file_messages[i]);
+		casio_free(handle->casio_file_messages);
 	}
 
 	/* function keys time! */
 	if (handle->casio_file_type & casio_filetype_fkey
 	 && handle->casio_file_fkeys) {
 		for (i = 0; i < handle->casio_file_count; i++)
-			free(handle->casio_file_fkeys[i]);
-		free(handle->casio_file_fkeys);
+			casio_free(handle->casio_file_fkeys[i]);
+		casio_free(handle->casio_file_fkeys);
 	}
 
 	/* picture time! */
 	if (handle->casio_file_type & casio_filetype_picture)
-		free(handle->casio_file_pixels);
+		casio_free(handle->casio_file_pixels);
 
 	/* e-activities time! */
 /*	if (handle->casio_file_type & casio_filetype_eact)
 		casio_free_line_content(handle->casio_file_line); */
 
 	/* free the handle itself! */
-	free(handle);
+	casio_free(handle);
 }

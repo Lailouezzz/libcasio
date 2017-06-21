@@ -149,8 +149,8 @@ int CASIO_EXPORT casio_seven_get_buffer(casio_link_t *handle,
 			response.casio_seven_packet_total);
 
 		/* Check if there is an overflow. */
-		if (response.casio_seven_packet_data_size > size)
-			response.casio_seven_packet_data_size = size;
+		if ((casio_off_t)response.casio_seven_packet_data_size > size)
+			response.casio_seven_packet_data_size = (unsigned int)size;
 
 		/* Copy the data. */
 		memcpy(p, response.casio_seven_packet_data,

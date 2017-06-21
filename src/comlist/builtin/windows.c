@@ -54,7 +54,8 @@ int CASIO_EXPORT casio_comlist_windows(casio_list_com_t callback, void *cookie)
 	/* prepare */
 	msg((ll_info, "Allocating enough space"));
 	valsize = 1024; datasize = 1024; /* I DON'T CARE IT WORKS LALALA */
-	if (!(value = malloc(valsize)) || !(data = malloc(datasize)))
+	if (!(value = casio_alloc(valsize, 1))
+	 || !(data  = casio_alloc(datasize, 1)))
 		goto fail;
 
 	/* enumerate values */
@@ -81,7 +82,7 @@ int CASIO_EXPORT casio_comlist_windows(casio_list_com_t callback, void *cookie)
 fail:
 	ifmsg(werr, (ll_error, "Got error %08lu", werr));
 	/* free, close the key and return ! */
-	free(value); free(data);
+	casio_free(value); casio_free(data);
 	if (hkey_open) RegCloseKey(hkey);
 	return (werr ? casio_error_unknown : 0);
 }

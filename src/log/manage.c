@@ -122,5 +122,6 @@ void CASIO_EXPORT casio_listlog(casio_log_list_t *callback, void *cookie)
 
 int CASIO_EXPORT casio_islog(casio_loglevel_t level, const char *func)
 {
+	(void)func;
 	return (islog(level));
 }

@@ -271,6 +271,7 @@ typedef struct casio_mcshead_s {
 
 	/* raw data */
 	unsigned int           casio_mcshead_rawtype;
+	unsigned int           casio_mcshead_cas_ext;
 	casio_pictureformat_t  casio_mcshead_picformat;
 
 	/* strings */
@@ -278,7 +279,7 @@ typedef struct casio_mcshead_s {
 	char casio_mcshead_password[9];
 	char casio_mcshead_group[17];
 	char casio_mcshead_dirname[9];
-	char casio_mcshead_appname[4];
+	char casio_mcshead_cas_app[4];
 	char casio_mcshead_datatype[3];
 } casio_mcshead_t;
 /* ************************************************************************* */
@@ -317,9 +318,6 @@ typedef struct casio_mcsfile_s {
 /* ************************************************************************* */
 CASIO_BEGIN_DECLS
 /* Make a main memory file, prepare it, and free it. */
-
-/* Manage a main memory file from a head, duplicate an existing main memory
- * file, and free a main memory file. */
 
 CASIO_EXTERN int  CASIO_EXPORT casio_make_mcsfile
 	OF((casio_mcsfile_t **casio__handle, const casio_mcshead_t *casio__head));
@@ -370,10 +368,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_encode_casfile_part
 
 /* Correct a head (add raw data). */
 
-CASIO_EXTERN int CASIO_EXPORT casio_correct_mcsfile_head
-	OF((casio_mcshead_t *casio__head));
-CASIO_EXTERN int CASIO_EXPORT casio_correct_casfile_head
-	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead
+	OF((casio_mcshead_t *casio__head, unsigned long casio__mcsfor));
 
 /* Compare MCS files (for ordering). */
 

@@ -57,8 +57,9 @@ int CASIO_EXPORT casio_seven_serve(casio_link_t *handle,
 	while (1) {
 		/* Check command packet. */
 		if (response.casio_seven_packet_type != casio_seven_type_cmd) {
-			if (response.casio_seven_packet_type == casio_seven_type_end
-			 || response.casio_seven_packet_type == casio_seven_type_swp)
+			if (response.casio_seven_packet_type == casio_seven_type_end)
+				return (casio_seven_send_ack(handle, 0));
+			if (response.casio_seven_packet_type == casio_seven_type_swp)
 				break;
 
 			err = casio_seven_send_err(handle, casio_seven_err_other);
@@ -83,5 +84,5 @@ int CASIO_EXPORT casio_seven_serve(casio_link_t *handle,
 	}
 
 	/* Ack and disconnect. */
-	return (casio_seven_send_ack(handle, 0));
+	return (0);
 }

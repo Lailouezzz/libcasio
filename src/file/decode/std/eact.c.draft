@@ -70,7 +70,7 @@ static int eact_decode_content_eact(casio_line_t *handle, uint8_t *buf,
 	handle->casio_line_count = 0;
 	handle->casio_line__size = count;
 	handle->casio_line_lines =
-		malloc(sizeof(casio_line_t*) * handle->casio_line__size);
+		casio_alloc(handle->casio_line__size, sizeof(casio_line_t*));
 	if (!handle->casio_line_lines) return (casio_error_alloc);
 	memset(handle->casio_line_lines, 0,
 		sizeof(casio_line_t*) * handle->casio_line__size);
@@ -82,7 +82,7 @@ static int eact_decode_content_eact(casio_line_t *handle, uint8_t *buf,
 			be32toh(lds[0].casio_eact_line_descriptor_offset << 8);
 	for (i = 0; i < count; i++) {
 		/* allocate line */
-		casio_line_t *line = malloc(sizeof(casio_line_t));
+		casio_line_t *line = casio_alloc(1, sizeof(casio_line_t));
 		err = casio_error_alloc;
 		if (!line) goto fail;
 
@@ -122,7 +122,7 @@ static int eact_decode_content_eact(casio_line_t *handle, uint8_t *buf,
 
 	loop_fail:
 		casio_free_line_content(line);
-		free(line);
+		casio_free(line);
 		goto fail;
 	}
 
@@ -310,7 +310,7 @@ static int eact_decode_line_picture(casio_line_t *handle, uint8_t *buf,
 	if (sz == (size_t)-1) return (casio_error_magic);
 
 	/* make the string */
-	handle->casio_line_content = malloc(sizeof(FONTCHARACTER) * (sz + 1));
+	handle->casio_line_content = casio_alloc(sz + 1, sizeof(FONTCHARACTER));
 	if (!handle->casio_line_content) return (casio_error_alloc);
 	casio_wcstombs(handle->casio_line_content, s, 0);
 
@@ -471,7 +471,7 @@ int CASIO_EXPORT casio_decode_std_eact(casio_file_t **h,
 		hd.casio_eact_header_setup_area_size));
 
 	/* allocate handle */
-	*h = malloc(sizeof(casio_file_t));
+	*h = casio_alloc(1, sizeof(casio_file_t));
 	if (!*h) return (casio_error_alloc);
 	casio_file_t *handle = *h;
 	memset(handle, 0, sizeof(casio_file_t));

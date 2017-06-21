@@ -34,27 +34,27 @@ void CASIO_EXPORT casio_free_mcsfile(casio_mcsfile_t *handle)
 
 	switch (handle->casio_mcsfile_head.casio_mcshead_type) {
 	/* free the cells */
-	case casio_mcstype_mat: case casio_mcstype_vct:
+	case casio_mcstype_mat:  case casio_mcstype_vct:
 	case casio_mcstype_list: case casio_mcstype_ssheet:
 		if (handle->casio_mcsfile_head.casio_mcshead_width
 		 && handle->casio_mcsfile_head.casio_mcshead_height) {
-			free(handle->casio_mcsfile_cells[0]);
-			free(handle->casio_mcsfile_cells);
+			casio_free(handle->casio_mcsfile_cells[0]);
+			casio_free(handle->casio_mcsfile_cells);
 		}
 		break;
 
 	/* free the set of pixels */
 	case casio_mcstype_pict: case casio_mcstype_capt:
 		for (i = 0; i < handle->casio_mcsfile_head.casio_mcshead_count; i++)
-			free(handle->casio_mcsfile_pics[i]);
+			casio_free(handle->casio_mcsfile_pics[i]);
 		if (handle->casio_mcsfile_pics != &handle->casio_mcsfile_pic)
-			free(handle->casio_mcsfile_pics);
+			casio_free(handle->casio_mcsfile_pics);
 		break;
 
 	/* free the variables */
 	case casio_mcstype_alphamem:
 		if (handle->casio_mcsfile_vars != &handle->casio_mcsfile_var)
-			free(handle->casio_mcsfile_vars);
+			casio_free(handle->casio_mcsfile_vars);
 		break;
 
 	/* free nothing */
@@ -65,11 +65,11 @@ void CASIO_EXPORT casio_free_mcsfile(casio_mcsfile_t *handle)
 
 	/* free the raw content */
 	default:
-		free(handle->casio_mcsfile_content);
+		casio_free(handle->casio_mcsfile_content);
 	}
 
 	/* free the content */
-	if (handle->casio_mcsfile_head.casio_mcshead_flags & casio_mcsflag_alloc)
-		free(handle);
 	handle->casio_mcsfile_head.casio_mcshead_flags &= ~casio_mcsflag_valid;
+	if (handle->casio_mcsfile_head.casio_mcshead_flags & casio_mcsflag_alloc)
+		casio_free(handle);
 }

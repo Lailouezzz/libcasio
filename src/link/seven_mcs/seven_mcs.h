@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/read.c -- read from a stream.
+ * link/seven_mcs/seven_mcs.h -- protocol seven MCS interface internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,37 +16,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "stream.h"
+#ifndef  LINK_SEVEN_MCS_H
+# define LINK_SEVEN_MCS_H 1
+# include "../usage/usage.h"
 
-/**
- *	casio_read:
- *	Read from a libcasio stream.
- *
- *	@arg	stream		the stream to read from.
- *	@arg	dest		the destination buffer.
- *	@arg	size		the amount of bytes to read.
- *	@return				the error code (0 if ok).
- */
+typedef struct {
+	casio_link_t *sevenmcs_link;
+} sevenmcs_t;
 
-int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
-{
-	int err;
+CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_get
+	OF((sevenmcs_t *casio__cookie, casio_mcsfile_t **casio__mcsfile,
+		casio_mcshead_t *casio__head));
 
-	/* check if we can read */
-	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
+CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_put
+	OF((sevenmcs_t *casio__cookie, casio_mcsfile_t  *casio__mcsfile));
 
-	/* read */
-	if (!size) return (0);
-	err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
-	if (err) {
-		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
-		goto fail;
-	}
+CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_delete
+	OF((sevenmcs_t *casio__cookie, casio_mcshead_t  *casio__mcshead));
 
-	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
-fail:
-	stream->casio_stream_lasterr = err;
-	return (err);
-}
+CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_list
+	OF((sevenmcs_t *casio__cookie, casio_mcslist_t  *casio__mcslist,
+		void *casio__mcslist_cookie));
+
+#endif /* LINK_SEVEN_MCS_H */

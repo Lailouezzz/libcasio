@@ -42,7 +42,8 @@ int CASIO_EXPORT casio_decode_caspart_capture(casio_mcsfile_t *handle,
 
 	/* read the picture size */
 	err = casio_error_alloc;
-	pic_data = malloc(pic_size); if (!pic_data) return (err);
+	pic_data = casio_alloc(pic_size, 1);
+	if (!pic_data) return (err);
 	GREAD(pic_data, pic_size)
 
 	/* decode the picture data */
@@ -57,6 +58,6 @@ int CASIO_EXPORT casio_decode_caspart_capture(casio_mcsfile_t *handle,
 	err = 0;
 fail:
 	if (err) casio_free_mcsfile(handle);
-	free(pic_data);
+	casio_free(pic_data);
 	return (0);
 }

@@ -57,7 +57,8 @@
 /*  Picture utilities                                                        */
 /* ************************************************************************* */
 # define alloc_pixels(W, H) \
-	malloc(sizeof(casio_pixel_t*) * (H) + sizeof(casio_pixel_t) * (W) * (H))
+	casio_alloc(sizeof(casio_pixel_t*) \
+		* (H) + sizeof(casio_pixel_t) * (W) * (H), 1)
 # define prepare_pixels(I, W, H) { \
 	unsigned int PIXPREP_y; \
 	casio_pixel_t *PIXPREP_line = (casio_pixel_t*)&(I)[(H)]; \
@@ -65,20 +66,5 @@
 		(I)[PIXPREP_y] = PIXPREP_line; \
 		PIXPREP_line += (W); \
 	}}
-/* ************************************************************************* */
-/*  Correspondances                                                          */
-/* ************************************************************************* */
-/* CAS app */
-extern int casio_maketype_casapp OF((casio_mcshead_t *casio__head,
-	int casio__ext, const char *casio__app));
-
-/* CAS data type */
-extern int casio_maketype_cas    OF((casio_mcshead_t *casio__head,
-	const char *casio__datatype));
-
-/* MCS file */
-extern int casio_maketype_mcs OF((casio_mcshead_t *casio__head,
-	const char *casio__gname, const char *casio__dname,
-	const char *casio__fname, unsigned int casio__rawtype));
 
 #endif

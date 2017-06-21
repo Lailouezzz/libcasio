@@ -91,7 +91,7 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	msg((ll_info, "Reading %" CASIO_PRIuSIZE "B of deflated data",
 		deflated_size));
 	err = casio_error_alloc;
-	if (!(defbuf = malloc(deflated_size))) goto fail;
+	if (!(defbuf = casio_alloc(deflated_size, 1))) goto fail;
 	READ(defbuf, deflated_size)
 
 	/* unobfuscate if required */
@@ -103,7 +103,7 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	/* make the destination buffer */
 	rawsize = casio_get_picture_size(NULL, picfmt, width, height);
 	err = casio_error_alloc;
-	if (!(infbuf = malloc(rawsize))) goto fail;
+	if (!(infbuf = casio_alloc(rawsize, 1))) goto fail;
 
 	/* uncompress */
 	inflated_size = (uLong)rawsize;
@@ -114,7 +114,7 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 		err = casio_error_magic;
 		goto fail;
 	}
-	free(defbuf); defbuf = NULL;
+	casio_free(defbuf); defbuf = NULL;
 
 	/* check the checksum */
 	READ(&checksum, sizeof(casio_uint32_t))
@@ -139,7 +139,7 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	/* then store it */
 	casio_decode_picture(handle->casio_file_pixels, infbuf,
 		picfmt, handle->casio_file_width, handle->casio_file_height);
-	free(infbuf); infbuf = NULL;
+	casio_free(infbuf); infbuf = NULL;
 
 	/* TODO: footers? */
 
@@ -147,7 +147,7 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	return (0);
 fail:
 	casio_free_file(*h); *h = NULL;
-	free(infbuf); free(defbuf);
+	casio_free(infbuf); casio_free(defbuf);
 	return (err);
 }
 /* ************************************************************************* */

@@ -40,7 +40,7 @@ int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
 	casio_streamfuncs_t *c;
 
 	/* allocate the stream */
-	*pstream = malloc(sizeof(casio_stream_t));
+	*pstream = casio_alloc(1, sizeof(casio_stream_t));
 	stream = *pstream;
 	checknot(stream == NULL, casio_error_alloc)
 
@@ -73,7 +73,7 @@ int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
 	err = 0;
 fail:
 	if (err) {
-		free(stream);
+		casio_free(stream);
 		(*callbacks->casio_streamfuncs_close)(cookie);
 	}
 	return (err);
@@ -94,6 +94,6 @@ int CASIO_EXPORT casio_close(casio_stream_t *stream)
 	if (!stream) return (0);
 	c = getcb(stream, close);
 	if (c) (*c)(stream->casio_stream_cookie);
-	free(stream);
+	casio_free(stream);
 	return (0);
 }

@@ -90,7 +90,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_comlist_windows
 	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 # endif
 /* ************************************************************************* */
-/*  Built-in sleep function                                                  */
+/*  Built-in functions                                                       */
 /* ************************************************************************* */
 /* As there is no portable sleep function, libcasio implements one.
  * It takes a callback, of the following form: */
@@ -101,6 +101,14 @@ CASIO_EXTERN void CASIO_EXPORT casio_set_sleep
 	OF((casio_sleep_t *casio__func));
 CASIO_EXTERN int  CASIO_EXPORT casio_sleep
 	OF((unsigned long casio__ms));
+
+/* And here are cross-platform allocation functions.
+ * They are defined just in case. */
+
+CASIO_EXTERN void* CASIO_EXPORT casio_alloc
+	OF((size_t casio__num_elements, size_t casio__element_size));
+CASIO_EXTERN void  CASIO_EXPORT casio_free
+	OF((void *casio__ptr));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

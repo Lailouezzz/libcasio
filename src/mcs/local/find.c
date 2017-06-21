@@ -68,7 +68,7 @@ int CASIO_EXPORT casio_localmcs_find(localmcs_t *cookie,
 			casio_mcsfile_t **newindex = NULL;
 
 			/* Allocate the new index. */
-			newindex = malloc(newsize * sizeof(casio_mcsfile_t*));
+			newindex = casio_alloc(newsize, sizeof(casio_mcsfile_t*));
 			if (!newindex) return (casio_error_alloc);
 
 			/* Copy the old index data. */
@@ -81,7 +81,7 @@ int CASIO_EXPORT casio_localmcs_find(localmcs_t *cookie,
 				(newsize - cookie->localmcs_size) * sizeof(casio_mcsfile_t*));
 
 			/* Free the old index, assign the new one. */
-			free(cookie->localmcs_files);
+			casio_free(cookie->localmcs_files);
 			cookie->localmcs_files = newindex;
 			cookie->localmcs_size  = newsize;
 		}

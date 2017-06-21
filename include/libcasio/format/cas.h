@@ -75,7 +75,7 @@ typedef struct casio_cas40_s {
 /* ************************************************************************* */
 /*  CASDYN header                                                            */
 /* ************************************************************************* */
-/* The CASDYN (dynamic size) header appeared later.
+/* The CASDYN (dynamic size, super header) header appeared later.
  * It is known in CaS as the protocol the CFX-9850G uses.
  *
  * This header format was previously named 'caspro' in libcasio, then CAS50

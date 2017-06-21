@@ -41,24 +41,24 @@ typedef struct casio_mcsfuncs_s casio_mcsfuncs_t;
  *
  * Here are the callbacks you should set: */
 
-typedef int casio_mcs_get_t
+typedef int  casio_mcs_get_t
 	OF((void *casio__cookie, casio_mcsfile_t **casio__mcsfile,
 		casio_mcshead_t *casio__mcshead));
 
-typedef int casio_mcs_put_t
+typedef int  casio_mcs_put_t
 	OF((void *casio__cookie, casio_mcsfile_t *casio__mcsfile));
 
-typedef int casio_mcs_delete_t
+typedef int  casio_mcs_delete_t
 	OF((void *casio__cookie, casio_mcshead_t *casio__mcshead));
 
-typedef int casio_mcslist_t
+typedef void casio_mcslist_t
 	OF((void *casio__cookie, const casio_mcshead_t *casio__mcshead));
 
-typedef int casio_mcs_list_t
+typedef int  casio_mcs_list_t
 	OF((void *casio__cookie, casio_mcslist_t *casio__mcslist,
 		void *casio__mcslist_cookie));
 
-typedef int casio_mcs_close_t
+typedef int  casio_mcs_close_t
 	OF((void *casio__cookie));
 
 struct casio_mcsfuncs_s {

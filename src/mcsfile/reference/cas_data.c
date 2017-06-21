@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/corresp/cas_data.c -- get the CAS type out of raw id. data.
+ * mcsfile/reference/cas_data.c -- get the CAS type out of raw data.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../mcsfile.h"
+#include "reference.h"
 
 /* ************************************************************************* */
 /*  Local types                                                              */
@@ -37,7 +37,6 @@ struct type_corresp {
 	casio_mcstype_t type;
 	casio_pictureformat_t picformat;
 };
-
 /* ************************************************************************* */
 /*  Correspondances                                                          */
 /* ************************************************************************* */
@@ -124,18 +123,17 @@ CASIO_LOCAL int get_number(const char *s, int *num)
 }
 
 /**
- *	casio_maketype_cas:
- *	Get the libcasio MCS type from the raw CAS40/CAS50 data type.
+ *	casio_correct_mcshead_from_casdata:
+ *	Get the abstract type from the CAS data type.
  *
- *	@arg	head		the head to fill.
- *	@arg	datatype	the data type string (2 bytes long).
+ *	@arg	head		the head.
  *	@return				the error (if any).
  */
 
-int CASIO_EXPORT casio_maketype_cas(casio_mcshead_t *head,
-	const char *datatype)
+int CASIO_EXPORT casio_correct_mcshead_from_casdata(casio_mcshead_t *head)
 {
 	const struct type_corresp *c;
+	const char *datatype = head->casio_mcshead_datatype;
 	int id = 0;
 
 	/* copy information */
@@ -167,18 +165,18 @@ notfound:
 	msg((ll_info, "Type with '%.2s' data string was not implemented or not "
 		"recognized.", datatype));
 	head->casio_mcshead_type = 0;
-	return (1);
+	return (casio_error_op);
 }
 
 /**
- *	casio_correct_casfile_head:
+ *	casio_correct_mcshead_to_cas:
  *	Correct a CAS file head.
  *
  *	@arg	head		the head to correct.
  *	@return				the error (0 if ok).
  */
 
-int CASIO_EXPORT casio_correct_casfile_head(casio_mcshead_t *head)
+int CASIO_EXPORT casio_correct_mcshead_to_casdata(casio_mcshead_t *head)
 {
 	const struct type_corresp *c;
 

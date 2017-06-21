@@ -219,7 +219,7 @@ CASIO_LOCAL int casio_streams_close(void *vcookie)
 		close(cookie->_writefd);
 
 	/* free the cookie. */
-	free(cookie);
+	casio_free(cookie);
 	return (0);
 }
 /* ************************************************************************* */
@@ -489,7 +489,7 @@ int CASIO_EXPORT casio_open_stream_fd(casio_stream_t **stream,
 	if (!mode) { err = casio_error_invalid; goto fail; }
 
 	/* allocate cookie */
-	cookie = malloc(sizeof(streams_cookie_t));
+	cookie = casio_alloc(1, sizeof(streams_cookie_t));
 	if (!cookie) { err = casio_error_alloc; goto fail; }
 	cookie->_readfd = readfd;
 	cookie->_writefd = writefd;

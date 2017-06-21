@@ -27,17 +27,7 @@ CASIO_BEGIN_DECLS
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_typical_mcs_command
 	OF((casio_link_t *casio__handle,
 		int casio__code, casio_mcshead_t *casio__head,
-		casio_mcsfile_t *casio__file,
-		int casio__ow));
-/*
-	size_t sz = casio__file ? get_the_file_size(casio__file) : 0;
-	return (casio_seven_send_cmd_data(casio__handle, casio__code, casio__ow,
-		casio__head->casio_mcshead_rawtype, sz,
-		casio__head->casio_mcshead_dirname,
-		casio__head->casio_mcshead_name,
-		casio__head->casio_mcshead_group,
-		NULL, NULL, NULL));
-*/
+		casio_mcsfile_t *casio__mcsfile, int casio__ow));
 /* ************************************************************************* */
 /*  Basic commands                                                           */
 /* ************************************************************************* */
@@ -100,19 +90,28 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmdsys_setlink
 # define casio_seven_cmdmcs_reqfile     0x24
 # define casio_seven_send_cmdmcs_reqfile(CASIO__HANDLE, CASIO__HEAD) \
 	casio_seven_send_typical_mcs_command(CASIO__HANDLE, 0x24, \
-		CASIO__HEAD, NULL, 0)
+		CASIO__HEAD, 0, 0)
 
 /* Send a file */
 # define casio_seven_cmdmcs_sendfile    0x25
 # define casio_seven_send_cmdmcs_sendfile(CASIO__HANDLE, CASIO__OW, \
   CASIO__FILE) \
 	casio_seven_send_typical_mcs_command(CASIO__HANDLE, 0x25, \
-		(CASIO__FILE)->casio_mcsfile_head, CASIO__FILE, CASIO__OW)
+		(CASIO__FILE)->casio_mcsfile_head, CASIO__OW)
+
+/* Delete a file */
+# define casio_seven_cmdmcs_delfile     0x26
+# define casio_seven_send_cmdmcs_delfile(CASIO__HANDLE, CASIO__HEAD) \
+	casio_seven_send_typical_mcs_command(CASIO__HANDLE, 0x26, \
+		(CASIO__HEAD), NULL, 0)
 
 /* Request all file information */
 # define casio_seven_cmdmcs_reqallinfo  0x2D
 # define casio_seven_send_cmdmcs_reqallinfo(CASIO__HANDLE) \
 	casio_seven_send_cmd(CASIO__HANDLE, 0x2D)
+
+/* Send one file's information */
+# define casio_seven_cmdmcs_fileinfo    0x2E
 /* ************************************************************************* */
 /*  Storage commands                                                         */
 /* ************************************************************************* */

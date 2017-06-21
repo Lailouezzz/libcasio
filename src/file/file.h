@@ -58,7 +58,7 @@
 /*  Picture utilities                                                        */
 /* ************************************************************************* */
 # define alloc_pixels(W, H) \
-	malloc(sizeof(uint32_t*) * (H) + sizeof(uint32_t) * (W) * (H))
+	casio_alloc(sizeof(uint32_t*) * (H) + sizeof(uint32_t) * (W) * (H), 1)
 # define prepare_pixels(I, W, H) { \
 	unsigned int PIXPREP_y; \
 	uint32_t *PIXPREP_line = (uint32_t*)&(I)[(H)]; \

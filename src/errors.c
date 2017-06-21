@@ -65,7 +65,8 @@ const char* CASIO_EXPORT casio_error_strings[128] = {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL,
 
-	/* Decoding errors. */
+/* Decoding errors. */
+
 	"corrupted or unknown file format",
 	"invalid checksum",
 	"was recognized but not one of the allowed file types."

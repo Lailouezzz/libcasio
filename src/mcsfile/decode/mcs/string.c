@@ -36,7 +36,7 @@ int CASIO_EXPORT casio_decode_mcs_string(casio_mcsfile_t **h,
 
 	/* print content */
 	msg((ll_info, "String MCS file is not managed yet. Content:"));
-	str = malloc(length);
+	str = casio_alloc(length, 1);
 	if (!str) { err = casio_error_alloc; goto fail; }
 	GREAD(str, length)
 	mem((ll_info, str, length));
@@ -48,6 +48,6 @@ int CASIO_EXPORT casio_decode_mcs_string(casio_mcsfile_t **h,
 	/* end */
 	err = 0;
 fail:
-	free(str);
+	casio_free(str);
 	return (err);
 }

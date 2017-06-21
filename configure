@@ -1,8 +1,8 @@
 #!/bin/sh
 cd "$(dirname $0)"
-#******************************************************************************#
-# Defaults                                                                     #
-#******************************************************************************#
+#*****************************************************************************#
+# Defaults                                                                    #
+#*****************************************************************************#
 # Project variables
 [ -f Makefile.cfg ] && mv Makefile.cfg Makefile.cfg.tmp
 name="$(make -s getname)"
@@ -46,9 +46,9 @@ install_devel=yes
 # Tweaks
 cflags=
 ldflags=
-#******************************************************************************#
-# Help message                                                                 #
-#******************************************************************************#
+#*****************************************************************************#
+# Help message                                                                #
+#*****************************************************************************#
 usage() {
 cat <<EOF
 \`configure\` configures ${name} to adapt to systems that aren't mine.
@@ -96,9 +96,9 @@ Report bugs to ${maintainer}.
 EOF
 exit 0
 }
-#******************************************************************************#
-# Version message                                                              #
-#******************************************************************************#
+#*****************************************************************************#
+# Version message                                                             #
+#*****************************************************************************#
 version() {
 cat <<EOF
 ${name} configure script v${version}
@@ -110,9 +110,9 @@ FITNESS FOR A PARTICULAR PURPOSE.
 EOF
 exit 0
 }
-#******************************************************************************#
-# Check for help and version                                                   #
-#******************************************************************************#
+#*****************************************************************************#
+# Check for help and version                                                  #
+#*****************************************************************************#
 put_version=
 put_help=
 for arg ; do case "$arg" in
@@ -121,9 +121,9 @@ for arg ; do case "$arg" in
 esac; done
 [ $put_version ] && version
 [ $put_help ] && usage
-#******************************************************************************#
-# Parse arguments                                                              #
-#******************************************************************************#
+#*****************************************************************************#
+# Parse arguments                                                             #
+#*****************************************************************************#
 for arg ; do case "$arg" in
 --make-full-log) make_full_log=yes ;;
 --maintainer) more_warnings=yes; loglevel=info; install_manpages= ;;
@@ -161,9 +161,9 @@ CFLAGS=*) cflags="${arg#*=}" ;;
 LDFLAGS=*) ldflags="${arg#*=}" ;;
 *) echo "$arg: didn't read" ;;
 esac; done
-#******************************************************************************#
-# Little things                                                                #
-#******************************************************************************#
+#*****************************************************************************#
+# Little things                                                               #
+#*****************************************************************************#
 # Cross-compilation things
 if [ ! $prefix_set ] && [ $target ]; then
 	prefix="$prefix"/"$target"
@@ -206,17 +206,18 @@ fi
 # Check that MS-Windows has a mingw* target.
 if [ "$windows" ] && [ ! "$win_target" ]; then
 cat >&2 <<EOF
-You have selected the --windows option, but have not selected a mingw32/mingw64
-BFD target. We supposed that it is because you are compiling libcasio for a
-cross-compiler compiled for MS-Windows (that's why configuration won't fail).
+You have selected the --windows option, but have not selected a
+mingw32/mingw64 target. We supposed that it is because you are compiling
+libcasio for a cross-compiler compiled for MS-Windows
+(that's why configuration won't fail).
 
 If it is not, please reconfigure to use a mingw32/mingw64 toolchain!
 
 EOF
 fi
-#******************************************************************************#
-# Create Makefile configuration                                                #
-#******************************************************************************#
+#*****************************************************************************#
+# Create Makefile configuration                                               #
+#*****************************************************************************#
 # Clean before
 make mrproper MAKE_FULL_LOG=y 1>/dev/null 2>/dev/null
 
@@ -231,9 +232,9 @@ tools/write-header-config --version=${version} \
 exec 3>&1 1>Makefile.cfg
 cat <<EOF
 #!/usr/bin/make -f
-#******************************************************************************#
-# Makefile configuration generated by ./configure                              #
-#******************************************************************************#
+#*****************************************************************************#
+# Makefile configuration generated by ./configure                             #
+#*****************************************************************************#
 # Configuration version and messages configuration
  CONFIG_VERSION = $version
  MAKE_FULL_LOG = $make_full_log

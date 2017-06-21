@@ -53,7 +53,7 @@ int CASIO_EXPORT casio_decode_mcs_spreadsheet(casio_mcsfile_t **h,
 		be32toh(shd.casio_mcs_spreadsheet_subheader_defs_size);
 
 	/* prepare */
-	cells = malloc(sizeof(casio_mcscell_t) * 1000 * colcount);
+	cells = casio_alloc(1000 * colcount, sizeof(casio_mcscell_t));
 	memset(cells, 0, sizeof(casio_mcscell_t) * 1000 * colcount);
 
 	/* log some info */
@@ -129,6 +129,6 @@ int CASIO_EXPORT casio_decode_mcs_spreadsheet(casio_mcsfile_t **h,
 	/* end */
 	err = 0;
 fail:
-	free(cells);
+	casio_free(cells);
 	return (err);
 }

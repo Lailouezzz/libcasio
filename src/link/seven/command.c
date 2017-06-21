@@ -148,6 +148,33 @@ int CASIO_EXPORT casio_seven_send_cmd_data(casio_link_t *handle,
 		casio_seven_type_cmd, subtype, buf, buflen, 1));
 }
 /* ************************************************************************* */
+/*  Typical MCS command                                                      */
+/* ************************************************************************* */
+/**
+ *	casio_seven_send_typical_mcs_command:
+ *	Send a typical MCS command.
+ *
+ *	@arg	handle		the link handle.
+ *	@arg	code		the command code.
+ *	@arg	head		the MCS head.
+ *	@arg	file		the file.
+ *	@arg	ow			the overwrite.
+ *	@return				the error code (0 if ok).
+ */
+
+int CASIO_EXPORT casio_seven_send_typical_mcs_command(casio_link_t *handle,
+	int code, casio_mcshead_t *head, casio_mcsfile_t *file, int ow)
+{
+	unsigned long sz = 0;
+
+	/* FIXME: get the file size when not NULL */
+	(void)file;
+	return (casio_seven_send_cmd_data(handle, code, ow,
+		head->casio_mcshead_rawtype, sz,
+		head->casio_mcshead_dirname, head->casio_mcshead_name,
+		head->casio_mcshead_group, NULL, NULL, NULL));
+}
+/* ************************************************************************* */
 /*  Special commands                                                         */
 /* ************************************************************************* */
 /**

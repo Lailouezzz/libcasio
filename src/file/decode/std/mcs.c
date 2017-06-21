@@ -79,6 +79,7 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 				i, datalength));
 
 			/* decode the head */
+			num--;
 			casio_decode_mcsfile_head(&head,
 				fhd.casio_mcs_fileheader_filetype,
 				hd.casio_mcs_subheader_intname,

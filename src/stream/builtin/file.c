@@ -196,7 +196,7 @@ CASIO_LOCAL int casio_file_close(file_cookie_t *cookie)
 	if (cookie->_wstream && cookie->_wstream != cookie->_rstream
 	 && cookie->_wstream_cl)
 		fclose(cookie->_wstream);
-	free(cookie);
+	casio_free(cookie);
 	return (0);
 }
 /* ************************************************************************* */
@@ -234,7 +234,7 @@ int CASIO_EXPORT casio_open_stream_file(casio_stream_t **stream,
 	}
 
 	/* allocate the cookie */
-	cookie = malloc(sizeof(file_cookie_t));
+	cookie = casio_alloc(1, sizeof(file_cookie_t));
 	if (!cookie) { err = casio_error_alloc; goto fail; }
 
 	/* fill the cookie */

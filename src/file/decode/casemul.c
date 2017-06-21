@@ -186,7 +186,7 @@ CASIO_LOCAL int read_picture(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	/* read all of the pixels */
 	rawpxsize = casio_get_picture_size(NULL,
 		casio_pictureformat_casemul, width, height);
-	rawpx = malloc(rawpxsize);
+	rawpx = casio_alloc(1, rawpxsize);
 	if (!rawpx) return (casio_error_alloc);
 	GREAD(rawpx, rawpxsize)
 
@@ -208,7 +208,7 @@ CASIO_LOCAL int read_picture(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 fail:
 	if (err) casio_free_mcsfile(*pfile);
 	*pfile = NULL;
-	free(rawpx);
+	casio_free(rawpx);
 	return (0);
 }
 
@@ -245,7 +245,7 @@ CASIO_LOCAL int read_matrix(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 
 	/* read double tab */
 	total = width * height;
-	tab = malloc(total * sizeof(double));
+	tab = casio_alloc(total, sizeof(double));
 	if (!tab) return (casio_error_alloc);
 	GREAD(tab, total * sizeof(double))
 	raw = tab;
@@ -257,7 +257,7 @@ CASIO_LOCAL int read_matrix(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	memcpy(head.casio_mcshead_name, name, strlen(name) + 1);
 	head.casio_mcshead_id = name[4] - 'A' + 1;
 	err = casio_make_mcsfile(pfile, &head);
-	if (err) { free(tab); return (err); }
+	if (err) { casio_free(tab); return (err); }
 
 	/* read the matrix */
 	cells = (*pfile)->casio_mcsfile_cells;
@@ -287,7 +287,7 @@ CASIO_LOCAL int read_matrix(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 fail:
 	if (err) casio_free_mcsfile(*pfile);
 	*pfile = NULL;
-	free(tab);
+	casio_free(tab);
 	return (0);
 }
 
@@ -321,7 +321,7 @@ CASIO_LOCAL int read_list(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	msg((ll_info, "%d elements in list", len));
 
 	/* read double tab */
-	tab = malloc(len); if (!tab) return (casio_error_alloc);
+	tab = casio_alloc(len, 1); if (!tab) return (casio_error_alloc);
 	GREAD(tab, len * sizeof(double))
 	raw = tab;
 
@@ -332,7 +332,7 @@ CASIO_LOCAL int read_list(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 	memcpy(head.casio_mcshead_name, name, strlen(name) + 1);
 	head.casio_mcshead_id = name[5] - '0';
 	err = casio_make_mcsfile(pfile, &head);
-	if (err) { free(tab); return (err); }
+	if (err) { casio_free(tab); return (err); }
 
 	/* read the list */
 	cells = (*pfile)->casio_mcsfile_cells;
@@ -362,7 +362,7 @@ CASIO_LOCAL int read_list(casio_mcsfile_t **pfile, casio_stream_t *buffer,
 fail:
 	if (err) casio_free_mcsfile(*pfile);
 	*pfile = NULL;
-	free(tab);
+	casio_free(tab);
 	return (0);
 }
 /* ************************************************************************* */

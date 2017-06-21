@@ -123,7 +123,7 @@ CASIO_LOCAL int casio_memory_seek(void *vcookie, casio_off_t *offset,
 
 CASIO_LOCAL int casio_memory_close(void *vcookie)
 {
-	free(vcookie);
+	casio_free(vcookie);
 	return (0);
 }
 
@@ -154,7 +154,7 @@ int CASIO_EXPORT casio_open_memory(casio_stream_t **stream,
 		return (casio_error_nostream);
 
 	/* allocate the cookie */
-	cookie = malloc(sizeof(memory_cookie_t));
+	cookie = casio_alloc(1, sizeof(memory_cookie_t));
 	if (!cookie) return (casio_error_alloc);
 
 	/* fill the cookie */

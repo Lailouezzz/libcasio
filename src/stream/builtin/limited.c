@@ -65,7 +65,7 @@ CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest, size_t si
 
 CASIO_LOCAL int casio_limited_close(void *vcookie)
 {
-	free(vcookie);
+	casio_free(vcookie);
 	return (0);
 }
 
@@ -93,7 +93,7 @@ int CASIO_EXPORT casio_open_limited(casio_stream_t **stream,
 
 	/* FIXME: check original stream */
 	/* allocate the cookie */
-	cookie = malloc(sizeof(limited_cookie_t));
+	cookie = casio_alloc(1, sizeof(limited_cookie_t));
 	if (!cookie) return (casio_error_alloc);
 
 	/* fill the cookie */

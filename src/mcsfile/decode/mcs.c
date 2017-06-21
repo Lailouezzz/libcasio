@@ -86,15 +86,24 @@ CASIO_LOCAL mcs_decode_func_t *lookup_mcsfile_decode(casio_mcstype_t type)
 int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
 	int raw_type, const unsigned char *groupname,
 	const unsigned char *dirname, const unsigned char *filename,
-	uint_fast32_t filesize)
+	unsigned long filesize)
 {
 	/* check that we have a head, lol */
 	if (!head) return (-1);
 
-	/* look for the raw type */
-	casio_maketype_mcs(head, (char*)groupname, (char*)dirname,
-		(char*)filename, raw_type);
+	/* prepare the head */
+	head->casio_mcshead_flags = casio_mcsfor_mcs;
 	head->casio_mcshead_size = filesize;
+	head->casio_mcshead_rawtype = raw_type;
+	strncpy(head->casio_mcshead_name, (char*)filename, 12);
+	head->casio_mcshead_name[12] = 0;
+	strncpy(head->casio_mcshead_group, (char*)groupname, 16);
+	head->casio_mcshead_group[16] = 0;
+	strncpy(head->casio_mcshead_dirname, (char*)dirname, 8);
+	head->casio_mcshead_dirname[8] = 0;
+
+	/* make the lib abstract types out of this raw information. */
+	casio_correct_mcshead(head, 0);
 	msg((ll_info, "libcasio file type is 0x%08lX", head->casio_mcshead_type));
 
 	ifmsg(casio_mcshead_uses_id(head), (ll_info,
@@ -141,18 +150,26 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 	}
 
 	/* decode */
-	if (!head->casio_mcshead_size) err = (*decode)(handle, buffer, &h);
+	if (!head->casio_mcshead_size)
+		err = (*decode)(handle, buffer, &h);
 	else {
 		casio_stream_t *lbuf;
 		int alterr;
 
+		/* Open the limited buffer. */
+		msg((ll_info, "Making a limited buffer out of the buffer."));
 		err = casio_open_limited(&lbuf, buffer, head->casio_mcshead_size);
 		if (err) goto fail;
+
+		/* Call the decode error. */
+		msg((ll_info, "Decoding the file with the specific function."));
 		err = (*decode)(handle, lbuf, &h);
 		alterr = casio_empty_limited(lbuf);
 		casio_close(lbuf);
-		if (!err && alterr) err = alterr;
-		if (err) goto fail;
+
+		/* Check the error. */
+		if (!err && alterr)
+			err = alterr;
 	}
 
 	/* oh yeah, and go away. */
@@ -175,7 +192,7 @@ notparsing:
 	return (0);
 
 fail:
-	casio_free_mcsfile(*handle);
+	casio_free_mcsfile(*handle); *handle = NULL;
 	return (err);
 }
 

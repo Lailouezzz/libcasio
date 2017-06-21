@@ -88,7 +88,7 @@ int CASIO_EXPORT casio_decode_std_fkey(casio_file_t **h,
 	data_size = be32toh(std->casio_standard_header_filesize)
 		- sizeof(casio_standard_header_t)
 		- sizeof(casio_fkey_subheader_t);
-	if (!(data = malloc(data_size)))
+	if (!(data = casio_alloc(data_size, 1)))
 		goto fail;
 	READ(data, data_size)
 
@@ -123,7 +123,7 @@ int CASIO_EXPORT casio_decode_std_fkey(casio_file_t **h,
 
 	/* omg fail! */
 fail:
-	free(data);
+	casio_free(data);
 	casio_free_file(*h); *h = NULL;
 	return (err);
 }
@@ -166,7 +166,7 @@ int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 		- sizeof(casio_standard_subheader_t)
 		- sizeof(casio_standard_prizm_subheader_t)
 		- sizeof(casio_prizm_lang_subheader_t) - 4;
-	if (!(data = malloc(data_size))) goto fail;
+	if (!(data = casio_alloc(data_size, 1))) goto fail;
 	READ(data, data_size)
 	*check = casio_checksum32(data, data_size, *check);
 
@@ -200,11 +200,11 @@ int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 	}
 
 	/* done */
-	free(data);
+	casio_free(data);
 	return (0);
 
 fail:
-	if (data) free(data);
+	if (data) casio_free(data);
 	casio_free_file(*h); *h = NULL;
 	return (err);
 }

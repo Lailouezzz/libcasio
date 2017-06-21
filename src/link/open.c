@@ -45,7 +45,7 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 	/* allocate handle */
 	msg((ll_info, "Allocating and building the link handle!"));
 	*h = NULL;
-	if (!(*h = malloc(sizeof(casio_link_t)))) {
+	if (!(*h = casio_alloc(1, sizeof(casio_link_t)))) {
 		err = casio_error_alloc;
 		goto fail;
 	}
@@ -112,5 +112,5 @@ void CASIO_EXPORT casio_close_link(casio_link_t *handle)
 
 	/* free handle */
 	msg((ll_info, "freeing the handle!"));
-	free(handle);
+	casio_free(handle);
 }

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * type/mcs.c -- get the MCS type out of raw identification data.
+ * mcsfile/reference/mcs.c -- get the MCS type out of raw data.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../mcsfile.h"
+#include "reference.h"
 
 /* ************************************************************************* */
 /*  Local types                                                              */
@@ -259,7 +259,6 @@ CASIO_LOCAL const struct group_corresp mcs_groups[] = {
 	/* terminating entry */
 	{NULL, 0, NULL}
 };
-
 /* ************************************************************************* */
 /*  Main functions                                                           */
 /* ************************************************************************* */
@@ -282,7 +281,8 @@ CASIO_LOCAL int get_number(const char *s, int *num, int isnum)
 	else if (!strcmp(s, "\xCD"))
 		*num = casio_r;
 	else if (isnum) {
-		if (!(*num = atoi(s))) return (1);
+		if (!(*num = atoi(s)))
+			return (1);
 	} else {
 		if (*s < 'A' || *s > 'Z')
 			return (1);
@@ -292,42 +292,25 @@ CASIO_LOCAL int get_number(const char *s, int *num, int isnum)
 }
 
 /**
- *	casio_maketype_mcs:
- *	Get libcasio type from rawtype.
+ *	casio_correct_mcshead_from_mcs:
+ *	Make libcasio abstract data from raw MCS identification data.
  *
- *	@arg	head		the head to fill.
- *	@arg	gname		the group name.
- *	@arg	dname		the directory name.
- *	@arg	fname		the filename.
- *	@arg	rawtype		the raw numerical type.
- *	@return				if the type was not found (0 if yes).
+ *	@arg	head		the head to correct.
+ *	@return				if an error occured.
  */
 
-int CASIO_EXPORT casio_maketype_mcs(casio_mcshead_t *head,
-	const char *gname, const char *dname,
-	const char *fname, unsigned int rawtype)
+int CASIO_EXPORT casio_correct_mcshead_from_mcs(casio_mcshead_t *head)
 {
 	int gid = 0, fid = 0;
+	const char *gname = head->casio_mcshead_group;
+	const char *fname = head->casio_mcshead_name;
+	unsigned int rawtype = head->casio_mcshead_rawtype;
 	const struct group_corresp *g;
 	const struct type_corresp *t;
 
 	/* log what we're looking for */
 	msg((ll_info, "Looking for type with '%.8s' group, '%.8s' name and "
 		"0x%02X raw type", gname, fname, rawtype));
-
-	/* copy raw information */
-	memset(head, 0, sizeof(casio_mcshead_t));
-	head->casio_mcshead_flags |= casio_mcsfor_mcs;
-	memcpy(head->casio_mcshead_name, fname, 8);
-	head->casio_mcshead_name[8] = 0;
-	memcpy(head->casio_mcshead_group, gname, 16);
-	head->casio_mcshead_group[16] = 0;
-	head->casio_mcshead_rawtype = rawtype;
-	if (dname) {
-		memcpy(head->casio_mcshead_dirname, dname, 8);
-		head->casio_mcshead_dirname[8] = 0;
-	} else
-		memset(head->casio_mcshead_dirname, 0, 9);
 
 	/* look for group correspondance */
 	for (g = mcs_groups; g->types; g++) {
@@ -381,14 +364,14 @@ notfound:
 }
 
 /**
- *	casio_correct_mcsfile_head:
- *	Correct information.
+ *	casio_correct_mcshead_to_mcs:
+ *	Make MCS raw data from the abstract data.
  *
- *	@arg	head		the mcs head to correct.
+ *	@arg	head		the MCS head to correct.
  *	@return				if an error was encountered.
  */
 
-int CASIO_EXPORT casio_correct_mcsfile_head(casio_mcshead_t *head)
+int CASIO_EXPORT casio_correct_mcshead_to_mcs(casio_mcshead_t *head)
 {
 	const struct group_corresp *g;
 	const struct type_corresp *t;
@@ -406,18 +389,15 @@ int CASIO_EXPORT casio_correct_mcsfile_head(casio_mcshead_t *head)
 		if (t->type != head->casio_mcshead_type) continue;
 
 		/* check if id is weighted by major */
-		if (casio_get_id_major(head->casio_mcshead_id)) {
-			if (~t->flags & weight_by_gid)
-				continue;
-		} else
-			continue;
+		if (casio_get_id_major(head->casio_mcshead_id)
+		 && ~t->flags & weight_by_gid) continue;
 
 		/* we have found the entry! */
 		goto found;
 	}
 
 	/* not found... */
-	return (casio_error_unknown);
+	return (casio_error_op);
 
 found:
 	/* put the group name */
@@ -461,10 +441,12 @@ found:
 	} else if (t->name)
 		strcpy(nm, t->name);
 
+	/* put the raw type */
+	head->casio_mcshead_rawtype = t->rawtype;
+
 	/* no error */
 	return (0);
 }
-
 /* ************************************************************************* */
 /*  Compare function                                                         */
 /* ************************************************************************* */

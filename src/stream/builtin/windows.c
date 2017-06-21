@@ -90,7 +90,7 @@ CASIO_LOCAL char *wfind(unsigned int vid, unsigned int pid)
 		msg((ll_info,
 			"Allocating space for interface information detail (%luo)",
 			RequiredSize));
-		DeviceInterfaceDetailData = malloc(RequiredSize);
+		DeviceInterfaceDetailData = casio_alloc(RequiredSize, 1);
 		if (!DeviceInterfaceDetailData) {
 			msg((ll_error, "Memory allocation failed. Oh well."));
 			break ;
@@ -113,13 +113,13 @@ CASIO_LOCAL char *wfind(unsigned int vid, unsigned int pid)
 		Path = DeviceInterfaceDetailData->DevicePath;
 		msg((ll_info, "Stumbled across: %s", Path));
 		if (strstr(Path, vidpid)) {
-			devpath = malloc(strlen(Path) + 1);
+			devpath = casio_alloc(strlen(Path) + 1, 1);
 			if (!devpath) break;
 			strcpy(devpath, Path);
 		}
 
 		/* free the allocated detail */
-		free(DeviceInterfaceDetailData);
+		casio_free(DeviceInterfaceDetailData);
 		if (devpath) break ;
 	}
 
@@ -272,7 +272,7 @@ CASIO_LOCAL int casio_win_close(void *vcookie)
 {
 	win_cookie_t *cookie = (win_cookie_t*)vcookie;
 	CloseHandle(cookie->_handle);
-	free(cookie);
+	casio_free(cookie);
 	return (0);
 }
 /* ************************************************************************* */
@@ -354,9 +354,9 @@ CASIO_LOCAL int casio_win_seek(void *vcookie, casio_off_t *offset,
 	/* get the move method */
 	DWORD MoveMethod;
 	switch (whence) {
-	case CASIO_SEEK_CUR:          MoveMethod = FILE_CURRENT;
-	case CASIO_SEEK_END:          MoveMethod = FILE_END;
-	default /* CASIO_SEEK_SET */: MoveMethod = FILE_BEGIN; }
+	case CASIO_SEEK_CUR:          MoveMethod = FILE_CURRENT; break;
+	case CASIO_SEEK_END:          MoveMethod = FILE_END;     break;
+	default /* CASIO_SEEK_SET */: MoveMethod = FILE_BEGIN;   break; }
 
 	ret = SetFilePointer(cookie->_handle, (LONG)*offset, NULL, MoveMethod);
 	if (ret == INVALID_SET_FILE_POINTER)
@@ -435,8 +435,8 @@ int CASIO_EXPORT casio_openusb_windows(casio_stream_t **stream)
 	p = wfind(0x07cf, 0x6101);
 	if (!p) return (casio_error_nocalc);
 
-	err = casio_open_stream_windows(stream, path);
-	free(p);
+	err = casio_opencom_windows(stream, p);
+	casio_free(p);
 	return (err);
 }
 
@@ -473,7 +473,7 @@ int CASIO_EXPORT casio_opencom_windows(casio_stream_t **stream,
 
 	/* make cookie */
 	msg((ll_info, "Making the cookie"));
-	cookie = malloc(sizeof(win_cookie_t));
+	cookie = casio_alloc(1, sizeof(win_cookie_t));
 	err = casio_error_alloc;
 	if (!cookie) goto fail;
 
@@ -483,11 +483,11 @@ int CASIO_EXPORT casio_opencom_windows(casio_stream_t **stream,
 	cookie->_end = 1;
 
 	/* initialize for real */
-	return (casio_open(stream, CASIO_MODE_READ | CASIO_MODE_WRITE,
+	return (casio_open(stream, CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE,
 		casio_streamtype_serial, cookie, &casio_windows_callbacks));
 fail:
 	if (fhandle != INVALID_HANDLE_VALUE) CloseHandle(fhandle);
-	if (cookie) free(cookie);
+	if (cookie) casio_free(cookie);
 	return (err);
 }
 

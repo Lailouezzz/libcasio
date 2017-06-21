@@ -115,7 +115,8 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 	casio_uint32_t check = casio_checksum32(std,
 		sizeof(casio_standard_header_t), 0);
 
-	/* reverse the standard header */ {
+	/* reverse the standard header */
+	{
 		unsigned char *u = (unsigned char*)std;
 		size_t i;
 

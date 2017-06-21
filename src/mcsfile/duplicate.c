@@ -33,12 +33,12 @@ int CASIO_EXPORT casio_duplicate_mcsfile(casio_mcsfile_t **h,
 	int err; casio_mcsfile_t *handle = NULL;
 
 	/* Make the handle. */
-	*h = malloc(sizeof(casio_mcsfile_t)); handle = *h;
+	*h = casio_alloc(1, sizeof(casio_mcsfile_t)); handle = *h;
 	if (!handle) return (casio_error_alloc);
 
 	/* Copy the file. */
 	err = casio_copy_mcsfile(handle, orig);
-	if (err) { free(handle); return (err); }
+	if (err) { casio_free(handle); return (err); }
 
 	/* Set the 'alloc' flag and return. */
 	handle->casio_mcsfile_head.casio_mcshead_flags |= casio_mcsflag_alloc;

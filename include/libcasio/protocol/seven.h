@@ -256,11 +256,10 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_send_eack
  * so if you're using a classical command, you should use them instead. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmd
-	OF((casio_link_t *casio__handle,
-		unsigned int casio__subtype));
+	OF((casio_link_t *casio__handle, unsigned int casio__code));
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmd_data
 	OF((casio_link_t *casio__handle,
-		unsigned int casio__subtype,  int casio__overwrite,
+		unsigned int casio__code,  int casio__overwrite,
 		unsigned int casio__datatype, unsigned long casio__filesize,
 		const char *casio__arg0, const char *casio__arg1,
 		const char *casio__arg2, const char *casio__arg3,

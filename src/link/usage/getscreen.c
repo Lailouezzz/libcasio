@@ -44,8 +44,8 @@ int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
 	chk_passive(handle);
 
 	/* allocate pixels. */
-	pixels = malloc(sizeof(uint32_t*) * HEIGHT
-		+ sizeof(uint32_t) * WIDTH * HEIGHT);
+	pixels = casio_alloc(sizeof(uint32_t*) * HEIGHT
+		+ sizeof(uint32_t) * WIDTH * HEIGHT, 1);
 	if (!pixels) failure(alloc);
 
 	/* prepare pixels. */
@@ -73,6 +73,6 @@ int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
 
 	err = 0;
 fail:
-	free(pixels);
+	casio_free(pixels);
 	return (0);
 }

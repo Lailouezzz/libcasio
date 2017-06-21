@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/read.c -- read from a stream.
+ * link/seven_mcs/delete.c -- delete a file on a Protocol 7.00 main memory.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,37 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "stream.h"
+#include "seven_mcs.h"
 
 /**
- *	casio_read:
- *	Read from a libcasio stream.
+ *	casio_sevenmcs_delete:
+ *	Delete a file on the link main memory.
  *
- *	@arg	stream		the stream to read from.
- *	@arg	dest		the destination buffer.
- *	@arg	size		the amount of bytes to read.
+ *	@arg	cookie		the link main memory cookie.
+ *	@arg	mcshead		the head of the file to delete.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
+int CASIO_EXPORT casio_sevenmcs_delete(sevenmcs_t *cookie,
+	casio_mcshead_t *mcshead)
 {
-	int err;
+	int err; casio_link_t *handle = cookie->sevenmcs_link;
+	casio_mcshead_t head;
 
-	/* check if we can read */
-	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
+	msg((ll_info, "Correcting the head."));
+	memcpy(&head, mcshead, sizeof(head));
+	if (casio_correct_mcshead(&head, casio_mcsfor_mcs))
+		return (casio_error_notfound);
 
-	/* read */
-	if (!size) return (0);
-	err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
-	if (err) {
-		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
-		goto fail;
-	}
+	msg((ll_info, "Sending the deletion command."));
+	err = casio_seven_send_cmdmcs_delfile(handle, &head);
+	if (err) return (err);
+	if (response.casio_seven_packet_type == casio_seven_type_nak)
+		return (casio_error_notfound);
+	if (response.casio_seven_packet_type != casio_seven_type_ack)
+		return (casio_error_unknown);
 
-	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
-fail:
-	stream->casio_stream_lasterr = err;
-	return (err);
+	return (0);
 }

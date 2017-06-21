@@ -71,7 +71,7 @@ CASIO_LOCAL int casio_libusb_close(void *vcookie)
 
 	if (cookie->_handle) libusb_close(cookie->_handle);
 	if (cookie->_context) libusb_exit(cookie->_context);
-	free(vcookie);
+	casio_free(vcookie);
 	return (0);
 }
 /* ************************************************************************* */
@@ -330,7 +330,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	}
 
 	/* make the cookie */
-	cookie = malloc(sizeof(libusb_cookie_t));
+	cookie = casio_alloc(1, sizeof(libusb_cookie_t));
 	err = casio_error_alloc;
 	if (!cookie) goto fail;
 	cookie->_context = context;
@@ -342,7 +342,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	return (casio_open(stream, CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE,
 		casio_streamtype_usb, cookie, &casio_libusb_callbacks));
 fail:
-	if (cookie)  free(cookie);
+	if (cookie)  casio_free(cookie);
 	if (dhandle) libusb_close(dhandle);
 	if (context) libusb_exit(context);
 	return (err);

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/corresp/cas_app.c -- get the CAS app out of raw identification data.
+ * mcsfile/reference/cas_app.c -- get the CAS app out of raw data.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../mcsfile.h"
+#include "reference.h"
 
 /* ************************************************************************* */
 /*  Local types                                                              */
@@ -86,17 +86,15 @@ CASIO_LOCAL const struct ext_corresp apps[] = {
 /*  Main functions                                                           */
 /* ************************************************************************* */
 /**
- *	casio_maketype_casapp:
+ *	casio_check_cas_app:
  *	Get the CAS application from raw CASDYN identification data.
  *
- *	@arg	head		the head to fill.
  *	@arg	ext			the extension value.
  *	@arg	app			the application name.
  *	@return				the error (if any).
  */
 
-int CASIO_EXPORT casio_maketype_casapp(casio_mcshead_t *head,
-	int ext, const char *app)
+int CASIO_EXPORT casio_check_cas_app(int ext, const char *app)
 {
 	const struct ext_corresp *e;
 	const struct app_corresp *a;
@@ -114,19 +112,11 @@ int CASIO_EXPORT casio_maketype_casapp(casio_mcshead_t *head,
 			break;
 	} if (!a->name) goto notfound;
 
-	/* copy raw information */
-	memset(head, 0, sizeof(casio_mcshead_t));
-	head->casio_mcshead_flags |= e->info; /* FIXME */
-	msg((ll_info, "Head info is 0x%04X", e->info));
-	strncpy((char*)head->casio_mcshead_appname, app, 3);
-	head->casio_mcshead_appname[3] = 0;
-
-	/* fill in info and return */
+	/* return */
 	return (0);
 
 notfound:
 	msg((ll_error, "Type with 0x%02X extension and '%.3s' app name was not "
 		"implemented or recognized", ext, app));
-	head->casio_mcshead_type = 0;
 	return (1);
 }

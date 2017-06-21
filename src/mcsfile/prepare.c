@@ -60,12 +60,12 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 
 		if (wd && ht) {
 			handle->casio_mcsfile_cells =
-				malloc(sizeof(casio_mcscell_t*) * ht);
+				casio_alloc(ht, sizeof(casio_mcscell_t*));
 			if (!handle->casio_mcsfile_cells) goto fail;
 			handle->casio_mcsfile_cells[0] =
-				malloc(sizeof(casio_mcscell_t) * wd * ht);
+				casio_alloc(wd * ht, sizeof(casio_mcscell_t));
 			if (!handle->casio_mcsfile_cells[0]) {
-				free(handle->casio_mcsfile_cells); goto fail; }
+				casio_free(handle->casio_mcsfile_cells); goto fail; }
 
 			for (y = 1; y < ht; y++)
 				handle->casio_mcsfile_cells[y] = &handle->casio_mcsfile_cells
@@ -78,8 +78,8 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 		if (head->casio_mcshead_count <= 1)
 			handle->casio_mcsfile_vars = &handle->casio_mcsfile_var;
 		else {
-			handle->casio_mcsfile_vars = malloc(sizeof(casio_mcscell_t)
-				* head->casio_mcshead_count);
+			handle->casio_mcsfile_vars = casio_alloc(head->casio_mcshead_count,
+				sizeof(casio_mcscell_t));
 			if (!handle->casio_mcsfile_vars) goto fail;
 			memset(handle->casio_mcsfile_vars, 0, sizeof(casio_mcscell_t)
 				* head->casio_mcshead_count);
@@ -89,15 +89,16 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 	/* allocate the set of pixels */
 	case casio_mcstype_pict: case casio_mcstype_capt:
 		/* set count */
-		head->casio_mcshead_count =
-			(head->casio_mcshead_type == casio_mcstype_pict) ? 2 : 1;
+		head->casio_mcshead_count = 1;
+		if (head->casio_mcshead_type == casio_mcstype_pict)
+			head->casio_mcshead_count = 2;
 
 		/* allocate directory */
 		if (head->casio_mcshead_count <= 1)
 			handle->casio_mcsfile_pics = &handle->casio_mcsfile_pic;
 		else {
-			handle->casio_mcsfile_pics = malloc(sizeof(casio_pixel_t**)
-				* head->casio_mcshead_count);
+			handle->casio_mcsfile_pics = casio_alloc(head->casio_mcshead_count,
+				sizeof(casio_pixel_t**));
 			if (!handle->casio_mcsfile_pics) goto fail;
 		}
 
@@ -107,9 +108,9 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 				head->casio_mcshead_width, head->casio_mcshead_height);
 			if (!handle->casio_mcsfile_pics[i]) {
 				for (j = 0; j < i; j++)
-					free(handle->casio_mcsfile_pics[j]);
+					casio_free(handle->casio_mcsfile_pics[j]);
 				if (handle->casio_mcsfile_pics != &handle->casio_mcsfile_pic)
-					free(handle->casio_mcsfile_pics);
+					casio_free(handle->casio_mcsfile_pics);
 				goto fail;
 			}
 		}
@@ -128,7 +129,8 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 
 	/* allocate raw content */
 	default:
-		handle->casio_mcsfile_content = malloc(head->casio_mcshead_size);
+		handle->casio_mcsfile_content =
+			casio_alloc(head->casio_mcshead_size, 1);
 		if (!handle->casio_mcsfile_content) goto fail;
 		break;
 	}

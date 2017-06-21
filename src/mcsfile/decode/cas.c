@@ -20,6 +20,7 @@
  * https://casetta.tuxfamily.org/formats/cas
  * ************************************************************************* */
 #include "decode.h"
+#include "../reference/reference.h"
 #define FUNC(NAME)   &casio_decode_caspart_##NAME
 #define HFUNC(NAME) &casio_decode_cashpart_##NAME
 
@@ -93,11 +94,11 @@ CASIO_LOCAL int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
 	/* read the raw header */
 	DREAD(hd)
 	msg((ll_info, "Raw CAS50 (CASPRO) header content (app: '%.3s'):",
-		head->casio_mcshead_appname));
+		head->casio_mcshead_cas_app));
 	mem((ll_info, &hd, sizeof(casio_cas50_t)));
 
 	/* check the checksum */
-	csum = casio_checksum_cas(&hd, sizeof(casio_cas50_t) - 1, 0);
+	csum = casio_checksum_cas(&hd, sizeof(casio_cas50_t) - 1, csum);
 	if (csum != hd.casio_cas50_checksum) {
 		msg((ll_error, "Checksum mismatch: expected 0x%02X, got 0x%02X",
 			hd.casio_cas50_checksum, csum));
@@ -105,7 +106,9 @@ CASIO_LOCAL int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
 	}
 
 	/* copy the basic information */
-	casio_maketype_cas(head, (char*)hd.casio_cas50_data);
+	head->casio_mcshead_flags = casio_mcsfor_cas50;
+	memcpy(head->casio_mcshead_datatype, hd.casio_cas50_data, 2);
+	casio_correct_mcshead(head, 0);
 	head->casio_mcshead_size = be16toh(hd.casio_cas50_height)
 		- 2 /* checksum, colon */;
 	end = memchr(hd.casio_cas50_name, 0xFF, 8);
@@ -162,17 +165,27 @@ int CASIO_EXPORT casio_decode_casfile_head(casio_mcshead_t *head,
 
 	/* read beginning of the header, check if is an extended header */
 	READ(buf, 4) csum = casio_checksum_cas(buf, 4, 0);
-	if (!casio_maketype_casapp(head, dhd->casio_casdyn_ext,
-	 (char*)dhd->casio_casdyn_app))
-	  switch (head->casio_mcshead_flags & casio_mcsfor_mask) {
-		case casio_mcsfor_cas50:  return (decode_cas50(head, buffer, csum));
+	if (!casio_check_cas_app(dhd->casio_casdyn_ext,
+	  (char*)dhd->casio_casdyn_app)) {
+		memcpy(head->casio_mcshead_cas_app, dhd->casio_casdyn_app, 3);
+		head->casio_mcshead_cas_app[3] = 0;
+		head->casio_mcshead_cas_ext = dhd->casio_casdyn_ext;
+
+		switch (dhd->casio_casdyn_ext) {
+		case casio_casdyn_9850: /* FALLTHRU */
+		case casio_casdyn_end:
+			return (decode_cas50(head, buffer, csum));
+
 #if 0
-		case casio_mcsfor_cas100: return (decode_cas100(head, buffer));
+		case casio_casdyn_g100: /* FALLTHRU */
+		case casio_casdyn_g100b:
+			return (decode_cas100(head, buffer));
 #endif
 		default:
 			msg((ll_error, "Platform 0x%08X isn't implemented yet.",
 				head->casio_mcshead_flags & casio_mcsfor_mask));
 			return (casio_error_op);
+		}
 	}
 
 	/* is a CAS40 head, read it. */
@@ -180,7 +193,9 @@ int CASIO_EXPORT casio_decode_casfile_head(casio_mcshead_t *head,
 	csum = casio_checksum_cas(&buf[4], 34, csum);
 	msg((ll_info, "Raw CAS40 (CAS) header:"));
 	mem((ll_info, hd, sizeof(casio_cas40_t)));
-	if (casio_maketype_cas(head, (char*)hd->casio_cas40_data))
+	head->casio_mcshead_flags = casio_mcsfor_cas40;
+	memcpy(head->casio_mcshead_datatype, hd->casio_cas40_data, 2);
+	if (casio_correct_mcshead(head, 0))
 		return (casio_error_magic);
 	if (~csum + 1 != hd->casio_cas40_checksum)
 		return (casio_error_csum);

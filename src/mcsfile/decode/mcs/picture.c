@@ -55,7 +55,7 @@ int CASIO_EXPORT casio_decode_mcs_capture(casio_mcsfile_t **h,
 	pic_size = casio_get_picture_size(NULL, casio_pictureformat_1bit_packed,
 		head->casio_mcshead_width, head->casio_mcshead_height);
 	err = casio_error_alloc;
-	if (!(pic_raw = malloc(pic_size))) goto fail;
+	if (!(pic_raw = casio_alloc(pic_size, 1))) goto fail;
 	READ(pic_raw, pic_size)
 
 	/* get the image and return */
@@ -65,10 +65,10 @@ int CASIO_EXPORT casio_decode_mcs_capture(casio_mcsfile_t **h,
 		goto fail;
 
 	/* no error! */
-	free(pic_raw);
+	casio_free(pic_raw);
 	return (0);
 fail:
-	free(pic_raw);
+	casio_free(pic_raw);
 	casio_free_mcsfile(*h);
 	*h = NULL;
 	return (err);
@@ -102,7 +102,7 @@ int CASIO_EXPORT casio_decode_mcs_picture(casio_mcsfile_t **h,
 	pic_size = casio_get_picture_size(NULL, casio_pictureformat_1bit_packed,
 		head->casio_mcshead_width, head->casio_mcshead_height);
 	err = casio_error_alloc;
-	if (!(pics_raw = malloc(pic_size * 2))) goto fail;
+	if (!(pics_raw = casio_alloc(pic_size * 2, 1))) goto fail;
 	READ(pics_raw, pic_size * 2)
 
 	/* decode the images */
@@ -115,10 +115,10 @@ int CASIO_EXPORT casio_decode_mcs_picture(casio_mcsfile_t **h,
 		goto fail;
 
 	/* no error */
-	free(pics_raw);
+	casio_free(pics_raw);
 	return (0);
 fail:
 	casio_free_mcsfile(*h); *h = NULL;
-	free(pics_raw);
+	casio_free(pics_raw);
 	return (0);
 }

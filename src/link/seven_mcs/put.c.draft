@@ -1,0 +1,61 @@
+/* ****************************************************************************
+ * link/seven_mcs/put.c -- put a file into a protocol seven main memory.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ * ************************************************************************* */
+#include "seven_mcs.h"
+
+/**
+ *	casio_sevenmcs_put:
+ *	Put the file to the Protocol 7.00 main memory.
+ *
+ *	@arg	cookie		the Protocol 7.00 main memory interface detail.
+ *	@arg	mcsfile		the MCS file to send.
+ *	@return				the error code (0 if ok).
+ */
+
+int casio_sevenmcs_put(sevenmcs_t *cookie, casio_mcsfile_t *mcsfile)
+{
+	int err; casio_mcshead_t *head;
+	casio_stream_t *data_stream;
+
+	/* Send the command. */
+	msg((ll_info, "Sending the file request."));
+	err = casio_seven_send_cmd_data(cookie->sevenmcs_link,
+		casio_seven_cmdmcs_putfile, casio_seven_ow_force,
+		head.casio_mcshead_rawtype, /* FIXME: size */,
+		head.casio_mcshead_dirname, head.casio_mcshead_name,
+		head.casio_mcshead_group, NULL, NULL, NULL);
+	if (err) return (err);
+
+	/* Check the answer. */
+	if (response.casio_seven_packet_type == casio_seven_type_nak
+	 && response.casio_seven_packet_code == casio_seven_err_other)
+		return (casio_error_op);
+	else if (response.casio_seven_packet_type != casio_seven_type_ack)
+		return (casio_error_unknown);
+
+	/* Make the data stream. */
+	err = casio_seven_open_data_stream(&data_stream, cookie->sevenmcs_link,
+		/* FIXME: size */, cookie->sevenmcs_disp,
+		cookie->sevenmcs_disp_cookie);
+	if (err) return (err);
+
+	/* Encode the file on-the-flight. */
+	err = casio_encode_mcsfile(mcsfile, data_stream);
+	casio_close(data_stream);
+	return (err);
+}

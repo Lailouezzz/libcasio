@@ -34,7 +34,7 @@ int CASIO_EXPORT casio_open_mcs(casio_mcs_t **m, void *cookie,
 	int err; casio_mcs_t *mcs = NULL;
 
 	/* Allocate the filesystem. */
-	*m = malloc(sizeof(casio_mcs_t)); mcs = *m;
+	*m = casio_alloc(1, sizeof(casio_mcs_t)); mcs = *m;
 	if (!mcs) { err = casio_error_alloc; goto fail; }
 
 	/* Set it up and return it. */
@@ -61,6 +61,6 @@ int CASIO_EXPORT casio_close_mcs(casio_mcs_t *mcs)
 	if (!mcs || !(func = mcs->casio_mcs_funcs.casio_mcsfuncs_close))
 		return (0);
 	err = (*func)(mcs->casio_mcs_cookie);
-	free(mcs);
+	casio_free(mcs);
 	return (err);
 }

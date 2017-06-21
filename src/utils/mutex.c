@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/write.c -- write to a stream.
+ * utils/mutex.c -- mutex internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,55 +16,65 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "stream.h"
+#include "../internals.h"
 
 /**
- *	casio_write:
- *	Write to a libcasio stream.
+ *	casio_init_mutex:
+ *	Initialize a mutex.
  *
- *	@arg	stream		the stream to write to.
- *	@arg	data		the data to write.
- *	@arg	size		the amount of bytes to write.
- *	@return				the error code (0 if ok).
+ *	@arg	mutex		the mutex to initialize.
  */
 
-int CASIO_EXPORT casio_write(casio_stream_t *stream,
-	const void *data, size_t size)
+void CASIO_EXPORT casio_init_mutex(casio_mutex_t *mutex)
 {
-	int err;
-
-	/* check if we can write */
-	failure(~stream->casio_stream_mode & CASIO_OPENMODE_WRITE,
-		casio_error_write)
-
-	/* write */
-	if (!size) return (0);
-	err = (*getcb(stream, write))(stream->casio_stream_cookie, data, size);
-	if (err) {
-		msg((ll_error, "Stream writing failure: %s", casio_strerror(err)));
-		goto fail;
-	}
-
-	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
-fail:
-	stream->casio_stream_lasterr = err;
-	return (err);
+	*mutex = 0;
 }
 
 /**
- *	casio_write_char:
- *	Write a character to a libcasio stream.
+ *	casio_lock_mutex:
+ *	Lock a mutex.
  *
- *	@arg	stream		the stream to write to.
- *	@arg	car			the character to write.
+ *	@arg	mutex		the mutex to lock.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_write_char(casio_stream_t *stream, int car)
+int  CASIO_EXPORT casio_lock_mutex(casio_mutex_t *mutex)
 {
-	unsigned char ccar = car;
+	int err;
 
-	return (casio_write(stream, &ccar, 1));
+	if (!*mutex) goto unlocked;
+	if ((err = casio_sleep(0))) return (err);
+	while (*(volatile casio_mutex_t*)mutex)
+		casio_sleep(5);
+
+unlocked:
+	*mutex = 1;
+	return (0);
+}
+
+/**
+ *	casio_trylock_mutex:
+ *	Try to lock a mutex.
+ *
+ *	@arg	mutex		the mutex to lock.
+ *	@return				the error code (0 if ok).
+ */
+
+int  CASIO_EXPORT casio_trylock_mutex(casio_mutex_t *mutex)
+{
+	if (*mutex) return (casio_error_lock);
+	*mutex = 1;
+	return (0);
+}
+
+/**
+ *	casio_unlock_mutex:
+ *	Unlock a mutex.
+ *
+ *	@arg	mutex		the mutex to unlock.
+ */
+
+void CASIO_EXPORT casio_unlock_mutex(casio_mutex_t *mutex)
+{
+	*mutex = 0;
 }

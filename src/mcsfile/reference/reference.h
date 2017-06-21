@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/read.c -- read from a stream.
+ * mcsfile/reference/reference.h -- reference functions.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,37 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "stream.h"
+#ifndef  LOCAL_MCSFILE_REFERENCE_H
+# define LOCAL_MCSFILE_REFERENCE_H 1
+# include "../mcsfile.h"
 
-/**
- *	casio_read:
- *	Read from a libcasio stream.
- *
- *	@arg	stream		the stream to read from.
- *	@arg	dest		the destination buffer.
- *	@arg	size		the amount of bytes to read.
- *	@return				the error code (0 if ok).
- */
+/* MCS metadata. */
 
-int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
-{
-	int err;
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_mcs
+	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_mcs
+	OF((casio_mcshead_t *casio__head));
 
-	/* check if we can read */
-	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
+/* CAS40 & CAS50 data type. */
 
-	/* read */
-	if (!size) return (0);
-	err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
-	if (err) {
-		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
-		goto fail;
-	}
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_casdata
+	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_casdata
+	OF((casio_mcshead_t *casio__head));
 
-	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
-fail:
-	stream->casio_stream_lasterr = err;
-	return (err);
-}
+/* Check if a CAS app exists. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_check_cas_app
+	OF((int casio__ext, const char *casio__app));
+
+#endif /* LOCAL_MCSFILE_REFERENCE_H */

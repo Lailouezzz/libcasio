@@ -91,10 +91,6 @@ CASIO_LOCAL int casio_seven_send_buf(casio_link_t *handle,
 		/* send prepared packet */
 		err = casio_write(handle->casio_link_stream, buf, bufsize);
 		if (err) return (err);
-#if 0 /* FIXME */
-		if (handle->casio_link_last_type == casio_seven_type_swp)
-			handle->casio_link_flags &= ~casio_linkflag_ended;
-#endif
 
 		/* set wasreset for logging */
 		wasresend = 1;
@@ -110,6 +106,8 @@ CASIO_LOCAL int casio_seven_send_buf(casio_link_t *handle,
 	}
 
 	/* packet sending is finished */
+	if (!resp_err && handle->casio_link_curr_type == casio_seven_type_swp)
+		handle->casio_link_flags &= ~casio_linkflag_active;
 	return (resp_err);
 }
 
