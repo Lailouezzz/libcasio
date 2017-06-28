@@ -131,6 +131,9 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 		be32toh(std->casio_standard_header_filesize);
 	std->casio_standard_header_number =
 		be16toh(std->casio_standard_header_number);
+	msg((ll_info, "Standard Header filesize is 0x%08" CASIO_PRIX32 "o",
+		std->casio_standard_header_filesize));
+
 
 	/* get the type */
 	if (casio_maketype_std(path, std, &mflags, &platform, &type))
@@ -152,6 +155,7 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 	/* check if there is a standard subheader */
 	if (mflags & casio_stdflag_sub) {
 		casio_standard_subheader_t hd;
+		casio_stream_t *csum_stream;
 
 		msg((ll_info, "Has a Standard Subheader!"));
 		DREAD(hd)
@@ -175,8 +179,15 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 			check = casio_checksum32(&shd,
 				sizeof(casio_standard_classpad_subheader_t), check);
 
+			/* make the checksum stream */
+			msg((ll_info, "Opening the checksum stream"));
+			err = casio_open_csum32(&csum_stream, buffer, &check);
+			if (err) return (err);
+
 			/* decode the file content */
-			err = (*rd)(h, buffer, std, &hd, &shd, &check);
+			msg((ll_info, "Decoding the file using the specific function"));
+			err = (*rd)(h, csum_stream, std, &hd, &shd);
+			casio_close(csum_stream);
 			if (err) return (err);
 		} else if (platform == casio_filefor_cg) {
 			casio_standard_prizm_subheader_t shd;
@@ -186,8 +197,15 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 			check = casio_checksum32(&shd,
 				sizeof(casio_standard_prizm_subheader_t), check);
 
+			/* make the checksum stream */
+			msg((ll_info, "Opening the checksum stream"));
+			err = casio_open_csum32(&csum_stream, buffer, &check);
+			if (err) return (err);
+
 			/* decode the file content */
-			err = (*rd)(h, buffer, std, &hd, &shd, &check);
+			msg((ll_info, "Decoding the file using the specific function"));
+			err = (*rd)(h, csum_stream, std, &hd, &shd);
+			casio_close(csum_stream);
 			if (err) return (err);
 
 			/* read the footer */
@@ -200,8 +218,12 @@ int CASIO_EXPORT casio_decode_std(casio_file_t **h, const char *path,
 
 		/* check the sum */
 		err = casio_error_csum;
-		if (check != be32toh(hd.casio_standard_subheader_checksum))
+		if (check != be32toh(hd.casio_standard_subheader_checksum)) {
+			msg((ll_error, "Checksum mismatch: got 0x%08" CASIO_PRIX32
+				", expected 0x%08" CASIO_PRIX32,
+				check, be32toh(hd.casio_standard_subheader_checksum)));
 			goto fail;
+		}
 
 		/* no error */
 		return (0);

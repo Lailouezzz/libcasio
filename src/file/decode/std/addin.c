@@ -97,14 +97,12 @@ fail:
  *	@arg	std			the standard header.
  *	@arg	sub			the standard subheader.
  *	@arg	cp			the classpad-specific subheader.
- *	@arg	check		the checksum to feed.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_decode_std_cp_addin(casio_file_t **h,
 	casio_stream_t *buffer, casio_standard_header_t *std,
-	casio_standard_subheader_t *sub, casio_standard_classpad_subheader_t *cp,
-	casio_uint32_t *check)
+	casio_standard_subheader_t *sub, casio_standard_classpad_subheader_t *cp)
 {
 	int err = 0;
 	casio_file_t *handle;
@@ -114,8 +112,6 @@ int CASIO_EXPORT casio_decode_std_cp_addin(casio_file_t **h,
 
 	/* read the add-in subheader */
 	DREAD(cphd)
-	*check = casio_checksum32(&cphd,
-		sizeof(casio_classpad_addin_subheader_t), *check);
 
 	/* make the handle */
 	casio_decode_version(&version,
@@ -152,8 +148,6 @@ int CASIO_EXPORT casio_decode_std_cp_addin(casio_file_t **h,
 
 	/* get content */
 	GREAD(handle->casio_file_content, handle->casio_file_size)
-	*check = casio_checksum32(handle->casio_file_content,
-		handle->casio_file_size, *check);
 
 	/* no error */
 	return (0);
@@ -173,14 +167,12 @@ fail:
  *	@arg	std			the standard header.
  *	@arg	sub			the standard subheader.
  *	@arg	prizm		the prizm-specific subheader.
- *	@arg	check		the checksum to feed.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_decode_std_cg_addin(casio_file_t **h,
 	casio_stream_t *buffer, casio_standard_header_t *std,
-	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm,
-	casio_uint32_t *check)
+	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm)
 {
 	int err = 0;
 	casio_prizm_addin_subheader_t cghd; size_t content_size;
@@ -190,8 +182,6 @@ int CASIO_EXPORT casio_decode_std_cg_addin(casio_file_t **h,
 
 	/* read the add-in subheader */
 	DREAD(cghd)
-	*check = casio_checksum32(&cghd,
-		sizeof(casio_prizm_addin_subheader_t), *check);
 
 	/* make the handle */
 	casio_decode_version(&version,
@@ -206,8 +196,9 @@ int CASIO_EXPORT casio_decode_std_cg_addin(casio_file_t **h,
 		+ sizeof(casio_uint32_t);
 	msg((ll_info, "Content size is %" CASIO_PRIuSIZE, content_size));
 	err = casio_make_addin(h, casio_filefor_cg, content_size,
+		(char*)sub->casio_standard_subheader_title,
 		(char*)sub->casio_standard_subheader_internal_name,
-		(char*)sub->casio_standard_subheader_title, &version, &created);
+		&version, &created);
 	if (err) return (err);
 	handle = *h;
 
@@ -232,8 +223,6 @@ int CASIO_EXPORT casio_decode_std_cg_addin(casio_file_t **h,
 
 	/* read content */
 	GREAD(handle->casio_file_content, handle->casio_file_size)
-	*check = casio_checksum32(handle->casio_file_content,
-		handle->casio_file_size, *check);
 
 	/* no error */
 	return (0);

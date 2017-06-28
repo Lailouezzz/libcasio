@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/decode/cas/screenshot.c -- decode a CAS screenshot.
+ * mcsfile/decode/cas/sshot.c -- decode a CAS screenshot.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * log/manage.c -- manage libcasio logging utilities.
+ * log/manage.c -- fiddle with libcasio log settings.
  * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -17,15 +17,10 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "log.h"
-#undef islog
-#define islog(CASIO__LOGLEVEL) \
-	(casio_getlog() <= (CASIO__LOGLEVEL))
-
-/* ************************************************************************* */
-/*  Interact with the log settings at runtime                                */
-/* ************************************************************************* */
+#if !defined(LIBCASIO_DISABLED_LOG)
 /* The log setting */
 CASIO_LOCAL casio_loglevel_t log_setting = LOGLEVEL;
+#endif
 
 /**
  *	casio_setlog:
@@ -34,9 +29,13 @@ CASIO_LOCAL casio_loglevel_t log_setting = LOGLEVEL;
  *	@arg	level	the level to set.
  */
 
-void CASIO_EXPORT casio_setlog(casio_loglevel_t level)
+void CASIO_EXPORT casio_setlog(const char *level)
 {
-	log_setting = level;
+#if !defined(LIBCASIO_DISABLED_LOG)
+	log_setting = casio_loglevel_fromstring(level);
+#else
+	(void)level;
+#endif
 }
 
 /**
@@ -46,71 +45,16 @@ void CASIO_EXPORT casio_setlog(casio_loglevel_t level)
  *	@return			the current level.
  */
 
-casio_loglevel_t CASIO_EXPORT casio_getlog(void)
+const char* CASIO_EXPORT casio_getlog(void)
 {
-	return (log_setting);
-}
-/* ************************************************************************* */
-/*  Make conversions between settings values and strings, list settings      */
-/* ************************************************************************* */
-/**
- *	casio_loglevel_tostring:
- *	Make a string out of a log level.
- *
- *	@arg	level	the log level.
- *	@return			the string.
- */
-
-const char* CASIO_EXPORT casio_loglevel_tostring(casio_loglevel_t level)
-{
-	if (level >= 0  && level < 10)
-		return ("info");
-	if (level >= 10 && level < 20)
-		return ("warn");
-	if (level >= 20 && level < 30)
-		return ("error");
-	if (level >= 30 && level < 40)
-		return ("fatal");
+#if !defined(LIBCASIO_DISABLED_LOG)
+	return (casio_loglevel_tostring(log_setting));
+#else
 	return ("none");
+#endif
 }
 
-/**
- *	casio_loglevel_fromstring:
- *	Make a log level out of a string.
- *
- *	@arg	string	the string.
- *	@return			the log level.
- */
-
-casio_loglevel_t CASIO_EXPORT casio_loglevel_fromstring(const char *string)
-{
-	if (!strcmp(string, "info"))
-		return (casio_loglevel_info);
-	if (!strcmp(string, "warn"))
-		return (casio_loglevel_warn);
-	if (!strcmp(string, "error"))
-		return (casio_loglevel_error);
-	if (!strcmp(string, "fatal"))
-		return (casio_loglevel_fatal);
-	return (casio_loglevel_none);
-}
-
-/**
- *	casio_listlog:
- *	List log levels.
- *
- *	@arg	callback	the callback.
- *	@arg	cookie		the callback cookie.
- */
-
-void CASIO_EXPORT casio_listlog(casio_log_list_t *callback, void *cookie)
-{
-	(*callback)(cookie, "info");
-	(*callback)(cookie, "warn");
-	(*callback)(cookie, "error");
-	(*callback)(cookie, "fatal");
-}
-
+#if !defined(LIBCASIO_DISABLED_LOG)
 /**
  *	casio_islog:
  *	Get the log level out of the ll_* tuples.
@@ -123,5 +67,6 @@ void CASIO_EXPORT casio_listlog(casio_log_list_t *callback, void *cookie)
 int CASIO_EXPORT casio_islog(casio_loglevel_t level, const char *func)
 {
 	(void)func;
-	return (islog(level));
+	return (log_setting <= level);
 }
+#endif

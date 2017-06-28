@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/main/usb.c -- open a USB stream.
+ * stream/open/usb.c -- open a USB stream.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.

@@ -25,6 +25,7 @@ no_libusb=
 static=
 windows=
 optimize_size=
+no_log=
 loglevel=none # none, info, warn, error, fatal
 
 # Installation directories
@@ -69,7 +70,8 @@ Build options:
   --optimize-size           optimize size instead of speed
   --no-file                 do not use the libc FILE interface
   --no-libusb               do not use libusb
-  --loglevel=LOGLEVEL       library log level [$loglevel]
+  --no-log                  disable logging
+  --loglevel=LOGLEVEL       default library log level [$loglevel]
 
 Installation options:
   --no-manpages             should not make and install manpages
@@ -133,6 +135,7 @@ for arg ; do case "$arg" in
 --optimize-size) optimize_size=y ;;
 --no-file) no_file=y ;;
 --no-libusb) no_libusb=y ;;
+--no-log) no_log=y ;;
 --loglevel=*)
 	level="${arg#*=}"
 	# check if is in array
@@ -226,6 +229,7 @@ tools/write-header-config --version=${version} \
 	--maintainer="$(echo ${maintainer} | sed 's/"/\\"/g')" \
 	$([ "$no_file" ] && echo --no-file) \
 	$([ "$no_libusb" ] && echo --no-libusb) \
+	$([ "$no_log" ] && echo --no-log) \
 	>include/${name}/config.h
 
 # Do it!

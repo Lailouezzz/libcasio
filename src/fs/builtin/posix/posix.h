@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/duplicate.c -- duplicate an MCS file handle.
+ * fs/builtin/posix/posix.h -- POSIX filesystem internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,31 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "mcsfile.h"
+#ifndef  LOCAL_FS_BUILTIN_POSIX_H
+# define LOCAL_FS_BUILTIN_POSIX_H 1
+# include "../../../internals.h"
 
-/**
- *	casio_duplicate_mcsfile:
- *	Copy an MCS file.
- *
- *	@arg	h			the file to allocate.
- *	@arg	orig		the original file.
- *	@return				the error code (0 if ok).
- */
+CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path_array
+	OF((casio_path_t **casio__path, const char *casio__rawpath));
 
-int CASIO_EXPORT casio_duplicate_mcsfile(casio_mcsfile_t **h,
-	casio_mcsfile_t *orig)
-{
-	int err; casio_mcsfile_t *handle = NULL;
-
-	/* Make the handle. */
-	*h = casio_alloc(1, sizeof(casio_mcsfile_t)); handle = *h;
-	if (!handle) return (casio_error_alloc);
-
-	/* Copy the file. */
-	err = casio_copy_mcsfile(handle, orig);
-	if (err) { casio_free(handle); return (err); }
-
-	/* Set the 'alloc' flag and return. */
-	handle->casio_mcsfile_head.casio_mcshead_flags |= casio_mcsflag_alloc;
-	return (0);
-}
+#endif /* LOCAL_FS_BUILTIN_POSIX_H */

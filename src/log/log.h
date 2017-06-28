@@ -26,17 +26,30 @@
 # include "../internals.h"
 # include <stdio.h>
 
+/* These definitions used to be public, but they went private in order to
+ * not have numbers *and* strings in the public interface.
+ * Strings allow an easier future compatibility. */
+
+typedef int casio_loglevel_t;
+# define casio_loglevel_info   0
+# define casio_loglevel_warn  10
+# define casio_loglevel_error 20
+# define casio_loglevel_fatal 30
+# define casio_loglevel_none  40
+
 /* Cross-compiler and cross-standard `__func__` variable to display
  * the function on logging. */
 
-#  if defined(__cplusplus) ? CASIO_GNUC_PREREQ(2, 6) \
+# if defined(__cplusplus) ? CASIO_GNUC_PREREQ(2, 6) \
    : !defined(__STRICT_ANSI__) && CASIO_GNUC_PREREQ(2, 4)
-#   define CASIO_LOGFUNC __PRETTY_FUNCTION__
-#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#   define CASIO_LOGFUNC __func__
-#  else
-#   define CASIO_LOGFUNC NULL
-#  endif
+#  define CASIO_LOGFUNC __PRETTY_FUNCTION__
+# elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#  define CASIO_LOGFUNC __func__
+# elif !defined(__STRICT_ANSI__) && CASIO_GNUC_PREREQ(2, 0)
+#  define CASIO_LOGFUNC __FUNCTION__
+# else
+#  define CASIO_LOGFUNC NULL
+# endif
 
 /* Log levels */
 # define ll_info  casio_loglevel_info,  CASIO_LOGFUNC
@@ -97,6 +110,14 @@
 	else msg(CASIO__ARGS)
 #  define elsemem(             CASIO__ARGS) \
 	else mem(CASIO__ARGS)
+
+/* Conversion functions between strings and numbers.
+ * Strings are for the external API, numbers for the internal one. */
+
+CASIO_EXTERN const char*      CASIO_EXPORT casio_loglevel_tostring
+	OF((casio_loglevel_t casio__level));
+CASIO_EXTERN casio_loglevel_t CASIO_EXPORT casio_loglevel_fromstring
+	OF((const char *casio__string));
 
 /* Here are the main functions. Don't use them directly, prefer the
  * `msg` and `mem` macros as they are sensible to the fact that logging

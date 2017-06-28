@@ -18,9 +18,6 @@
  * ************************************************************************* */
 #include "log.h"
 #include <stdarg.h>
-#undef islog
-#define islog(CASIO__LOGLEVEL) \
-	(casio_getlog() <= (CASIO__LOGLEVEL))
 #if !defined(LIBCASIO_DISABLED_LOG)
 
 /**
@@ -55,13 +52,15 @@ void CASIO_EXPORT casio_log_msg(casio_loglevel_t loglevel,
 	const char *func, const char *format, ...)
 {
 	va_list args;
+	int shouldlog = casio_islog(loglevel, NULL);
 
 	/* put the prefix */
-	if (islog(loglevel)) casio_log_prefix(loglevel, func);
+	if (shouldlog)
+		casio_log_prefix(loglevel, func);
 
 	/* put the main part */
 	va_start(args, format);
-	if (islog(loglevel)) {
+	if (shouldlog) {
 		vfprintf(stderr, format, args);
 		fputc('\n', stderr);
 	}

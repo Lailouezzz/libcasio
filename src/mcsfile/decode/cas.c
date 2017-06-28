@@ -20,7 +20,7 @@
  * https://casetta.tuxfamily.org/formats/cas
  * ************************************************************************* */
 #include "decode.h"
-#include "../reference/reference.h"
+#include "../ref/ref.h"
 #define FUNC(NAME)   &casio_decode_caspart_##NAME
 #define HFUNC(NAME) &casio_decode_cashpart_##NAME
 
@@ -125,7 +125,7 @@ CASIO_LOCAL int decode_cas50(casio_mcshead_t *head, casio_stream_t *buffer,
 		len = end ? (size_t)(end - (char*)hd.casio_cas50_aux) : 8;
 		memcpy(head->casio_mcshead_password, hd.casio_cas50_aux, len);
 		head->casio_mcshead_password[len] = 0;
-		msg((ll_info, "Is a program of %" PRIuFAST32 " bytes",
+		msg((ll_info, "Is a program of %lu bytes",
 			head->casio_mcshead_size));
 		break;
 	case casio_mcstype_variable:

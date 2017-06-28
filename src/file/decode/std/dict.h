@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/reference/reference.h -- reference functions.
+ * file/decode/std/dict.h -- dictionary decoding.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,27 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_MCSFILE_REFERENCE_H
-# define LOCAL_MCSFILE_REFERENCE_H 1
-# include "../mcsfile.h"
+#ifndef  LOCAL_FILE_DECODE_STD_DICT_H
+# define LOCAL_FILE_DECODE_STD_DICT_H 1
+# include "../decode.h"
 
-/* MCS metadata. */
+typedef int casio_decode_dict_entry_t
+	OF((void *casio__cookie, unsigned int casio__id,
+		void *casio__mem, size_t casio__size));
 
-CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_mcs
-	OF((casio_mcshead_t *casio__head));
-CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_mcs
-	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_decode_std_dict
+	OF((casio_stream_t *casio__buffer,
+		casio_decode_dict_entry_t *casio__callback, void *casio__cookie,
+		unsigned int casio__num, unsigned long casio__size, int casio__is32));
 
-/* CAS40 & CAS50 data type. */
-
-CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_casdata
-	OF((casio_mcshead_t *casio__head));
-CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_casdata
-	OF((casio_mcshead_t *casio__head));
-
-/* Check if a CAS app exists. */
-
-CASIO_EXTERN int CASIO_EXPORT casio_check_cas_app
-	OF((int casio__ext, const char *casio__app));
-
-#endif /* LOCAL_MCSFILE_REFERENCE_H */
+#endif /* LOCAL_FILE_DECODE_STD_DICT_H */

@@ -45,7 +45,8 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-CASIO_LOCAL int casio_libusb_settm(void *vcookie, const casio_timeouts_t *timeouts)
+CASIO_LOCAL int casio_libusb_settm(void *vcookie,
+	const casio_timeouts_t *timeouts)
 {
 	libusb_cookie_t *cookie = (void*)vcookie;
 
@@ -69,7 +70,7 @@ CASIO_LOCAL int casio_libusb_close(void *vcookie)
 {
 	libusb_cookie_t *cookie = (libusb_cookie_t*)vcookie;
 
-	if (cookie->_handle) libusb_close(cookie->_handle);
+	if (cookie->_handle)  libusb_close(cookie->_handle);
 	if (cookie->_context) libusb_exit(cookie->_context);
 	casio_free(vcookie);
 	return (0);
@@ -88,7 +89,8 @@ CASIO_LOCAL int casio_libusb_close(void *vcookie)
  */
 
 # define ENDPOINT_IN (LIBUSB_ENDPOINT_IN | LIBUSB_TRANSFER_TYPE_BULK)
-CASIO_LOCAL int casio_libusb_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_libusb_read(void *vcookie,
+	unsigned char *dest, size_t size)
 {
 	int libusberr; libusb_cookie_t *cookie = (libusb_cookie_t*)vcookie;
 	size_t tocopy;
@@ -117,6 +119,7 @@ CASIO_LOCAL int casio_libusb_read(void *vcookie, unsigned char *dest, size_t siz
 			case LIBUSB_ERROR_PIPE:
 			case LIBUSB_ERROR_NO_DEVICE:
 			case LIBUSB_ERROR_IO:
+				msg((ll_error, "The calculator is not here anymore :("));
 				return (casio_error_nocalc);
 
 			case LIBUSB_ERROR_TIMEOUT:
@@ -171,6 +174,7 @@ CASIO_LOCAL int casio_libusb_write(void *vcookie,
 
 		case LIBUSB_ERROR_PIPE:
 		case LIBUSB_ERROR_NO_DEVICE:
+			msg((ll_error, "The calculator is not here anymore :("));
 			return (casio_error_nocalc);
 
 		default:
@@ -284,7 +288,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	/* disconnect any kernel driver */
 	msg((ll_info, "Detaching kernel driver, if any."));
 	uerr = libusb_detach_kernel_driver(dhandle, 0);
-	switch(uerr) {
+	switch (uerr) {
 		/* cases where it's okay */
 		case 0: case LIBUSB_ERROR_NOT_SUPPORTED:
 		case LIBUSB_ERROR_NOT_FOUND: break;
@@ -309,7 +313,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	/* claim the interface */
 	msg((ll_info, "Claiming the interface."));
 	uerr = libusb_claim_interface(dhandle, 0);
-	switch(uerr) {
+	switch (uerr) {
 		/* cases where it's okay (not a lot) */
 		case 0: break;
 

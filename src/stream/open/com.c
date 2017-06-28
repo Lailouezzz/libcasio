@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * stream/main/com.c -- open a COM stream.
+ * stream/open/com.c -- open a COM stream.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.

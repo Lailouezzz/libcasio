@@ -17,7 +17,7 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "mcsfile.h"
-#include "reference/reference.h"
+#include "ref/ref.h"
 
 /**
  *	casio_correct_mcshead:

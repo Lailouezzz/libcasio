@@ -35,7 +35,7 @@ int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
 	casio_link_screen_t *callback, void *cbcookie)
 {
 	int err = 0, y;
-	uint32_t **pixels = NULL, *base;
+	casio_pixel_t **pixels = NULL, *base;
 	unsigned int width, height;
 
 	/* make checks. */
@@ -44,8 +44,8 @@ int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
 	chk_passive(handle);
 
 	/* allocate pixels. */
-	pixels = casio_alloc(sizeof(uint32_t*) * HEIGHT
-		+ sizeof(uint32_t) * WIDTH * HEIGHT, 1);
+	pixels = casio_alloc(sizeof(casio_pixel_t*) * HEIGHT
+		+ sizeof(casio_pixel_t) * WIDTH * HEIGHT, 1);
 	if (!pixels) failure(alloc);
 
 	/* prepare pixels. */

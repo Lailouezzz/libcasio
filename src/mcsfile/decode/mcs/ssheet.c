@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/decode/mcs/spreadsheet.c -- decode an MCS spreadsheet.
+ * mcsfile/decode/mcs/ssheet.c -- decode an MCS spreadsheet.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.

@@ -27,8 +27,37 @@ struct         casio_filesystem_s;
 typedef struct casio_filesystem_s casio_filesystem_t;
 struct         casio_fsfuncs_s;
 typedef struct casio_fsfuncs_s    casio_fsfuncs_t;
+struct         casio_pathnode_s;
+typedef struct casio_pathnode_s   casio_pathnode_t;
+struct         casio_path_s;
+typedef struct casio_path_s       casio_path_t;
 struct         casio_stat_s;
 typedef struct casio_stat_s       casio_stat_t;
+/* ************************************************************************* */
+/*  Filesystem file path                                                     */
+/* ************************************************************************* */
+/* We ought to make a file path abstraction, that take into account all of the
+ * existing file systems, with devices, namespaces, and their character
+ * encodings.
+ *
+ * The path node is a path element, generally a file/folder/else name.
+ * It is stored as a linked list. */
+
+struct casio_pathnode_s {
+	casio_pathnode_t *casio_pathnode_next;
+	unsigned char     casio_pathnode_name[2048];
+};
+
+/* And here is the main path structure. */
+
+#define casio_pathflag_alloc 0x0001 /* path object is valid and allocated */
+#define casio_pathflag_rel   0x0002 /* relative path */
+
+struct casio_path_s {
+	unsigned int      casio_path_flags;
+	const char       *casio_path_device;
+	casio_pathnode_t *casio_path_nodes;
+};
 /* ************************************************************************* */
 /*  Filesystem file entry                                                    */
 /* ************************************************************************* */
@@ -50,31 +79,55 @@ typedef void casio_fs_list_func_t OF((void *casio__cookie,
 /* ************************************************************************* */
 /*  Filesystem description                                                   */
 /* ************************************************************************* */
-/* The filesystem is a private structure that represents a file system. */
+/* The filesystem is a private structure that represents a file system.
+ *
+ * The `casio_fs_stat` callback is to get information about a file or
+ * directory. */
 
 typedef int casio_fs_stat_t
 	OF((void *casio__cookie, const char *casio__device,
 		const void *casio__path[], casio_stat_t *casio__stat));
+
+/* The `casio_fs_makedir` callback creates a directory. */
+
 typedef int casio_fs_makedir_t
 	OF((void *casio__cookie, const char *casio__device,
 		const void *casio__path[]));
+
+/* The `casio_fs_del` callback deletes a file or directory. */
+
 typedef int casio_fs_del_t
 	OF((void *casio__cookie, const char *casio__device,
 		const void *casio__path[]));
+
+/* The `casio_fs_move` callback renames/moves a file into an
+ * other directory, eventually with an other name. */
+
 typedef int casio_fs_move_t
 	OF((void *casio__cookie, const char *casio__device,
 		const void *casio__orig[], const void *casio__new[]));
 
+/* The `casio_fs_open` callback makes a stream out of a file with a path. */
+
 typedef int casio_fs_open_t
 	OF((void *casio__cookie, const void *casio__path, casio_off_t size,
 		casio_openmode_t casio__mode, casio_stream_t **stream));
+
+/* The `casio_fs_list` callback lists files in a directory. */
 
 typedef int casio_fs_list_t
 	OF((void *casio__cookie, const char *casio__device,
 		const void *casio__dirpath[],
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
 
+/* The `casio_fs_close` callback is called when the filesystem interface
+ * is closed. */
+
 typedef int casio_fs_close_t OF((void *casio__cookie));
+
+/* And here is the structure with all of the functions.
+ * It is the one used when you want to open a libcasio filesystem interface
+ * abstraction. */
 
 struct casio_fsfuncs_s {
 	casio_fs_stat_t     *casio_fsfuncs_stat;

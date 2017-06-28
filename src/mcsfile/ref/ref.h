@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * libcasio/log.h -- libcasio logging.
+ * mcsfile/ref/ref.h -- reference functions.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,26 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_LOG_H
-# define LIBCASIO_LOG_H
-# include "cdefs.h"
-CASIO_BEGIN_NAMESPACE
-CASIO_BEGIN_DECLS
+#ifndef  LOCAL_MCSFILE_REF_H
+# define LOCAL_MCSFILE_REF_H 1
+# include "../mcsfile.h"
 
-/* Get and set the log level at runtime. */
-CASIO_EXTERN void        CASIO_EXPORT casio_setlog
-	OF((const char *casio__level));
-CASIO_EXTERN const char* CASIO_EXPORT casio_getlog
-	OF((void));
+/* MCS metadata. */
 
-/* List log levels */
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_mcs
+	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_mcs
+	OF((casio_mcshead_t *casio__head));
 
-typedef void casio_log_list_t OF((void *casio__cookie,
-	const char *casio__str));
+/* CAS40 & CAS50 data type. */
 
-CASIO_EXTERN void CASIO_EXPORT casio_listlog
-	OF((casio_log_list_t *casio__callback, void *casio__cookie));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_from_casdata
+	OF((casio_mcshead_t *casio__head));
+CASIO_EXTERN int CASIO_EXPORT casio_correct_mcshead_to_casdata
+	OF((casio_mcshead_t *casio__head));
 
-CASIO_END_DECLS
-CASIO_END_NAMESPACE
-#endif /* LIBCASIO_LOG_H */
+/* Check if a CAS app exists. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_check_cas_app
+	OF((int casio__ext, const char *casio__app));
+
+#endif /* LOCAL_MCSFILE_REF_H */

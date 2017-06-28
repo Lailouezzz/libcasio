@@ -31,7 +31,7 @@ const char* CASIO_EXPORT casio_error_strings[128] = {
 
 /* Stream errors. */
 
-	"the stream is invalid",
+	"the stream is invalid/no (more) stream",
 	"a read operation on the stream has failed",
 	"a write operation on the stream has failed",
 	"a seek operation on the stream has failed",

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * mcsfile/reference/cas_app.c -- get the CAS app out of raw data.
+ * mcsfile/ref/cas_app.c -- get the CAS app out of raw data.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "reference.h"
+#include "ref.h"
 
 /* ************************************************************************* */
 /*  Local types                                                              */

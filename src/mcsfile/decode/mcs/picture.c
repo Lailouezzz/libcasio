@@ -33,7 +33,7 @@ int CASIO_EXPORT casio_decode_mcs_capture(casio_mcsfile_t **h,
 {
 	int err;
 	casio_mcs_captureheader_t hd;
-	uint8_t *pic_raw = NULL; size_t pic_size;
+	unsigned char *pic_raw = NULL; size_t pic_size;
 	casio_mcsfile_t *handle;
 
 	/* read header */

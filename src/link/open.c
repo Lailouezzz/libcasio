@@ -22,8 +22,6 @@
  * custom stream, probably for its platform.
  * ************************************************************************* */
 #include "link.h"
-#include <stdlib.h>
-#include <string.h>
 
 /**
  *	casio_open_link:

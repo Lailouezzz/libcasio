@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * link/open_usb.c -- open a USB communication.
- * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * mcsfile/dup.c -- duplicate an MCS file handle.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,41 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "link.h"
+#include "mcsfile.h"
 
 /**
- *	casio_open_usb:
- *	Open a USB communication.
+ *	casio_duplicate_mcsfile:
+ *	Copy an MCS file.
  *
- *	@arg	handle		the link handle to make.
- *	@arg	flags		the link flags.
+ *	@arg	h			the file to allocate.
+ *	@arg	orig		the original file.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
+int CASIO_EXPORT casio_duplicate_mcsfile(casio_mcsfile_t **h,
+	casio_mcsfile_t *orig)
 {
-	int err, failed = 0, tries = 3; casio_stream_t *stream;
+	int err; casio_mcsfile_t *handle = NULL;
 
-	*handle = NULL;
-	msg((ll_info, "Looking for USB-connected calculators."));
-	while (1) {
-		if (failed) {
-			msg((ll_info, "Trying again in one second."));
-			casio_sleep(1000);
-		}
+	/* Make the handle. */
+	*h = casio_alloc(1, sizeof(casio_mcsfile_t)); handle = *h;
+	if (!handle) return (casio_error_alloc);
 
-		err = casio_open_usb_stream(&stream);
-		if (err == casio_error_op) return (casio_error_nocalc);
-		if (!err) break;
-		if (err != casio_error_nocalc)
-			return (err);
+	/* Copy the file. */
+	err = casio_copy_mcsfile(handle, orig);
+	if (err) { casio_free(handle); return (err); }
 
-		msg((ll_error, "No device found!"));
-		if (!tries--) return (casio_error_nocalc);
-		failed = 1;
-	}
-
-	err = casio_open_link(handle, flags, stream, NULL);
-	if (err) return (err);
+	/* Set the 'alloc' flag and return. */
+	handle->casio_mcsfile_head.casio_mcshead_flags |= casio_mcsflag_alloc;
 	return (0);
 }

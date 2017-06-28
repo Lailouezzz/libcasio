@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * link/open_com.c -- open a serial communication.
+ * link/open/com.c -- open a serial communication.
  * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "link.h"
+#include "../link.h"
 
 /**
  *	casio_open_com:

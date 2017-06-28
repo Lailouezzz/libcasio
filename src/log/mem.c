@@ -17,9 +17,6 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "log.h"
-#undef islog
-#define islog(CASIO__LOGLEVEL) \
-	(casio_getlog() <= (CASIO__LOGLEVEL))
 #ifndef LIBCASIO_DISABLED_LOG
 
 /**
@@ -88,7 +85,7 @@ void CASIO_EXPORT casio_log_mem(casio_loglevel_t loglevel, const char *func,
 	const unsigned char *p;
 
 	/* check if the log level is good */
-	if (!islog(loglevel)) return ;
+	if (!casio_islog(loglevel, NULL)) return ;
 
 	/* if nothing, print it directly */
 	if (!n) {

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * utils/extension.c -- file extension utilities.
+ * utils/ext.c -- file extension utilities.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.

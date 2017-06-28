@@ -55,16 +55,14 @@ CASIO_EXTERN int CASIO_EXPORT casio_decode_std_cg_##CASIO__NAME \
 	OF((casio_file_t **casio__file, casio_stream_t *casio__buffer, \
 		casio_standard_header_t *casio__std, \
 		casio_standard_subheader_t *casio__sub, \
-		casio_standard_prizm_subheader_t *casio__pzm, \
-		uint32_t *casio__check));
+		casio_standard_prizm_subheader_t *casio__pzm));
 
 # define CASIO_CPFUNC(CASIO__NAME) \
 CASIO_EXTERN int CASIO_EXPORT casio_decode_std_cp_##CASIO__NAME \
 	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer, \
 		casio_standard_header_t *casio__std, \
 		casio_standard_subheader_t *casio__sub, \
-		casio_standard_classpad_subheader_t *casio__cp, \
-		uint32_t *casio__check));
+		casio_standard_classpad_subheader_t *casio__cp));
 
 # define CASIO_PICFUNC(CASIO__NAME) \
 CASIO_EXTERN int CASIO_EXPORT casio_decode_std_##CASIO__NAME \

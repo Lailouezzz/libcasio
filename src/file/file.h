@@ -58,10 +58,11 @@
 /*  Picture utilities                                                        */
 /* ************************************************************************* */
 # define alloc_pixels(W, H) \
-	casio_alloc(sizeof(uint32_t*) * (H) + sizeof(uint32_t) * (W) * (H), 1)
+	casio_alloc(sizeof(casio_pixel_t*) * \
+		(H) + sizeof(casio_pixel_t) * (W) * (H), 1)
 # define prepare_pixels(I, W, H) { \
 	unsigned int PIXPREP_y; \
-	uint32_t *PIXPREP_line = (uint32_t*)&(I)[(H)]; \
+	casio_pixel_t *PIXPREP_line = (casio_pixel_t*)&(I)[(H)]; \
 	for (PIXPREP_y = 0; PIXPREP_y < (H); PIXPREP_y++) { \
 		(I)[PIXPREP_y] = PIXPREP_line; \
 		PIXPREP_line += (W); \

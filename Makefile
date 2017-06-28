@@ -86,7 +86,7 @@ dist: mrproper
  getmaintainer:
 	@echo "$(MAINTAINER_NAME) <$(MAINTAINER_MAIL)>"
 
-.PHONY: getname getauthor getmail getversion
+.PHONY: getname getversion getmaintainer
 #*****************************************************************************#
 # Library-specific targets                                                    #
 #*****************************************************************************#
@@ -99,10 +99,10 @@ dist: mrproper
 
 # Make an object out of a source file.
 define make-obj-rule
- $(OBJDIR)/$1.o: $(SRCDIR)/$1.c $(INC) | $(dir $(OBJDIR)/$1)
+ $(OBJDIR)/$1.c.o: $(SRCDIR)/$1.c $(INC) $(INCI) | $(dir $(OBJDIR)/$1)
 	$(call bcmd,cc,$$@,$(CC) -c -o $$@ $$< $(CFLAGS))
 endef
-$(foreach src,$(SRC),\
+$(foreach src,$(basename $(SRC)),\
 $(eval $(call make-obj-rule,$(src))))
 
 # Make the shared library.
@@ -151,8 +151,8 @@ $(eval $(call make-obj-rule,$(src))))
 		$(call imsg,Installing development files.))
 	$(if $(INSTALL_DEVEL),\
 		$(call qcmd,$(INST) -m 755 -d $(patsubst %,\
-			"$(IINCDIR)/lib$(NAME)-$(VERSION)/%", $(sort $(dir $(INCPUB))))))
-	$(if $(INSTALL_DEVEL),$(foreach i,$(INCPUB),\
+			"$(IINCDIR)/lib$(NAME)-$(VERSION)/%", $(sort $(dir $(INCp))))))
+	$(if $(INSTALL_DEVEL),$(foreach i,$(INCp),\
 		$(call qcmd,$(INST) -m 644 $(INCDIR)/$(i) \
 			"$(IINCDIR)/lib$(NAME)-$(VERSION)/$(i)"$(\n))))
 

@@ -30,10 +30,10 @@
  *	@arg	n			the buffer size.
  */
 
-CASIO_LOCAL void g3p_deobfuscate(uint8_t *buf, size_t n)
+CASIO_LOCAL void g3p_deobfuscate(unsigned char *buf, size_t n)
 {
 	while (n--) {
-		uint8_t byte = ~*buf;
+		unsigned char byte = ~*buf;
 		*buf++ = (byte << 5) | (byte >> 3);
 	}
 }
@@ -77,7 +77,8 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 		case g3p_color_16bit: picfmt = casio_pictureformat_16bit;
 			coldesc = "16-bit"; break;
 		default:
-			msg((ll_error, "Unknown picture format: 0x%04" PRIX16, rawcol));
+			msg((ll_error, "Unknown picture format: 0x%04" CASIO_PRIX16,
+				rawcol));
 			err = casio_error_magic; goto fail;
 	}
 	msg((ll_info, "Picture format: %s", coldesc));

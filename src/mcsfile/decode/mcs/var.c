@@ -32,8 +32,8 @@ int CASIO_EXPORT casio_decode_mcs_var(casio_mcsfile_t **handle,
 	casio_stream_t *buffer, casio_mcshead_t *head)
 {
 	int err;
-	uint_fast32_t length = head->casio_mcshead_size;
-	uint8_t *buf = alloca(length);
+	unsigned long length = head->casio_mcshead_size;
+	unsigned char *buf = alloca(length);
 	const casio_mcsbcd_t *b;
 	casio_mcsfile_t *h;
 	int i;

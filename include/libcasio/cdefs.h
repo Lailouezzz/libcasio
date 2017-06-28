@@ -22,6 +22,10 @@
 # include <stddef.h>
 # include <time.h>
 
+/* Check the library version. */
+# define LIBCASIO_PREREQ(CASIO__MAJ, CASIO__MIN) \
+	((CASIO__MAJ) >  (LIBCASIO_MAJOR) || \
+	((CASIO__MAJ) == (LIBCASIO_MAJOR) && (CASIO__MIN) >= (LIBCASIO_MINOR)))
 /* ************************************************************************* */
 /*  Check for compilers                                                      */
 /* ************************************************************************* */

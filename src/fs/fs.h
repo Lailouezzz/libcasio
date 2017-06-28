@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * filesystem/filesystem.h -- libcasio filesystem internals.
+ * fs/fs.h -- libcasio filesystem internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_FILESYSTEM_H
-# define LOCAL_FILESYSTEM_H 1
+#ifndef  LOCAL_FS_H
+# define LOCAL_FS_H 1
 # include "../internals.h"
 
 struct casio_filesystem_s {
@@ -27,4 +27,4 @@ struct casio_filesystem_s {
 	casio_fsfuncs_t casio_filesystem_functions;
 };
 
-#endif /* LOCAL_FILESYSTEM_H */
+#endif /* LOCAL_FS_H */

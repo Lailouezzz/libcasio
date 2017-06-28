@@ -44,7 +44,7 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 	handle = *h;
 
 	/* read all of the parts */
-	msg((ll_info, "%" PRIuFAST16 " total mcs files to browse", num));
+	msg((ll_info, "%u total mcs files to browse", num));
 	while (num) {
 		casio_mcs_subheader_t hd;
 

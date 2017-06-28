@@ -372,6 +372,12 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_limited
 		casio_stream_t *casio__original, size_t casio__size));
 CASIO_EXTERN int CASIO_EXPORT casio_empty_limited
 	OF((casio_stream_t *casio__stream));
+
+/* Make a stream out of another, while calculating a 32-bit checksum. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_open_csum32
+	OF((casio_stream_t **casio__stream, casio_stream_t *casio__original,
+		casio_uint32_t *casio__csum));
 /* ************************************************************************* */
 /*  USB or serial stream opening management                                  */
 /* ************************************************************************* */

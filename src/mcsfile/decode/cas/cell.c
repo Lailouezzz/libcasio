@@ -44,8 +44,8 @@ CASIO_LOCAL int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
 	/* read position */
 	DREAD(fx) *x = be16toh(fx) - 1;
 	DREAD(fy) *y = be16toh(fy) - 1;
-	csum = casio_checksum_cas(&fx, sizeof(uint16_t), csum);
-	csum = casio_checksum_cas(&fy, sizeof(uint16_t), csum);
+	csum = casio_checksum_cas(&fx, sizeof(casio_uint16_t), csum);
+	csum = casio_checksum_cas(&fy, sizeof(casio_uint16_t), csum);
 
 	/* read the parts */
 	DREAD(wkg)
@@ -64,7 +64,6 @@ CASIO_LOCAL int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
 	/* no prob'! */
 	return (0);
 }
-
 /* ************************************************************************* */
 /*  Cell-reading CAS part decoding functions                                 */
 /* ************************************************************************* */

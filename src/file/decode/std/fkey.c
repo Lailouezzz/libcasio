@@ -109,7 +109,7 @@ int CASIO_EXPORT casio_decode_std_fkey(casio_file_t **h,
 	for (handle->casio_file_count = 0; handle->casio_file_count < (int)num;
 	  handle->casio_file_count++) {
 		int i = handle->casio_file_count;
-		if (offsets[i] == (uint16_t)-1)
+		if (offsets[i] == (casio_uint16_t)-1)
 			continue ;
 		offsets[i] = be16toh(offsets[i]);
 
@@ -139,14 +139,12 @@ fail:
  *	@arg	std			the standard header.
  *	@arg	sub			the standard subheader.
  *	@arg	prizm		the prizm-specific subheader.
- *	@arg	check		the checksum to feed.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 	casio_stream_t *buffer, casio_standard_header_t *std,
-	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm,
-	casio_uint32_t *check)
+	casio_standard_subheader_t *sub, casio_standard_prizm_subheader_t *prizm)
 {
 	int err = casio_error_alloc;
 	casio_prizm_lang_subheader_t lhd; unsigned int num;
@@ -157,8 +155,6 @@ int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 
 	/* read the subheader */
 	DREAD(lhd)
-	*check = casio_checksum32(&lhd,
-		sizeof(casio_prizm_lang_subheader_t), *check);
 
 	/* read the data */
 	data_size = be32toh(sub->casio_standard_subheader_filesize)
@@ -168,7 +164,6 @@ int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 		- sizeof(casio_prizm_lang_subheader_t) - 4;
 	if (!(data = casio_alloc(data_size, 1))) goto fail;
 	READ(data, data_size)
-	*check = casio_checksum32(data, data_size, *check);
 
 	/* make the handle */
 	num = be32toh(lhd.casio_prizm_lang_subheader_count);
@@ -178,20 +173,20 @@ int CASIO_EXPORT casio_decode_std_cg_fkey(casio_file_t **h,
 
 	/* setup the pointers */
 	offsets = (void*)data;
-	messages = (uint8_t*)&offsets[num + 1];
+	messages = (casio_uint8_t*)&offsets[num + 1];
 
 	/* read messages */
 	for (handle->casio_file_count = 0; handle->casio_file_count < (int)num;
 	  handle->casio_file_count++) {
 		int i = handle->casio_file_count;
-		if (offsets[i] == (uint32_t)-1) {
+		if (offsets[i] == (casio_uint32_t)-1) {
 			msg((ll_info, "[#%d] -", i));
 			continue;
 		}
 
 		/* correct offset and log */
 		offsets[i] = be32toh(offsets[i]);
-		msg((ll_info, "[#%d] '%s' (0x%" PRIu32 ")", i,
+		msg((ll_info, "[#%d] '%s' (0x%" CASIO_PRIu32 ")", i,
 			&messages[offsets[i]], offsets[i]));
 
 		/* store */

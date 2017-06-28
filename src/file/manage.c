@@ -111,9 +111,9 @@ int CASIO_EXPORT casio_make_fkey(casio_file_t **h,
 
 	/* allocate index */
 	if (count) {
-		handle->casio_file_fkeys = casio_alloc(count, sizeof(uint32_t**));
+		handle->casio_file_fkeys = casio_alloc(count, sizeof(casio_pixel_t**));
 		if (!handle->casio_file_fkeys) goto fail;
-		memset(handle->casio_file_fkeys, 0, sizeof(uint32_t**) * count);
+		memset(handle->casio_file_fkeys, 0, sizeof(casio_pixel_t**) * count);
 		handle->casio_file__size = count;
 	}
 
@@ -187,12 +187,19 @@ int CASIO_EXPORT casio_make_addin(casio_file_t **h,
 
 	/* make checks */
 	if (platform != casio_filefor_fx && platform != casio_filefor_cg
-	 && platform != casio_filefor_cp)
+	 && platform != casio_filefor_cp) {
+		msg((ll_error, "Not for the FX, FX-CG or FX-CP platform!"));
 		return (casio_error_op);
-	if (platform == casio_filefor_fx && size > 512 * 1024)
+	}
+	if (platform == casio_filefor_fx && size > 512 * 1024) {
+		msg((ll_error, "FX Addin should be no more than 512 KiB!"));
 		return (casio_error_op);
-	if (!isupper(name[0]) || internal[0] != '@' || !isupper(internal[1]))
+	}
+	if (!isupper(name[0]) || internal[0] != '@' || !isupper(internal[1])) {
+		msg((ll_error, "Internal name was invalid! Got:"));
+		mem((ll_error, internal, strlen(internal)));
 		return (casio_error_op);
+	}
 
 	/* make the handle */
 	mkhandle();
