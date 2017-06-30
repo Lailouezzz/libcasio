@@ -51,22 +51,18 @@ typedef struct casio_scsi_s         casio_scsi_t;
  * written, but not all of it), you shall return an error, because there is
  * no partial success.
  *
- * Here are the stream types. The callbacks that will be taken in `casio_open`
- * is directly linked to the stream type you pass to it. */
-
-typedef unsigned int casio_streamtype_t;
-
-# define casio_streamtype_virtual 0x0000
-# define casio_streamtype_serial  0x0001
-# define casio_streamtype_scsi    0x0002
-# define casio_streamtype_usb     0x0004
-
-/* Here are the open modes: */
+ * An open mode represents the type of operations you will be able to
+ * make with a stream.
+ * Here are the open modes: */
 
 typedef unsigned int casio_openmode_t;
 
-# define CASIO_OPENMODE_READ  0x0001 /* the stream is readable. */
-# define CASIO_OPENMODE_WRITE 0x0002 /* the stream is writable. */
+# define CASIO_OPENMODE_READ   0x0001 /* the stream is readable. */
+# define CASIO_OPENMODE_WRITE  0x0002 /* the stream is writable. */
+# define CASIO_OPENMODE_SEEK   0x0004 /* the stream is seekable. */
+# define CASIO_OPENMODE_SERIAL 0x0008 /* the stream has serial ops. */
+# define CASIO_OPENMODE_SCSI   0x0010 /* the stream has SCSI ops. */
+# define CASIO_OPENMODE_USB    0x0020 /* the stream has USB ops. */
 
 /* Here is the offset type, to move within a stream: */
 
@@ -94,15 +90,15 @@ typedef int casio_stream_scsi_t     OF((void*, casio_scsi_t*));
 struct casio_streamfuncs_s {
 	/* main callbacks */
 	casio_stream_close_t    *casio_streamfuncs_close;
-
-	/* settings callbacks */
-	casio_stream_setattrs_t *casio_streamfuncs_setattrs;
 	casio_stream_settm_t    *casio_streamfuncs_settm;
 
-	/* serial callbacks */
+	/* read & write callbacks */
 	casio_stream_read_t     *casio_streamfuncs_read;
 	casio_stream_write_t    *casio_streamfuncs_write;
 	casio_stream_seek_t     *casio_streamfuncs_seek;
+
+	/* serial callbacks */
+	casio_stream_setattrs_t *casio_streamfuncs_setattrs;
 
 	/* SCSI callbacks */
 	casio_stream_scsi_t     *casio_streamfuncs_scsi;
@@ -113,17 +109,18 @@ struct casio_streamfuncs_s {
 # define casio_stream_callbacks_for_serial(CASIO__CLOSE, CASIO__SETCOMM, \
 	CASIO__SETTM, CASIO__READ, CASIO__WRITE) \
 {(casio_stream_close_t*)(CASIO__CLOSE), \
- (casio_stream_setattrs_t*)(CASIO__SETCOMM), \
  (casio_stream_settm_t*)(CASIO__SETTM), \
  (casio_stream_read_t*)(CASIO__READ), \
- (casio_stream_write_t*)(CASIO__WRITE), NULL, NULL}
+ (casio_stream_write_t*)(CASIO__WRITE), NULL, \
+ (casio_stream_setattrs_t*)(CASIO__SETCOMM), \
+ NULL}
 
 # define casio_stream_callbacks_for_virtual(CASIO__CLOSE, \
 	CASIO__READ, CASIO__WRITE, CASIO__SEEK) \
-{(casio_stream_close_t*)(CASIO__CLOSE), NULL, NULL, \
+{(casio_stream_close_t*)(CASIO__CLOSE), NULL, \
  (casio_stream_read_t*)(CASIO__READ), \
  (casio_stream_write_t*)(CASIO__WRITE), \
- (casio_stream_seek_t*)(CASIO__SEEK), NULL}
+ (casio_stream_seek_t*)(CASIO__SEEK), NULL, NULL}
 /* ************************************************************************* */
 /*  Stream settings values and flags                                         */
 /* ************************************************************************* */
@@ -283,8 +280,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_comlist
 
 CASIO_EXTERN int CASIO_EXPORT casio_open
 	OF((casio_stream_t **casio__stream, casio_openmode_t mode,
-		casio_streamtype_t casio__type, void *casio__cookie,
-		const casio_streamfuncs_t *casio__callbacks));
+		void *casio__cookie, const casio_streamfuncs_t *casio__callbacks));
 CASIO_EXTERN int CASIO_EXPORT casio_close
 	OF((casio_stream_t *casio__stream));
 
@@ -300,13 +296,14 @@ CASIO_EXTERN int CASIO_EXPORT casio_iswritable
 # define casio_iswritable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_WRITE)
 
-CASIO_EXTERN casio_streamtype_t CASIO_EXPORT casio_get_type
+CASIO_EXTERN casio_openmode_t           CASIO_EXPORT casio_get_openmode
 	OF((casio_stream_t *casio__stream));
-CASIO_EXTERN casio_openmode_t CASIO_EXPORT casio_get_openmode
+CASIO_EXTERN const casio_streamfuncs_t* CASIO_EXPORT casio_get_streamfuncs
 	OF((casio_stream_t *casio__stream));
+
 CASIO_EXTERN void* CASIO_EXPORT casio_get_cookie
 	OF((casio_stream_t *casio__stream));
-CASIO_EXTERN int CASIO_EXPORT casio_get_lasterr
+CASIO_EXTERN int   CASIO_EXPORT casio_get_lasterr
 	OF((casio_stream_t *casio__stream));
 
 /* Read and write data from and to a stream. */

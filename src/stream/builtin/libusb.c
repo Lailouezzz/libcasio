@@ -194,10 +194,8 @@ CASIO_LOCAL int casio_libusb_write(void *vcookie,
 
 /* libusb callbacks. */
 CASIO_LOCAL const casio_streamfuncs_t casio_libusb_callbacks = {
-	casio_libusb_close,
-	NULL, casio_libusb_settm,
-	casio_libusb_read,
-	casio_libusb_write,
+	casio_libusb_close, casio_libusb_settm,
+	casio_libusb_read, casio_libusb_write, NULL,
 	NULL, NULL
 };
 
@@ -216,8 +214,8 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	libusb_context *context = NULL;
 	libusb_device *calc = NULL, **device_list = NULL;
 	libusb_device_handle *dhandle = NULL;
-	casio_streamtype_t type = casio_streamtype_usb;
 	libusb_cookie_t *cookie = NULL;
+	casio_openmode_t openmode = CASIO_OPENMODE_USB;
 
 	/* open up context */
 	if (libusb_init(&context)) {
@@ -244,6 +242,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 		/* check if is a CASIO Protocol 7.00 device */
 		if (descriptor.idVendor  == 0x07cf
 		 && descriptor.idProduct == 0x6101) {
+			openmode |= CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE;
 			calc = device_list[id];
 			break;
 		}
@@ -251,8 +250,8 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 		/* check if is a CASIO SCSI device */
 		if (descriptor.idVendor  == 0x07cf
 		 && descriptor.idProduct == 0x6102) {
+			openmode |= CASIO_OPENMODE_SCSI;
 			calc = device_list[id];
-			type |= casio_streamtype_scsi;
 			break;
 		}
 	}
@@ -343,8 +342,8 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 	cookie->_end = -1;
 
 	/* final call. */
-	return (casio_open(stream, CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE,
-		casio_streamtype_usb, cookie, &casio_libusb_callbacks));
+	return (casio_open(stream, openmode,
+		cookie, &casio_libusb_callbacks));
 fail:
 	if (cookie)  casio_free(cookie);
 	if (dhandle) libusb_close(dhandle);

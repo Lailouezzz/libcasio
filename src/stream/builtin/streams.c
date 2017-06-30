@@ -477,7 +477,8 @@ int CASIO_EXPORT casio_open_stream_fd(casio_stream_t **stream,
 	int readfd, int writefd, int closeread, int closewrite)
 {
 	int err; streams_cookie_t *cookie = NULL;
-	casio_openmode_t mode = CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE;
+	casio_openmode_t mode =
+		CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE | CASIO_OPENMODE_SERIAL;
 
 	/* check if the devices are valid. */
 	if ( readfd < 0 ||   read(readfd, NULL, 0) < 0)
@@ -503,7 +504,7 @@ int CASIO_EXPORT casio_open_stream_fd(casio_stream_t **stream,
 		readfd, writefd));
 
 	/* final call */
-	return (casio_open(stream, mode, casio_streamtype_serial, cookie,
+	return (casio_open(stream, mode, cookie,
 		&casio_streams_callbacks));
 fail:
 	if (readfd >= 0 && closeread)

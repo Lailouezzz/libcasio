@@ -26,15 +26,13 @@
  *
  *	@arg	pstream		the stream to open.
  *	@arg	mode		the open mode.
- *	@arg	type		the stream type.
  *	@arg	cookie		the stream cookie.
  *	@arg	callbacks	the stream callbacks.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
-	casio_streamtype_t type, void *cookie,
-	const casio_streamfuncs_t *callbacks)
+	void *cookie, const casio_streamfuncs_t *callbacks)
 {
 	int err; casio_stream_t *stream = NULL;
 	casio_streamfuncs_t *c;
@@ -49,19 +47,18 @@ int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
 	memset(c, 0, sizeof(casio_streamfuncs_t));
 	c->casio_streamfuncs_close = callbacks->casio_streamfuncs_close;
 	c->casio_streamfuncs_settm = callbacks->casio_streamfuncs_settm;
-	if (!type
-	|| (type & (casio_streamtype_usb | casio_streamtype_serial)
-	&& ~type &  casio_streamtype_scsi)) {
-		c->casio_streamfuncs_read =     callbacks->casio_streamfuncs_read;
-		c->casio_streamfuncs_write =    callbacks->casio_streamfuncs_write;
-		c->casio_streamfuncs_seek =     callbacks->casio_streamfuncs_seek; }
-	if (type & casio_streamtype_serial)
+	if (mode & CASIO_OPENMODE_READ)
+		c->casio_streamfuncs_read  = callbacks->casio_streamfuncs_read;
+	if (mode & CASIO_OPENMODE_WRITE)
+		c->casio_streamfuncs_write = callbacks->casio_streamfuncs_write;
+	if (mode & (CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE))
+		c->casio_streamfuncs_seek  = callbacks->casio_streamfuncs_seek;
+	if (mode & CASIO_OPENMODE_SERIAL)
 		c->casio_streamfuncs_setattrs = callbacks->casio_streamfuncs_setattrs;
-	if (type & casio_streamtype_scsi)
+	if (mode & CASIO_OPENMODE_SCSI)
 		c->casio_streamfuncs_scsi = callbacks->casio_streamfuncs_scsi;
 
 	/* initialize the stream properties */
-	stream->casio_stream_type = type;
 	stream->casio_stream_mode = mode;
 	stream->casio_stream_cookie = cookie;
 	stream->casio_stream_offset = 0;

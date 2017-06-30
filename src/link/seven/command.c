@@ -194,7 +194,7 @@ int CASIO_EXPORT casio_seven_send_cmdsys_setlink(casio_link_t *handle,
 	char sbaud[10], sparity[10], sstopbits[2];
 
 	/* check if is a serial connexion */
-	if (~casio_get_type(handle->casio_link_stream) & casio_streamtype_serial)
+	if (~casio_get_openmode(handle->casio_link_stream) & CASIO_OPENMODE_SERIAL)
 		return (casio_error_op);
 
 	/* make arguments */

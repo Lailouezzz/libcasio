@@ -348,6 +348,5 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 	}
 
 	/* initialize the stream */
-	return (casio_open(stream, mode, 0, cookie,
-		&seven_data_callbacks));
+	return (casio_open(stream, mode, cookie, &seven_data_callbacks));
 }

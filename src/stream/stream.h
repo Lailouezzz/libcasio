@@ -27,7 +27,6 @@
 
 struct casio_stream_s {
 	/* stream information */
-	casio_streamtype_t       casio_stream_type;
 	casio_openmode_t         casio_stream_mode;
 	void                    *casio_stream_cookie;
 	int                      casio_stream_lasterr;

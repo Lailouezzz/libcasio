@@ -21,20 +21,6 @@
 #undef casio_iswritable
 
 /**
- *	casio_get_type:
- *	Get the stream type.
- *
- *	@arg	stream		the stream.
- *	@return				the type.
- */
-
-casio_streamtype_t CASIO_EXPORT casio_get_type(casio_stream_t *stream)
-{
-	if (!stream) return (0);
-	return (stream->casio_stream_type);
-}
-
-/**
  *	casio_get_openmode:
  *	Get the open mode.
  *

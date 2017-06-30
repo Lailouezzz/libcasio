@@ -85,6 +85,7 @@ int CASIO_EXPORT casio_open_csum32(casio_stream_t **stream,
 	casio_stream_t *original, casio_uint32_t *csum)
 {
 	struct thecookie *cookie = NULL;
+	casio_openmode_t openmode;
 
 	/* FIXME: check original stream */
 	/* allocate the cookie */
@@ -96,6 +97,6 @@ int CASIO_EXPORT casio_open_csum32(casio_stream_t **stream,
 	cookie->_checksum = csum;
 
 	/* Initialize da stream. */
-	return (casio_open(stream, casio_get_openmode(original),
-		casio_get_type(original), cookie, &csum32_callbacks));
+	openmode = casio_get_openmode(original) & CASIO_OPENMODE_READ;
+	return (casio_open(stream, openmode, cookie, &csum32_callbacks));
 }

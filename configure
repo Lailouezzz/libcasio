@@ -30,9 +30,9 @@ loglevel=none # none, info, warn, error, fatal
 
 # Installation directories
 root=''
-prefix='${root}/usr'
+prefix='${root}/opt/p7-project'
 prefix_set=
-hprefix='${root}/usr'
+hprefix='${root}/opt/p7-project'
 bindir='${prefix}/bin'
 hbindir='${hprefix}/bin'
 libdir='${prefix}/lib'"$platform"
