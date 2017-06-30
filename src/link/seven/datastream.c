@@ -312,7 +312,7 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 	void *dcookie)
 {
 	seven_data_cookie_t *cookie = NULL;
-	casio_mode_t mode;
+	casio_openmode_t mode;
 
 	/* make checks */
 	chk_handle(link);

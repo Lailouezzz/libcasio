@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * fs/builtin/posix/posix.h -- POSIX filesystem internals.
- * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * stream/builtin/libusb/settm.c -- set timeouts of a libusb stream.
+ * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,25 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_FS_BUILTIN_POSIX_H
-# define LOCAL_FS_BUILTIN_POSIX_H 1
-# include "../../../internals.h"
-# ifndef LIBCASIO_DISABLED_POSIX_FS
-#  include <sys/stat.h>
-#  include <unistd.h>
+#include "libusb.h"
+#ifndef LIBCASIO_DISABLED_LIBUSB
 
-/* Path conversions. */
+/**
+ *	casio_libusb_settm:
+ *	Set timeouts.
+ *
+ *	@arg	vcookie		the cookie (uncasted).
+ *	@arg	timeouts	the timeouts.
+ *	@return				the error code (0 if ok).
+ */
 
-CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path
-	OF((char **casio__path, casio_path_t *casio__array));
-CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path_array
-	OF((casio_path_t **casio__path, const char *casio__rawpath));
+int CASIO_EXPORT casio_libusb_settm(cookie_libusb_t *cookie,
+	const casio_timeouts_t *timeouts)
+{
+	/* set the timeouts */
+	cookie->tmread =  timeouts->casio_timeouts_read;
+	cookie->tmwrite = timeouts->casio_timeouts_write;
 
-/* File information gathering. */
+	/* no error! */
+	return (0);
+}
 
-CASIO_EXTERN int CASIO_EXPORT casio_posix_stat
-	OF((void *casio__cookie, casio_path_t *casio__path,
-		casio_stat_t *casio__file_info));
-
-# endif
-#endif /* LOCAL_FS_BUILTIN_POSIX_H */
+#endif

@@ -70,6 +70,15 @@ CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 #  define LIBCASIO_DISABLED_WINDOWS
 # endif
 /* ************************************************************************* */
+/*  Built-in filesystems                                                     */
+/* ************************************************************************* */
+/* Make a local POSIX filesystem interface. */
+# if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
+/* TODO */
+# else
+#  define LIBCASIO_DISABLED_POSIX_FS
+# endif
+/* ************************************************************************* */
 /*  Built-in serial devices listing                                          */
 /* ************************************************************************* */
 /* List serial devices on Linux. */

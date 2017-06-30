@@ -17,6 +17,7 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "posix.h"
+#ifndef LIBCASIO_DISABLED_POSIX_FS
 
 /**
  *	makepathnode:
@@ -33,7 +34,63 @@ CASIO_LOCAL casio_pathnode_t *makepathnode(size_t size)
 	node = malloc(offsetof(casio_pathnode_t, casio_pathnode_name) + size);
 	if (!node) return (NULL);
 	node->casio_pathnode_next = NULL;
+	node->casio_pathnode_size = size;
 	return (node);
+}
+
+/**
+ *	casio_make_posix_path:
+ *	Make a POSIX path from a platform-agnostic path.
+ *
+ *	@arg	ppath		the path to make.
+ *	@arg	array		the path array.
+ *	@return				the error code (0 if ok).
+ */
+
+int CASIO_EXPORT casio_make_posix_path(char **ppath, casio_path_t *array)
+{
+	size_t length; const casio_pathnode_t *node;
+	char *path;
+
+	/* Make up the length and validate. */
+	length = !(array->casio_path_flags & casio_pathflag_rel);
+	node = array->casio_path_nodes;
+	while (node) {
+		size_t nodesize = node->casio_pathnode_size;
+
+		/* Check that there is no forbidden characters. */
+		if (memchr(node->casio_pathnode_name,   0, nodesize)
+		 || memchr(node->casio_pathnode_name, '/', nodesize))
+			return (casio_error_invalid);
+
+		/* Iterate on the node, add to the length. */
+		length += nodesize;
+		node = node->casio_pathnode_next;
+		if (node) length++; /* '/' */
+	}
+
+	/* Allocate the path. */
+	*ppath = malloc(length + 1);
+	path = *ppath; if (!path) return (casio_error_alloc);
+
+	/* Fill the path. */
+	if (~array->casio_path_flags & casio_pathflag_rel)
+		*path++ = '/';
+	node = array->casio_path_nodes;
+	while (node) {
+		size_t nodesize = node->casio_pathnode_size;
+
+		/* Copy the node data. */
+		memcpy(path, node->casio_pathnode_name, nodesize);
+		path += nodesize;
+
+		/* Iterate on the node, copy a slash if needed. */
+		node = node->casio_pathnode_next;
+		if (node) *path++ = '/';
+	}
+
+	/* No error has occured! */
+	return (0);
 }
 
 /**
@@ -98,3 +155,5 @@ fail:
 	}
 	return (casio_error_alloc);
 }
+
+#endif

@@ -45,6 +45,7 @@ typedef struct casio_stat_s       casio_stat_t;
 
 struct casio_pathnode_s {
 	casio_pathnode_t *casio_pathnode_next;
+	size_t            casio_pathnode_size;
 	unsigned char     casio_pathnode_name[2048];
 };
 
@@ -61,21 +62,32 @@ struct casio_path_s {
 /* ************************************************************************* */
 /*  Filesystem file entry                                                    */
 /* ************************************************************************* */
-/* This structure defines file metadata. */
+/* This structure defines file metadata.
+ * Here are the flags: */
 
-# define CASIO_MODE_IFMT  0xF000
-# define CASIO_MODE_IFREG 0x1000
-# define CASIO_MODE_IFDIR 0x2000
+/* TODO */
 
-typedef unsigned long casio_mode_t;
+/* And here are the "file" types ("file" is between quotes as on Windows,
+ * directories are not files like on Unix) you can find: */
+
+# define CASIO_STAT_TYPE_REG   0x0001 /* Regular file. */
+# define CASIO_STAT_TYPE_DIR   0x0002 /* Directory. */
+# define CASIO_STAT_TYPE_LNK   0x0004 /* Symbolic link. */
+# define CASIO_STAT_TYPE_CHAR  0x0008 /* Character device. */
+# define CASIO_STAT_TYPE_BLK   0x0010 /* Block device. */
+# define CASIO_STAT_TYPE_SOCK  0x0020 /* Socket. */
+
+/* And here is the stat structure.
+ * The path is not in it. */
 
 struct casio_stat_s {
-	casio_mode_t casio_stat_mode;
+	unsigned int casio_stat_flags;
+	unsigned int casio_stat_type;
 	casio_off_t  casio_stat_size;
 };
 
 typedef void casio_fs_list_func_t OF((void *casio__cookie,
-	const void *casio__name, const casio_stat_t *casio__stat));
+	const casio_pathnode_t *casio__node, const casio_stat_t *casio__stat));
 /* ************************************************************************* */
 /*  Filesystem description                                                   */
 /* ************************************************************************* */
@@ -85,27 +97,25 @@ typedef void casio_fs_list_func_t OF((void *casio__cookie,
  * directory. */
 
 typedef int casio_fs_stat_t
-	OF((void *casio__cookie, const char *casio__device,
-		const void *casio__path[], casio_stat_t *casio__stat));
+	OF((void *casio__cookie, casio_path_t *casio__path,
+		casio_stat_t *casio__stat));
 
 /* The `casio_fs_makedir` callback creates a directory. */
 
 typedef int casio_fs_makedir_t
-	OF((void *casio__cookie, const char *casio__device,
-		const void *casio__path[]));
+	OF((void *casio__cookie, casio_path_t *casio__path));
 
 /* The `casio_fs_del` callback deletes a file or directory. */
 
 typedef int casio_fs_del_t
-	OF((void *casio__cookie, const char *casio__device,
-		const void *casio__path[]));
+	OF((void *casio__cookie, casio_path_t *casio__path));
 
 /* The `casio_fs_move` callback renames/moves a file into an
  * other directory, eventually with an other name. */
 
 typedef int casio_fs_move_t
-	OF((void *casio__cookie, const char *casio__device,
-		const void *casio__orig[], const void *casio__new[]));
+	OF((void *casio__cookie, casio_path_t *casio__orig,
+		casio_path_t *casio__dest));
 
 /* The `casio_fs_open` callback makes a stream out of a file with a path. */
 
@@ -116,8 +126,7 @@ typedef int casio_fs_open_t
 /* The `casio_fs_list` callback lists files in a directory. */
 
 typedef int casio_fs_list_t
-	OF((void *casio__cookie, const char *casio__device,
-		const void *casio__dirpath[],
+	OF((void *casio__cookie, casio_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
 
 /* The `casio_fs_close` callback is called when the filesystem interface

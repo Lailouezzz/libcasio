@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * fs/builtin/posix/posix.h -- POSIX filesystem internals.
- * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * stream/builtin/windows/close.c -- close a Windows API stream.
+ * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,25 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_FS_BUILTIN_POSIX_H
-# define LOCAL_FS_BUILTIN_POSIX_H 1
-# include "../../../internals.h"
-# ifndef LIBCASIO_DISABLED_POSIX_FS
-#  include <sys/stat.h>
-#  include <unistd.h>
+#include "windows.h"
+#ifndef LIBCASIO_DISABLED_WINDOWS
 
-/* Path conversions. */
+/**
+ *	casio_windows_close:
+ *	Close a MS-Windows stream.
+ *
+ *	@arg	cookie		the cookie.
+ *	@return				the error code (0 if ok).
+ */
 
-CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path
-	OF((char **casio__path, casio_path_t *casio__array));
-CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path_array
-	OF((casio_path_t **casio__path, const char *casio__rawpath));
+int CASIO_EXPORT casio_windows_close(win_cookie_t *cookie)
+{
+	CloseHandle(cookie->_handle);
+	casio_free(cookie);
+	return (0);
+}
 
-/* File information gathering. */
-
-CASIO_EXTERN int CASIO_EXPORT casio_posix_stat
-	OF((void *casio__cookie, casio_path_t *casio__path,
-		casio_stat_t *casio__file_info));
-
-# endif
-#endif /* LOCAL_FS_BUILTIN_POSIX_H */
+#endif
