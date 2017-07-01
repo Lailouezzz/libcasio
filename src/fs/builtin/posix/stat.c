@@ -24,27 +24,21 @@
  *	POSIX stat.
  *
  *	@arg	cookie		the POSIX cookie.
- *	@arg	apath		the path to get.
+ *	@arg	path		the POSIX path to get.
  *	@arg	stat		the file information to fill.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_posix_stat(void *cookie,
-	casio_path_t *apath, casio_stat_t *file_info)
+	void *path, casio_stat_t *file_info)
 {
-	int err; char *path = NULL;
 	struct stat statbuf;
 
 	(void)cookie;
-	/* Make the POSIX path. */
-	err = casio_make_posix_path(&path, apath);
-	if (err) return (err);
-
 	/* Make the stat. */
-	if (lstat(path, &statbuf)) {
+	if (lstat((char*)path, &statbuf)) {
 		/* FIXME: different kinds of errnos? */
-		err = casio_error_unknown;
-		goto fail;
+		return (casio_error_unknown);
 	}
 
 	/* Gather the type. */
@@ -76,11 +70,7 @@ int CASIO_EXPORT casio_posix_stat(void *cookie,
 	/* Get the rest, and return. */
 	file_info->casio_stat_flags = 0;
 	file_info->casio_stat_size  = statbuf.st_size;
-
-	err = 0;
-fail:
-	free(path);
-	return (err);
+	return (0);
 }
 
 #endif

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/fs.h -- libcasio filesystem internals.
+ * fs/open.c -- open a libcasio filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,13 +16,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_FS_H
-# define LOCAL_FS_H 1
-# include "../internals.h"
+#include "fs.h"
 
-struct casio_filesystem_s {
-	void           *casio_filesystem_cookie;
-	casio_fsfuncs_t casio_filesystem_functions;
-};
+/**
+ *	casio_open_fs:
+ *	Open a filesystem.
+ *
+ *	@arg	pfs		the filesystem to open.
+ *	@arg	cookie	the filesystem cookie.
+ *	@arg	funcs	the filesystem callbacks.
+ *	@return			the error code (0 if ok).
+ */
 
-#endif /* LOCAL_FS_H */
+int CASIO_EXPORT casio_open_fs(casio_filesystem_t **pfs,
+	void *cookie, const casio_fsfuncs_t *funcs)
+{
+	int err; casio_filesystem_t *fs;
+
+	/* Allocate the filesystem. */
+	*pfs = malloc(sizeof(casio_filesystem_t)); fs = *pfs;
+	if (!fs) { err = casio_error_alloc; goto fail; }
+
+	/* Copy the data into it. */
+	fs->casio_filesystem_cookie = cookie;
+	memcpy(&fs->casio_filesystem_functions, funcs, sizeof(casio_fsfuncs_t));
+	return (0);
+
+fail:
+	if (funcs->casio_fsfuncs_close)
+		(*funcs->casio_fsfuncs_close)(cookie);
+	return (err);
+}

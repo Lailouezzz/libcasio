@@ -25,15 +25,18 @@
 
 /* Path conversions. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path
-	OF((char **casio__path, casio_path_t *casio__array));
+CASIO_EXTERN int  CASIO_EXPORT casio_make_posix_path
+	OF((void *casio__cookie, void **casio__path, casio_path_t *casio__array));
+CASIO_EXTERN void CASIO_EXPORT casio_free_posix_path
+	OF((void *casio__cookie, void  *casio__path));
+
 CASIO_EXTERN int CASIO_EXPORT casio_make_posix_path_array
 	OF((casio_path_t **casio__path, const char *casio__rawpath));
 
 /* File information gathering. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_posix_stat
-	OF((void *casio__cookie, casio_path_t *casio__path,
+	OF((void *casio__cookie, void *casio__path,
 		casio_stat_t *casio__file_info));
 
 # endif

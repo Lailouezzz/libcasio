@@ -88,10 +88,8 @@ int CASIO_EXPORT casio_prepare_mcsfile(casio_mcsfile_t *handle,
 
 	/* allocate the set of pixels */
 	case casio_mcstype_pict: case casio_mcstype_capt:
-		/* set count */
-		head->casio_mcshead_count = 1;
-		if (head->casio_mcshead_type == casio_mcstype_pict)
-			head->casio_mcshead_count = 2;
+		/* NOTICE: count used to be deduced from type,
+		 * but not anymore. */
 
 		/* allocate directory */
 		if (head->casio_mcshead_count <= 1)

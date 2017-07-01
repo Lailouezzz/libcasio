@@ -93,52 +93,68 @@ typedef void casio_fs_list_func_t OF((void *casio__cookie,
 /* ************************************************************************* */
 /* The filesystem is a private structure that represents a file system.
  *
- * The `casio_fs_stat` callback is to get information about a file or
- * directory. */
+ * Once all of the operations are done, the user shall close the filesystem.
+ * This is the callback to free/close custom elements. */
+
+typedef int casio_fs_close_t OF((void *casio__cookie));
+
+/* From here, we will work with paths.
+ * Instead of having to convert the path every time, we will use native paths
+ * on the user side; they can be made how you want. */
+
+typedef int  casio_fs_makepath_t
+	OF((void *casio__cookie, void **casio__native_path,
+		casio_path_t *casio__path));
+typedef void casio_fs_freepath_t
+	OF((void *casio__cookie, void *casio__native_path));
+
+/* The `casio_fs_stat` callback is used to gather information about
+ * any element in your filesystem: files, directories, ... */
 
 typedef int casio_fs_stat_t
-	OF((void *casio__cookie, casio_path_t *casio__path,
+	OF((void *casio__cookie, void *casio__native_path,
 		casio_stat_t *casio__stat));
 
-/* The `casio_fs_makedir` callback creates a directory. */
+/* The `casio_fs_makedir` callback is used to create a directory. */
 
 typedef int casio_fs_makedir_t
-	OF((void *casio__cookie, casio_path_t *casio__path));
+	OF((void *casio__cookie, void *casio__native_path));
 
-/* The `casio_fs_del` callback deletes a file or directory. */
+/* The `casio_fs_del` callback is used to delete an element of any type
+ * from your filesystem. */
 
 typedef int casio_fs_del_t
-	OF((void *casio__cookie, casio_path_t *casio__path));
+	OF((void *casio__cookie, void *casio__native_path));
 
-/* The `casio_fs_move` callback renames/moves a file into an
- * other directory, eventually with an other name. */
+/* The `casio_fs_move` callback is used to move an element of your filesystem
+ * to an other location. */
 
 typedef int casio_fs_move_t
-	OF((void *casio__cookie, casio_path_t *casio__orig,
-		casio_path_t *casio__dest));
+	OF((void *casio__cookie, void *casio__native_orig,
+		void *casio__native_dest));
 
-/* The `casio_fs_open` callback makes a stream out of a file with a path. */
+/* The `casio_fs_open` callback is used to make a stream out of an element
+ * of your filesystem. */
 
 typedef int casio_fs_open_t
-	OF((void *casio__cookie, const void *casio__path, casio_off_t size,
+	OF((void *casio__cookie, void *casio__path, casio_off_t size,
 		casio_openmode_t casio__mode, casio_stream_t **stream));
 
-/* The `casio_fs_list` callback lists files in a directory. */
+/* The `casio_fs_list` callback is used to list files in a directory. */
 
 typedef int casio_fs_list_t
 	OF((void *casio__cookie, casio_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
-
-/* The `casio_fs_close` callback is called when the filesystem interface
- * is closed. */
-
-typedef int casio_fs_close_t OF((void *casio__cookie));
 
 /* And here is the structure with all of the functions.
  * It is the one used when you want to open a libcasio filesystem interface
  * abstraction. */
 
 struct casio_fsfuncs_s {
+	casio_fs_close_t    *casio_fsfuncs_close;
+	casio_fs_makepath_t *casio_fsfuncs_makepath;
+	casio_fs_freepath_t *casio_fsfuncs_freepath;
+
 	casio_fs_stat_t     *casio_fsfuncs_stat;
 	casio_fs_makedir_t  *casio_fsfuncs_makedir;
 	casio_fs_del_t      *casio_fsfuncs_del;
@@ -146,21 +162,31 @@ struct casio_fsfuncs_s {
 
 	casio_fs_list_t     *casio_fsfuncs_list;
 	casio_fs_open_t     *casio_fsfuncs_open;
-
-	casio_fs_close_t    *casio_fsfuncs_close;
 };
 /* ************************************************************************* */
 /*  Filesystem public functions                                              */
 /* ************************************************************************* */
 CASIO_BEGIN_DECLS
 
+/* Open a custom filesystem. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_open_fs
-	OF((casio_filesystem_t **casio__fs,
-		void *casio__cookie, const char *casio__dirsep,
-		const casio_fsfuncs_t *casio__funcs));
+	OF((casio_filesystem_t **casio__filesystem,
+		void *casio__cookie, const casio_fsfuncs_t *casio__funcs));
+
+/* Manipulate native paths. */
+
+CASIO_EXTERN int  CASIO_EXPORT casio_make_native_path
+	OF((casio_filesystem_t *casio__filesystem,
+		void **casio__native_path, casio_path_t *casio__path));
+CASIO_EXTERN void CASIO_EXPORT casio_free_native_path
+	OF((casio_filesystem_t *casio__filesystem,
+		void  *casio__native_path));
+
+/* Make a directory. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_makedir
-	OF((casio_filesystem_t *casio__fs, const char *casio__path));
+	OF((casio_filesystem_t *casio__fs, casio_path_t *casio__path));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

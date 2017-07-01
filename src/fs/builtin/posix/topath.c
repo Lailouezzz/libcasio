@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/builtin/posix/path.c -- POSIX path conversions.
+ * fs/builtin/posix/topath.c -- POSIX path conversions.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -20,38 +20,22 @@
 #ifndef LIBCASIO_DISABLED_POSIX_FS
 
 /**
- *	makepathnode:
- *	Make a directory node.
- *
- *	@arg	size		the name size.
- *	@return				the allocated path node.
- */
-
-CASIO_LOCAL casio_pathnode_t *makepathnode(size_t size)
-{
-	casio_pathnode_t *node;
-
-	node = malloc(offsetof(casio_pathnode_t, casio_pathnode_name) + size);
-	if (!node) return (NULL);
-	node->casio_pathnode_next = NULL;
-	node->casio_pathnode_size = size;
-	return (node);
-}
-
-/**
  *	casio_make_posix_path:
  *	Make a POSIX path from a platform-agnostic path.
  *
+ *	@arg	cookie		the filesystem cookie (unused).
  *	@arg	ppath		the path to make.
  *	@arg	array		the path array.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_make_posix_path(char **ppath, casio_path_t *array)
+int  CASIO_EXPORT casio_make_posix_path(void *cookie,
+	void **ppath, casio_path_t *array)
 {
 	size_t length; const casio_pathnode_t *node;
 	char *path;
 
+	(void)cookie;
 	/* Make up the length and validate. */
 	length = !(array->casio_path_flags & casio_pathflag_rel);
 	node = array->casio_path_nodes;
@@ -70,8 +54,9 @@ int CASIO_EXPORT casio_make_posix_path(char **ppath, casio_path_t *array)
 	}
 
 	/* Allocate the path. */
-	*ppath = malloc(length + 1);
-	path = *ppath; if (!path) return (casio_error_alloc);
+	*ppath = casio_alloc(length + 1, 1);
+	path = (char*)*ppath;
+	if (!path) return (casio_error_alloc);
 
 	/* Fill the path. */
 	if (~array->casio_path_flags & casio_pathflag_rel)
@@ -94,66 +79,16 @@ int CASIO_EXPORT casio_make_posix_path(char **ppath, casio_path_t *array)
 }
 
 /**
- *	casio_make_posix_path_array:
- *	Make a path array from a POSIX path.
+ *	casio_free_posix_path:
+ *	Free a POSIX path.
  *
- *	POSIX paths are soooo well done. <3
- *
- *	@arg	ppath		the final path.
- *	@arg	rawpath		the raw POSIX path.
- *	@return				the error code (0 if ok).
+ *	@arg	cookie		the cookie.
+ *	@arg	nat			the native path.
  */
 
-int CASIO_EXPORT casio_make_posix_path_array(casio_path_t **ppath,
-	const char *rawpath)
+void CASIO_EXPORT casio_free_posix_path(void *cookie, void *nat)
 {
-	casio_path_t *path = NULL;
-	casio_pathnode_t **node = NULL;
-	casio_pathnode_t  *localnode = NULL;
-	size_t nodelen;
-
-	/* Make and initialize the path structure. */
-	*ppath = malloc(sizeof(casio_path_t));
-	path = *ppath; if (!path) return (casio_error_alloc);
-	path->casio_path_flags = casio_pathflag_alloc | casio_pathflag_rel;
-	path->casio_path_device = NULL;
-	path->casio_path_nodes = NULL;
-
-	/* Check if it is an absolute path. */
-	if (*rawpath == '/') {
-		path->casio_path_flags &= ~casio_pathflag_rel;
-		rawpath++;
-	}
-
-	/* Split the path. */
-	node = &path->casio_path_nodes;
-	while (rawpath) {
-		rawpath += strspn(rawpath, "/");
-		if (!rawpath) break;
-
-		/* Get the entry size (to '/' or NUL). */
-		nodelen = strcspn(rawpath, "/");
-
-		/* Make the entry. */
-		localnode = makepathnode(nodelen + 1);
-		if (!localnode) goto fail;
-		memcpy(localnode->casio_pathnode_name, rawpath, nodelen);
-		localnode->casio_pathnode_name[nodelen] = 0;
-		*node = localnode;
-		node = &localnode->casio_pathnode_next;
-
-		/* Iterate. */
-		rawpath += nodelen;
-	}
-
-	return (0);
-fail:
-	while (path->casio_path_nodes) {
-		localnode = path->casio_path_nodes;
-		path->casio_path_nodes = localnode->casio_pathnode_next;
-		free(localnode);
-	}
-	return (casio_error_alloc);
+	casio_free(nat);
 }
 
 #endif

@@ -40,6 +40,7 @@ int CASIO_EXPORT casio_decode_mcs_capture(casio_mcsfile_t **h,
 	DREAD(hd)
 
 	/* make final head and file */
+	head->casio_mcshead_count  = 1;
 	head->casio_mcshead_width  = be16toh(hd.casio_mcs_captureheader_width);
 	head->casio_mcshead_height = be16toh(hd.casio_mcs_captureheader_height);
 	err = casio_make_mcsfile(h, head);
@@ -92,6 +93,8 @@ int CASIO_EXPORT casio_decode_mcs_picture(casio_mcsfile_t **h,
 	unsigned char *pics_raw = NULL; size_t pic_size;
 
 	/* make final head */
+	msg((ll_info, "Size is 0x%04X", head->casio_mcshead_size));
+	head->casio_mcshead_count = head->casio_mcshead_size / 1024;
 	head->casio_mcshead_width = 128;
 	head->casio_mcshead_height = 64;
 	err = casio_make_mcsfile(h, head);

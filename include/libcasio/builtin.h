@@ -20,6 +20,7 @@
 # define LIBCASIO_BUILTIN_H
 # include "cdefs.h"
 # include "stream.h"
+# include "fs.h"
 # ifndef LIBCASIO_DISABLED_FILE
 #  include <stdio.h>
 # endif
@@ -74,7 +75,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 /* ************************************************************************* */
 /* Make a local POSIX filesystem interface. */
 # if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
-/* TODO */
+CASIO_EXTERN int CASIO_EXPORT casio_open_posix_fs
+	OF((casio_filesystem_t **casio__filesystem));
 # else
 #  define LIBCASIO_DISABLED_POSIX_FS
 # endif

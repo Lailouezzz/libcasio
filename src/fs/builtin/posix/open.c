@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/fs.h -- libcasio filesystem internals.
+ * fs/builtin/posix/open.c -- open a POSIX filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,13 +16,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_FS_H
-# define LOCAL_FS_H 1
-# include "../internals.h"
+#include "posix.h"
+#ifndef LIBCASIO_DISABLED_POSIX_FS
 
-struct casio_filesystem_s {
-	void           *casio_filesystem_cookie;
-	casio_fsfuncs_t casio_filesystem_functions;
+/* Callbacks. */
+
+CASIO_LOCAL casio_fsfuncs_t posix_fs_funcs = {
+	NULL, &casio_make_posix_path, &casio_free_posix_path,
+	&casio_posix_stat, NULL, NULL, NULL,
+	NULL, NULL
 };
 
-#endif /* LOCAL_FS_H */
+/**
+ *	casio_open_posix_fs:
+ *	Open a POSIX filesystem interface.
+ *
+ *	@arg	fs		the filesystem interface to make.
+ *	@return			the error code (0 if ok).
+ */
+
+int CASIO_EXPORT casio_open_posix_fs(casio_filesystem_t **fs)
+{
+	return (casio_open_fs(fs, NULL, &posix_fs_funcs));
+}
+
+#endif
