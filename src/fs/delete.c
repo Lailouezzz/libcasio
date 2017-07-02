@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/path.c -- filesystem native path management utilities.
+ * fs/delete.c -- delete an element from a libcasio filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -19,44 +19,51 @@
 #include "fs.h"
 
 /**
- *	casio_make_native_path:
- *	Make a filesystem native path.
+ *	casio_delete:
+ *	Delete from a filesystem, using a native path.
  *
  *	@arg	fs		the filesystem.
- *	@arg	nat		the native path to make.
- *	@arg	path	the path to convert.
+ *	@arg	nat		the native path.
  *	@return			the error code (0 if ok).
  */
 
-int  CASIO_EXPORT casio_make_native_path(casio_fs_t *fs,
-	void **nat, casio_path_t *path)
+int CASIO_EXPORT casio_delete(casio_fs_t *fs, void *path)
 {
-	casio_fs_makepath_t *makepath;
+	int err; casio_fs_del_t *delete;
 
 	/* Get the callback. */
-	makepath = fs->casio_fs_funcs.casio_fsfuncs_makepath;
-	if (!makepath) return (casio_error_op);
+	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
+	if (!delete) return (casio_error_op);
 
-	/* Make the native path. */
-	return ((*makepath)(fs->casio_fs_cookie, nat, path));
+	/* Make the operation. */
+	err = (*delete)(fs->casio_fs_cookie, path);
+	return (err);
 }
 
 /**
- *	casio_free_native_path:
- *	Free a filesystem native path.
+ *	casio_delete_path:
+ *	Delete from a filesystem, using an abstract path.
  *
  *	@arg	fs		the filesystem.
- *	@arg	nat		the native path to free.
+ *	@arg	path	the abstract path.
+ *	@return			the error code (0 if ok).
  */
 
-void CASIO_EXPORT casio_free_native_path(casio_fs_t *fs, void *nat)
+int CASIO_EXPORT casio_delete_path(casio_fs_t *fs, casio_path_t *path)
 {
-	casio_fs_freepath_t *freepath;
+	int err; void *nat;
+	casio_fs_del_t *delete;
 
-	/* Get the callback. */
-	freepath = fs->casio_fs_funcs.casio_fsfuncs_freepath;
-	if (!freepath) return ;
+	/* Get the function. */
+	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
+	if (!delete) return (casio_error_op);
 
-	/* Free the native path. */
-	(*freepath)(fs->casio_fs_cookie, nat);
+	/* Make the native path. */
+	err = casio_make_native_path(fs, &nat, path);
+	if (err) return (err);
+
+	/* Make the operation. */
+	err = (*delete)(fs->casio_fs_cookie, nat);
+	casio_free_native_path(fs, nat);
+	return (err);
 }

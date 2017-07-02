@@ -420,6 +420,18 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_open_data_stream
 	OF((casio_stream_t **casio__stream,
 		casio_link_t *casio__link, casio_off_t casio__size,
 		casio_link_progress_t *casio__disp, void *casio__dcookie));
+/* ************************************************************************* */
+/*  Protocol 7.00 high-level abstractions                                    */
+/* ************************************************************************* */
+/* Make the MCS interface. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_open_seven_mcs
+	OF((casio_mcs_t **casio__mcs, casio_link_t *casio__link));
+
+/* Make the filesystem interface. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_open_seven_fs
+	OF((casio_fs_t **casio__filesystem, casio_link_t *casio__link));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

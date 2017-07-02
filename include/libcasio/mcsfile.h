@@ -182,6 +182,7 @@ typedef struct casio_mcscell_s {
  * Here is the main structure. Don't be afraid, it doesn't bite. */
 
 typedef struct casio_mcshead_s {
+# define casio_mcshead_for casio_mcshead_flags
 	unsigned long    casio_mcshead_flags;
 
 	/* file main information */

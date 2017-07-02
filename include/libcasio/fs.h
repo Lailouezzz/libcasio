@@ -23,16 +23,16 @@
 CASIO_BEGIN_NAMESPACE
 
 /* forward structure declarations (don't mind) */
-struct         casio_filesystem_s;
-typedef struct casio_filesystem_s casio_filesystem_t;
+struct         casio_fs_s;
+typedef struct casio_fs_s        casio_fs_t;
 struct         casio_fsfuncs_s;
-typedef struct casio_fsfuncs_s    casio_fsfuncs_t;
+typedef struct casio_fsfuncs_s   casio_fsfuncs_t;
 struct         casio_pathnode_s;
-typedef struct casio_pathnode_s   casio_pathnode_t;
+typedef struct casio_pathnode_s  casio_pathnode_t;
 struct         casio_path_s;
-typedef struct casio_path_s       casio_path_t;
+typedef struct casio_path_s      casio_path_t;
 struct         casio_stat_s;
-typedef struct casio_stat_s       casio_stat_t;
+typedef struct casio_stat_s      casio_stat_t;
 /* ************************************************************************* */
 /*  Filesystem file path                                                     */
 /* ************************************************************************* */
@@ -171,22 +171,31 @@ CASIO_BEGIN_DECLS
 /* Open a custom filesystem. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_fs
-	OF((casio_filesystem_t **casio__filesystem,
+	OF((casio_fs_t **casio__filesystem,
 		void *casio__cookie, const casio_fsfuncs_t *casio__funcs));
 
 /* Manipulate native paths. */
 
 CASIO_EXTERN int  CASIO_EXPORT casio_make_native_path
-	OF((casio_filesystem_t *casio__filesystem,
+	OF((casio_fs_t *casio__filesystem,
 		void **casio__native_path, casio_path_t *casio__path));
 CASIO_EXTERN void CASIO_EXPORT casio_free_native_path
-	OF((casio_filesystem_t *casio__filesystem,
+	OF((casio_fs_t *casio__filesystem,
 		void  *casio__native_path));
 
 /* Make a directory. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_makedir
-	OF((casio_filesystem_t *casio__fs, casio_path_t *casio__path));
+	OF((casio_fs_t *casio__fs, void *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_makedir_path
+	OF((casio_fs_t *casio__fs, casio_path_t *casio__path));
+
+/* Delete an element. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_delete
+	OF((casio_fs_t *casio__fs, void *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_delete_path
+	OF((casio_fs_t *casio__fs, casio_path_t *casio__path));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

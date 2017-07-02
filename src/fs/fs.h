@@ -20,9 +20,9 @@
 # define LOCAL_FS_H 1
 # include "../internals.h"
 
-struct casio_filesystem_s {
-	void           *casio_filesystem_cookie;
-	casio_fsfuncs_t casio_filesystem_functions;
+struct casio_fs_s {
+	void           *casio_fs_cookie;
+	casio_fsfuncs_t casio_fs_funcs;
 };
 
 #endif /* LOCAL_FS_H */

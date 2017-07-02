@@ -194,11 +194,6 @@ CASIO_EXTERN int CASIO_EXPORT casio_upload_and_run_file
 		casio_link_progress_t *casio__disp, void *casio__pcookie));
 # endif
 
-/* Make the MCS interface (don't use it unless you know what you're doing). */
-
-CASIO_EXTERN int CASIO_EXPORT casio_open_seven_mcs
-	OF((casio_mcs_t **casio__mcs, casio_link_t *casio__link));
-
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
 # include "protocol/legacy.h"

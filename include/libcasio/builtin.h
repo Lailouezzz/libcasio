@@ -73,12 +73,18 @@ CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 /* ************************************************************************* */
 /*  Built-in filesystems                                                     */
 /* ************************************************************************* */
-/* Make a local POSIX filesystem interface. */
+/* Make a POSIX filesystem interface. */
 # if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
 CASIO_EXTERN int CASIO_EXPORT casio_open_posix_fs
-	OF((casio_filesystem_t **casio__filesystem));
+	OF((casio_fs_t **casio__filesystem));
 # else
 #  define LIBCASIO_DISABLED_POSIX_FS
+# endif
+
+/* Make a Windows API filesystem interface. */
+# ifndef LIBCASIO_DISABLED_WINDOWS
+CASIO_EXTERN int CASIO_EXPORT casio_open_windows_fs
+	OF((casio_fs_t **casio__filesystem));
 # endif
 /* ************************************************************************* */
 /*  Built-in serial devices listing                                          */

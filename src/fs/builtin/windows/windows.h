@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/open.c -- open a libcasio filesystem.
+ * fs/builtin/windows/windows.h -- Windows filesystem internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,34 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "fs.h"
+#ifndef  LOCAL_FS_BUILTIN_WINDOWS_H
+# define LOCAL_FS_BUILTIN_WINDOWS_H 1
+# include "../../../internals.h"
+# ifndef LIBCASIO_DISABLED_WINDOWS
 
-/**
- *	casio_open_fs:
- *	Open a filesystem.
- *
- *	@arg	pfs		the filesystem to open.
- *	@arg	cookie	the filesystem cookie.
- *	@arg	funcs	the filesystem callbacks.
- *	@return			the error code (0 if ok).
- */
+/* Path conversions. */
 
-int CASIO_EXPORT casio_open_fs(casio_fs_t **pfs,
-	void *cookie, const casio_fsfuncs_t *funcs)
-{
-	int err; casio_fs_t *fs;
+CASIO_EXTERN int  CASIO_EXPORT casio_make_windows_path
+	OF((void *casio__cookie, void **casio__native_path,
+		casio_path_t *casio__array));
+CASIO_EXTERN void CASIO_EXPORT casio_free_windows_path
+	OF((void *casio__cookie, void  *casio__native_path));
 
-	/* Allocate the filesystem. */
-	*pfs = malloc(sizeof(casio_fs_t)); fs = *pfs;
-	if (!fs) { err = casio_error_alloc; goto fail; }
-
-	/* Copy the data into it. */
-	fs->casio_fs_cookie = cookie;
-	memcpy(&fs->casio_fs_funcs, funcs, sizeof(casio_fsfuncs_t));
-	return (0);
-
-fail:
-	if (funcs->casio_fsfuncs_close)
-		(*funcs->casio_fsfuncs_close)(cookie);
-	return (err);
-}
+# endif
+#endif /* LOCAL_FS_BUILTIN_WINDOWS_H */

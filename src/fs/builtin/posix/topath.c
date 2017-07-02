@@ -73,6 +73,7 @@ int  CASIO_EXPORT casio_make_posix_path(void *cookie,
 		node = node->casio_pathnode_next;
 		if (node) *path++ = '/';
 	}
+	*path = 0;
 
 	/* No error has occured! */
 	return (0);

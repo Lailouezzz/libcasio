@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/open.c -- open a libcasio filesystem.
+ * fs/builtin/windows/make.c -- make a Windows filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,34 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "fs.h"
+#include "windows.h"
+#ifndef LIBCASIO_DISABLED_WINDOWS
 
 /**
- *	casio_open_fs:
- *	Open a filesystem.
+ *	casio_open_windows_fs:
+ *	Open a Windows filesystem interface.
  *
- *	@arg	pfs		the filesystem to open.
- *	@arg	cookie	the filesystem cookie.
- *	@arg	funcs	the filesystem callbacks.
+ *	@arg	fs		the filesystem to make.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_open_fs(casio_fs_t **pfs,
-	void *cookie, const casio_fsfuncs_t *funcs)
+int CASIO_EXPORT casio_open_windows_fs(casio_fs_t **fs)
 {
-	int err; casio_fs_t *fs;
-
-	/* Allocate the filesystem. */
-	*pfs = malloc(sizeof(casio_fs_t)); fs = *pfs;
-	if (!fs) { err = casio_error_alloc; goto fail; }
-
-	/* Copy the data into it. */
-	fs->casio_fs_cookie = cookie;
-	memcpy(&fs->casio_fs_funcs, funcs, sizeof(casio_fsfuncs_t));
 	return (0);
-
-fail:
-	if (funcs->casio_fsfuncs_close)
-		(*funcs->casio_fsfuncs_close)(cookie);
-	return (err);
 }
+
+#endif

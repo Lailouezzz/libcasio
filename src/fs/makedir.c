@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/path.c -- make a directory on a libcasio filesystem.
+ * fs/makedir.c -- make a directory on a libcasio filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -20,28 +20,51 @@
 
 /**
  *	casio_makedir:
- *	Make a directory.
+ *	Make a directory using a native path.
  *
  *	@arg	fs		the filesystem.
  *	@arg	path	the path of the directory to make.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_makedir(casio_filesystem_t *fs, casio_path_t *path)
+int CASIO_EXPORT casio_makedir(casio_fs_t *fs, void *path)
+{
+	casio_fs_makedir_t *makedir;
+	int err;
+
+	/* Get the callback. */
+	makedir = fs->casio_fs_funcs.casio_fsfuncs_makedir;
+	if (!makedir) return (casio_error_op);
+
+	/* Make the operation. */
+	err = (*makedir)(fs->casio_fs_cookie, path);
+	return (err);
+}
+
+/**
+ *	casio_makedir_path:
+ *	Make a directory using an abstract path.
+ *
+ *	@arg	fs		the filesystem.
+ *	@arg	path	the path of the directory to make.
+ *	@return			the error code (0 if ok).
+ */
+
+int CASIO_EXPORT casio_makedir_path(casio_fs_t *fs, casio_path_t *path)
 {
 	casio_fs_makedir_t *makedir;
 	int err; void *nat = NULL;
 
 	/* Get the callback. */
-	makedir = fs->casio_filesystem_functions.casio_fsfuncs_makedir;
+	makedir = fs->casio_fs_funcs.casio_fsfuncs_makedir;
 	if (!makedir) return (casio_error_op);
 
 	/* Get the native path. */
 	err = casio_make_native_path(fs, &nat, path);
 	if (err) return (err);
 
-	/* Make the directory, free the native path, return. */
-	err = (*makedir)(fs->casio_filesystem_cookie, nat);
+	/* Make the directory. */
+	err = (*makedir)(fs->casio_fs_cookie, nat);
 	casio_free_native_path(fs, nat);
 	return (err);
 }
