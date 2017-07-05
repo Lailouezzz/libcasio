@@ -59,10 +59,13 @@ typedef unsigned int casio_openmode_t;
 
 # define CASIO_OPENMODE_READ   0x0001 /* the stream is readable. */
 # define CASIO_OPENMODE_WRITE  0x0002 /* the stream is writable. */
-# define CASIO_OPENMODE_SEEK   0x0004 /* the stream is seekable. */
-# define CASIO_OPENMODE_SERIAL 0x0008 /* the stream has serial ops. */
-# define CASIO_OPENMODE_SCSI   0x0010 /* the stream has SCSI ops. */
-# define CASIO_OPENMODE_USB    0x0020 /* the stream has USB ops. */
+# define CASIO_OPENMODE_TRUNC  0x0004 /* the file will be truncated. */
+# define CASIO_OPENMODE_APPEND 0x0008 /* will append to the file. */
+
+# define CASIO_OPENMODE_SEEK   0x0010 /* the stream is seekable. */
+# define CASIO_OPENMODE_SERIAL 0x0020 /* the stream has serial ops. */
+# define CASIO_OPENMODE_SCSI   0x0040 /* the stream has SCSI ops. */
+# define CASIO_OPENMODE_USB    0x0080 /* the stream has USB ops. */
 
 /* Here is the offset type, to move within a stream: */
 
@@ -278,7 +281,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_comlist
 
 /* Open and close a stream. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_open
+CASIO_EXTERN int CASIO_EXPORT casio_open_stream
 	OF((casio_stream_t **casio__stream, casio_openmode_t mode,
 		void *casio__cookie, const casio_streamfuncs_t *casio__callbacks));
 CASIO_EXTERN int CASIO_EXPORT casio_close

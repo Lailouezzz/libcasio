@@ -139,7 +139,7 @@ int CASIO_EXPORT casio_open_stream_fd(casio_stream_t **stream,
 		readfd, writefd));
 
 	/* final call */
-	return (casio_open(stream, mode, cookie,
+	return (casio_open_stream(stream, mode, cookie,
 		&casio_streams_callbacks));
 fail:
 	if (readfd >= 0 && closeread)

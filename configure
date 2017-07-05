@@ -7,6 +7,7 @@ cd "$(dirname $0)"
 [ -f Makefile.cfg ] && mv Makefile.cfg Makefile.cfg.tmp
 name="$(make -s getname)"
 version="$(make -s getversion)"
+indev="$(make -s isindev)"
 maintainer="$(make -s getmaintainer)"
 [ -f Makefile.cfg.tmp ] && mv Makefile.cfg.tmp Makefile.cfg
 
@@ -30,9 +31,11 @@ loglevel=none # none, info, warn, error, fatal
 
 # Installation directories
 root=''
-prefix='${root}/opt/p7-project'
+[ x"$indev" != x ] && prefix='${root}/opt/p7-project' \
+	|| prefix='${root}/usr'
 prefix_set=
-hprefix='${root}/opt/p7-project'
+[ x"$indev" != x ] && hprefix='${root}/opt/p7-project' \
+	|| hprefix='${root}/usr'
 bindir='${prefix}/bin'
 hbindir='${hprefix}/bin'
 libdir='${prefix}/lib'"$platform"

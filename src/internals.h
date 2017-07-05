@@ -63,4 +63,16 @@ extern casio_uint32_t casio_checksum32   OF((void *casio__mem,
 extern int casio_getext OF((const char *casio__path,
 	char *casio__buf, size_t casio__n));
 
+/* ASCII-HEX, ASCII-DEC utilities */
+
+CASIO_EXTERN void          CASIO_EXPORT casio_putascii
+	OF((unsigned char *casio__p, unsigned long casio__i, int casio__n));
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_getascii
+	OF((const unsigned char *casio__p, int casio__n));
+
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_getdec
+	OF((unsigned long casio__h));
+CASIO_EXTERN unsigned long CASIO_EXPORT casio_gethex
+	OF((unsigned long casio__d));
+
 #endif /* LOCAL_INTERNALS_H */

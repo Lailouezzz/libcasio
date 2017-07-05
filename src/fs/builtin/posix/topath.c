@@ -43,7 +43,8 @@ int  CASIO_EXPORT casio_make_posix_path(void *cookie,
 		size_t nodesize = node->casio_pathnode_size;
 
 		/* Check that there is no forbidden characters. */
-		if (memchr(node->casio_pathnode_name,   0, nodesize)
+		if (nodesize > 255
+		 || memchr(node->casio_pathnode_name,   0, nodesize)
 		 || memchr(node->casio_pathnode_name, '/', nodesize))
 			return (casio_error_invalid);
 

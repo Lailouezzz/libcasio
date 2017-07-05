@@ -21,7 +21,7 @@
 	{ if (CASIO__COND) {err = CASIO__ERR; goto fail;}}
 
 /**
- *	casio_open:
+ *	casio_open_stream:
  *	Open a libcasio stream.
  *
  *	@arg	pstream		the stream to open.
@@ -31,8 +31,9 @@
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_open(casio_stream_t **pstream, casio_openmode_t mode,
-	void *cookie, const casio_streamfuncs_t *callbacks)
+int CASIO_EXPORT casio_open_stream(casio_stream_t **pstream,
+	casio_openmode_t mode, void *cookie,
+	const casio_streamfuncs_t *callbacks)
 {
 	int err; casio_stream_t *stream = NULL;
 	casio_streamfuncs_t *c;

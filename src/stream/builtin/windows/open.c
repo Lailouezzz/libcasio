@@ -94,7 +94,7 @@ int CASIO_EXPORT casio_opencom_windows(casio_stream_t **stream,
 
 	/* initialize for real */
 	mode = CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE | CASIO_OPENMODE_SERIAL;
-	return (casio_open(stream, mode, cookie, &casio_windows_callbacks));
+	return (casio_open_stream(stream, mode, cookie, &casio_windows_callbacks));
 fail:
 	if (fhandle != INVALID_HANDLE_VALUE) CloseHandle(fhandle);
 	if (cookie) casio_free(cookie);

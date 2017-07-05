@@ -28,5 +28,5 @@
 # include "libcasio/link.h"
 # include "libcasio/file.h"
 # include "libcasio/mcs.h"
-# include "libcasio/utils.h"
+# include "libcasio/char.h"
 #endif /* LIBCASIO_H */

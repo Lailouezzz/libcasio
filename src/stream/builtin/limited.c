@@ -102,7 +102,7 @@ int CASIO_EXPORT casio_open_limited(casio_stream_t **stream,
 	cookie->_left = size;
 
 	/* initialize da stream */
-	return (casio_open(stream,
+	return (casio_open_stream(stream,
 		casio_get_openmode(original) & CASIO_OPENMODE_READ,
 		cookie, &casio_limited_callbacks));
 }

@@ -24,62 +24,97 @@
 #ifndef LIBCASIO_DISABLED_WINDOWS
 
 /**
- *	validate_name:
- *	Validate element name.
+ *	check_short:
+ *	Check if is a short name.
  *
- *	We'll check that names respect the short name formats, also called the 8.3.
- *	Folder names are 8 max chars, and file names are 8 max chars of name
- *	plus 3 max chars of extensions.
- *
- *	TODO: check for filesystems supporting long file names.
+ *	We'll check that names respect the short name formats, also called
+ *	the 8.3 format (linked to how FAT store metadata).
  *
  *	@arg	name		the name.
- *	@arg	size		the name size.
- *	@arg	flags		the validation flags.
- *	@return				if it is validated (0 if not).
+ *	@arg	usize		the name size.
+ *	@return				the error code (0 if ok).
  */
 
-CASIO_LOCAL int validate_name(const char *name, size_t size,
-	unsigned int flags)
+CASIO_LOCAL int check_short(const char *name, size_t usize)
 {
-	int i;
-	const char *nm;
+	int i, size;
+
+	/* Check if is too much. */
+	if (usize > 11) return (casio_error_invalid);
+	size = (int)usize;
 
 	/* Check the short format. */
 	i = 8; if (i >= size) i = size;
 
 	/* - Look for the dot marking the extension. */
 	for (; i >= 0 && name[i] != '.'; i--);
+
 	if (i < 0) {
 		/* No extension; check if the file is 8 chars or under. */
 		if (size > 8) return (casio_error_invalid);
 	} else {
-		/* Check if there is a dot after the limit for the extension. */
-		if (memchr(&name[i], '.', size - i)) return (casio_error_invalid);
-
 		/* Check if the extension is longer than 3 chars. */
 		if (size > i + 3) return (casio_error_invalid);
+
+		/* Check if there are dots after the "main" dot, in the section
+		 * where there shouldn't be. */
+		switch (i) {
+		case 8:
+			if (name[11] == '.')
+				return (casio_error_invalid);
+			/* FALLTHRU */
+		case 7:
+			if (name[10] == '.')
+				return (casio_error_invalid);
+			/* FALLTHRU */
+		case 6:
+			if (name[9] == '.')
+				return (casio_error_invalid);
+			break;
+		}
 	}
+
+	return (0);
+}
+
+/**
+ *	check_name:
+ *	Validate element name.
+ *
+ *	TODO: check for filesystems supporting long file names.
+ *
+ *	@arg	name		the name.
+ *	@arg	size		the name size.
+ *	@return				the error code (0 if ok).
+ */
+
+CASIO_LOCAL int check_name(const char *name, size_t size)
+{
+	int err; size_t i;
+
+	/* Check if is a valid short name. */
+	err = check_short(name, size);
+	if (err) return (err);
 
 	/* Look for reserved names. */
 	if (size == 3) {
-		if (!memcmp(name, "CON") || !memcmp(name, "PRN")
-		 || !memcmp(name, "AUX") || !memcmp(name, "NUL"))
-			return (0);
+		if (!memcmp(name, "CON", 3) || !memcmp(name, "PRN", 3)
+		 || !memcmp(name, "AUX", 3) || !memcmp(name, "NUL", 3))
+			return (casio_error_invalid);
 	} else if (size == 4) {
-		if ((!memcmp(name, "COM") && name[3] >= '1' && name[3] <= '9')
-		 || (!memcmp(name, "LPT") && name[3] >= '1' && name[3] <= '8'))
-			return (0);
+		if ((!memcmp(name, "COM", 3) && name[3] >= '1' && name[3] <= '9')
+		 || (!memcmp(name, "LPT", 3) && name[3] >= '1' && name[3] <= '8'))
+			return (casio_error_invalid);
 	}
 
 	/* Look for reserved characters. */
 	for (i = size; i; i--, name++) {
 		if (*name < 0x20 || memchr("<>:\"/\\|?*", *name, 9))
-			return (0);
+			return (casio_error_invalid);
 	}
 
 	/* We're good! */
-	return (1);
+	return (0);
 }
 
 /**
@@ -93,9 +128,9 @@ CASIO_LOCAL int validate_name(const char *name, size_t size,
  */
 
 int CASIO_EXPORT casio_make_windows_path(void *cookie,
-	void *ppath, casio_path_t *array)
+	void **ppath, casio_path_t *array)
 {
-	size_t length = 0;
+	int err; size_t length = 0;
 	char *path;
 	casio_pathnode_t *node;
 
@@ -113,12 +148,12 @@ int CASIO_EXPORT casio_make_windows_path(void *cookie,
 	if (!node) return (casio_error_invalid);
 
 	while (node) {
-		if (!validate_name(node->casio_pathnode_name,
-		  node->casio_pathnode_size))
-			return (casio_error_invalid);
+		err = check_name((char*)node->casio_pathnode_name,
+			node->casio_pathnode_size);
+		if (err) return (err);
 		length += node->casio_pathnode_size;
 
-		node = node->casio_pathnode_size;
+		node = node->casio_pathnode_next;
 		if (node) length++; /* '\\' */
 
 		if (length > 259)
@@ -127,7 +162,7 @@ int CASIO_EXPORT casio_make_windows_path(void *cookie,
 
 	/* Allocate the path. */
 	*ppath = casio_alloc(length + 1, 1);
-	path = *ppath; if (!path) return (casio_error_alloc);
+	path = (char*)*ppath; if (!path) return (casio_error_alloc);
 
 	/* Fill the path. */
 	if (array->casio_path_device) {

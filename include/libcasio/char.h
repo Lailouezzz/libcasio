@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * libcasio/encoding.h -- libcasio character encoding.
+ * libcasio/char.h -- libcasio character encoding.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_ENCODING_H
-# define LIBCASIO_ENCODING_H
+#ifndef  LIBCASIO_CHAR_H
+# define LIBCASIO_CHAR_H
 # include "cdefs.h"
 
-typedef int casio_encode_string_t OF((void *casio__dest,
+typedef int casio_encode_t OF((void *casio__dest,
 	const void *casio__data, size_t *casio__size));
 
 CASIO_EXTERN int CASIO_EXPORT casio_register_conv
@@ -31,4 +31,4 @@ CASIO_EXTERN int CASIO_EXPORT casio_encode_string
 	OF((void *casio__dest, const void *casio__data,
 		size_t *casio__size));
 
-#endif /* LIBCASIO_ENCODING_H */
+#endif /* LIBCASIO_CHAR_H */

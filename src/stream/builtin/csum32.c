@@ -98,5 +98,5 @@ int CASIO_EXPORT casio_open_csum32(casio_stream_t **stream,
 
 	/* Initialize da stream. */
 	openmode = casio_get_openmode(original) & CASIO_OPENMODE_READ;
-	return (casio_open(stream, openmode, cookie, &csum32_callbacks));
+	return (casio_open_stream(stream, openmode, cookie, &csum32_callbacks));
 }

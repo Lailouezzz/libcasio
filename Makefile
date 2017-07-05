@@ -82,6 +82,10 @@ dist: mrproper
  getversion:
 	@echo $(VERSION)
 
+# Check if is indev.
+ isindev:
+	@$(if $(INDEV),echo $(INDEV),true)
+
 # Get the maintainer.
  getmaintainer:
 	@echo "$(MAINTAINER_NAME) <$(MAINTAINER_MAIL)>"
