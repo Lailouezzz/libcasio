@@ -16,27 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
+#define PATH_FTW
 #include "posix.h"
 #ifndef LIBCASIO_DISABLED_POSIX_FS
-
-/**
- *	makepathnode:
- *	Make a directory node.
- *
- *	@arg	size		the name size.
- *	@return				the allocated path node.
- */
-
-CASIO_LOCAL casio_pathnode_t *makepathnode(size_t size)
-{
-	casio_pathnode_t *node;
-
-	node = malloc(offsetof(casio_pathnode_t, casio_pathnode_name) + size);
-	if (!node) return (NULL);
-	node->casio_pathnode_next = NULL;
-	node->casio_pathnode_size = size;
-	return (node);
-}
 
 /**
  *	casio_make_posix_path_array:
@@ -52,6 +34,7 @@ CASIO_LOCAL casio_pathnode_t *makepathnode(size_t size)
 int CASIO_EXPORT casio_make_posix_path_array(casio_path_t **ppath,
 	const char *rawpath)
 {
+	int err = casio_error_alloc;
 	casio_path_t *path = NULL;
 	casio_pathnode_t **node = NULL;
 	casio_pathnode_t  *localnode = NULL;
@@ -80,8 +63,8 @@ int CASIO_EXPORT casio_make_posix_path_array(casio_path_t **ppath,
 		nodelen = strcspn(rawpath, "/");
 
 		/* Make the entry. */
-		localnode = makepathnode(nodelen + 1);
-		if (!localnode) goto fail;
+		err = casio_make_pathnode(&localnode, nodelen + 1);
+		if (err) goto fail;
 		memcpy(localnode->casio_pathnode_name, rawpath, nodelen);
 		localnode->casio_pathnode_name[nodelen] = 0;
 		*node = localnode;
@@ -98,7 +81,8 @@ fail:
 		path->casio_path_nodes = localnode->casio_pathnode_next;
 		free(localnode);
 	}
-	return (casio_error_alloc);
+	if (!err) err = casio_error_alloc;
+	return (err);
 }
 
 #endif

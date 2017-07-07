@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/builtin/posix/make.c -- make a POSIX filesystem element.
+ * fs/builtin/posix/del.c -- delete a POSIX file/directory.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -21,21 +21,30 @@
 #ifndef LIBCASIO_DISABLED_POSIX
 
 /**
- *	casio_posix_make:
- *	Make a POSIX filesystem element.
+ *	casio_posix_delete:
+ *	Delete a file or directory.
  *
  *	@arg	cookie		the cookie.
  *	@arg	path		the file path.
- *	@arg	stat		the file information.
- *	@arg	...			other information depending on the file type.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_posix_make(void *cookie, const char *path,
-	const casio_stat_t *info, ...)
+int CASIO_EXPORT casio_posix_delete(void *cookie, const char *path)
 {
+	int err;
+
+	/* Remove. */
+	if (!remove(path))
+		return (0);
+
+	/* Get the libcasio error. */
+	switch (errno) {
 	/* TODO */
-	return (casio_error_op);
+	default:
+		err = casio_error_unknown;
+	}
+
+	return (err);
 }
 
 #endif

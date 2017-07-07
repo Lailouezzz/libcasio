@@ -41,10 +41,8 @@ hbindir='${hprefix}/bin'
 libdir='${prefix}/lib'"$platform"
 includedir='${prefix}/include'"$platform"
 pkgdir='${libdir}/pkgconfig'
-mandir='${prefix}/share/man'
 
 # Installation options
-install_manpages=yes
 install_devel=yes
 
 # Tweaks
@@ -77,7 +75,6 @@ Build options:
   --loglevel=LOGLEVEL       default library log level [$loglevel]
 
 Installation options:
-  --no-manpages             should not make and install manpages
   --no-devel                should not install developement files
 
 Installation directories:
@@ -91,7 +88,6 @@ Fine tuning of the installation directories:
   --pkgdir=PKGDIR           pkg-config configurations directory [$pkgdir]
   --libdir=LIBDIR           library files of the linker [$libdir]
   --includedir=INCDIR       include files for the compiler [$includedir]
-  --mandir=MANDIR           man root [$mandir]
 
 Other tweaks:
   CFLAGS=CFLAGS             some more compilation flags
@@ -131,7 +127,7 @@ esac; done
 #*****************************************************************************#
 for arg ; do case "$arg" in
 --make-full-log) make_full_log=yes ;;
---maintainer) more_warnings=yes; loglevel=info; install_manpages= ;;
+--maintainer) more_warnings=yes; loglevel=info ;;
 --target=*) target="${arg#*=}" ;;
 --static) static=y ;;
 --windows) windows=y ;;
@@ -152,7 +148,6 @@ got '$level'"
 	fi
 	# then set
 	loglevel=$level ;;
---no-manpages) install_manpages= ;;
 --no-devel) install_devel= ;;
 --root=*) root="${arg#*=}" ;;
 --hprefix=*) hprefix="${arg#*=}" ;;
@@ -162,7 +157,6 @@ got '$level'"
 --pkgdir=*) pkgdir="${arg#*=}" ;;
 --libdir=*) libdir="${arg#*=}" ;;
 --includedir=*) includedir="${arg#*=}" ;;
---mandir=*) mandir="${arg#*=}" ;;
 CFLAGS=*) cflags="${arg#*=}" ;;
 LDFLAGS=*) ldflags="${arg#*=}" ;;
 *) echo "$arg: didn't read" ;;
@@ -182,7 +176,7 @@ case "$target" in *-mingw32) if [ ! "$static" ]; then
 fi;; esac
 
 # Evaluate variables
-vars="prefix bindir libdir pkgdir includedir mandir hprefix hbindir"
+vars="prefix bindir libdir pkgdir includedir hprefix hbindir"
 for var in $vars; do
 	eval $var'='$(eval 'echo $'$var)
 done
@@ -261,10 +255,8 @@ cat <<EOF
  IPKGDIR = $pkgdir
  ILIBDIR = $libdir
  IINCDIR = $includedir
- IMANDIR = $mandir
 
 # Installation options
- INSTALL_MANPAGES = $install_manpages
  INSTALL_DEVEL = $install_devel
 
 # Other tweaks

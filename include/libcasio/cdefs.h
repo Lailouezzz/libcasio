@@ -69,6 +69,18 @@
 #  define OF(CASIO_ARGS) ()
 # endif
 /* ************************************************************************* */
+/*  Enumerations                                                             */
+/* ************************************************************************* */
+/* Enumerations can be great thanks to the compiler: better warnings,
+ * better debug, better coding! */
+
+# if   defined(LIBCASIO_USE_ENUMS)
+# elif defined(__STDC__) && __STDC__
+#  define LIBCASIO_USE_ENUMS 1
+# else /* K&R C, no enums! */
+#  define LIBCASIO_USE_ENUMS 0
+# endif
+/* ************************************************************************* */
 /*  C++ declarations and namespaces management                               */
 /* ************************************************************************* */
 /* libcasio is made in C. */

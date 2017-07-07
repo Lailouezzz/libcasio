@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/builtin/posix/make.c -- make a POSIX filesystem element.
+ * fs/builtin/posix/open_fs.c -- open a POSIX filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,26 +16,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#define PATHS_FTW
 #include "posix.h"
-#ifndef LIBCASIO_DISABLED_POSIX
+#ifndef LIBCASIO_DISABLED_POSIX_FS
+
+/* Callbacks. */
+
+CASIO_LOCAL casio_fsfuncs_t posix_fs_funcs = {
+	NULL, &casio_make_posix_path, &casio_free_posix_path,
+	&casio_posix_stat, NULL, NULL, NULL,
+	NULL, NULL
+};
 
 /**
- *	casio_posix_make:
- *	Make a POSIX filesystem element.
+ *	casio_open_posix_fs:
+ *	Open a POSIX filesystem interface.
  *
- *	@arg	cookie		the cookie.
- *	@arg	path		the file path.
- *	@arg	stat		the file information.
- *	@arg	...			other information depending on the file type.
- *	@return				the error code (0 if ok).
+ *	@arg	fs		the filesystem interface to make.
+ *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_posix_make(void *cookie, const char *path,
-	const casio_stat_t *info, ...)
+int CASIO_EXPORT casio_open_posix_fs(casio_fs_t **fs)
 {
-	/* TODO */
-	return (casio_error_op);
+	return (casio_open_fs(fs, NULL, &posix_fs_funcs));
 }
 
 #endif

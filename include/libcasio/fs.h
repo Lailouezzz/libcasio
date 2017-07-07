@@ -20,6 +20,7 @@
 # define LIBCASIO_FS_H
 # include "cdefs.h"
 # include "stream.h"
+# include <time.h>
 CASIO_BEGIN_NAMESPACE
 
 /* forward structure declarations (don't mind) */
@@ -49,6 +50,16 @@ struct casio_pathnode_s {
 	unsigned char     casio_pathnode_name[2048];
 };
 
+/* Path nodes should be managed using the following functions: */
+
+CASIO_EXTERN int  CASIO_EXPORT casio_make_pathnode
+	OF((casio_pathnode_t **casio__node, size_t casio__size));
+CASIO_EXTERN void CASIO_EXPORT casio_free_pathnode
+	OF((casio_pathnode_t  *casio__node));
+CASIO_EXTERN int  CASIO_EXPORT casio_duplicate_pathnode
+	OF((casio_pathnode_t **casio__new_node,
+		const casio_pathnode_t *casio__old_node));
+
 /* And here is the main path structure. */
 
 #define casio_pathflag_alloc 0x0001 /* path object is valid and allocated */
@@ -63,28 +74,91 @@ struct casio_path_s {
 /*  Filesystem file entry                                                    */
 /* ************************************************************************* */
 /* This structure defines file metadata.
- * Here are the flags: */
+ * Here are the flags:
+ * `CASIO_STAT_FLAG_PERM`:  stat permissions are set;
+ * `CASIO_STAT_FLAG_BTIME`: birth time is set;
+ * `CASIO_STAT_FLAG_ATIME`: last accessed time is set;
+ * `CASIO_STAT_FLAG_MTIME`: last modif. time is set. */
 
-/* TODO */
+# define CASIO_STAT_FLAG_PERM  0x0001
+# define CASIO_STAT_FLAG_BTIME 0x0002
+# define CASIO_STAT_FLAG_ATIME 0x0004
+# define CASIO_STAT_FLAG_MTIME 0x0008
+
+/* Elements can have Unix-like permissions. Here they are:
+ * `CASIO_STAT_PERM_IRUSR`: user   has  read  permission;
+ * `CASIO_STAT_PERM_IWUSR`: user   has  write permission;
+ * `CASIO_STAT_PERM_IXUSR`: user   has  exec  permission;
+ * `CASIO_STAT_PERM_IRGRP`: group  has  read  permission;
+ * `CASIO_STAT_PERM_IWGRP`: group  has  write permission;
+ * `CASIO_STAT_PERM_IXGRP`: group  has  exec  permission;
+ * `CASIO_STAT_PERM_IROTH`: others have read  permission;
+ * `CASIO_STAT_PERM_IWOTH`: others have write permission;
+ * `CASIO_STAT_PERM_IXOTH`: others have exec  permission. */
+
+# define CASIO_STAT_PERM_IRUSR 0x0001
+# define CASIO_STAT_PERM_IWUSR 0x0002
+# define CASIO_STAT_PERM_IXUSR 0x0004
+# define CASIO_STAT_PERM_IRGRP 0x0010
+# define CASIO_STAT_PERM_IWGRP 0x0020
+# define CASIO_STAT_PERM_IXGRP 0x0040
+# define CASIO_STAT_PERM_IROTH 0x0100
+# define CASIO_STAT_PERM_IWOTH 0x0200
+# define CASIO_STAT_PERM_IXOTH 0x0400
 
 /* And here are the "file" types ("file" is between quotes as on Windows,
- * directories are not files like on Unix) you can find: */
+ * directories are not files like on Unix) you can find:
+ * `CASIO_STAT_TYPE_REG`:  regular file;
+ * `CASIO_STAT_TYPE_DIR`:  directory;
+ * `CASIO_STAT_TYPE_LNK`:  symbolic link;
+ * `CASIO_STAT_TYPE_CHAR`: character device;
+ * `CASIO_STAT_TYPE_BLK`:  block device;
+ * `CASIO_STAT_TYPE_SOCK`: socket */
 
-# define CASIO_STAT_TYPE_REG   0x0001 /* Regular file. */
-# define CASIO_STAT_TYPE_DIR   0x0002 /* Directory. */
-# define CASIO_STAT_TYPE_LNK   0x0004 /* Symbolic link. */
-# define CASIO_STAT_TYPE_CHAR  0x0008 /* Character device. */
-# define CASIO_STAT_TYPE_BLK   0x0010 /* Block device. */
-# define CASIO_STAT_TYPE_SOCK  0x0020 /* Socket. */
+# define CASIO_STAT_TYPE_REG   0x0001
+# define CASIO_STAT_TYPE_DIR   0x0002
+# define CASIO_STAT_TYPE_LNK   0x0004
+# define CASIO_STAT_TYPE_CHAR  0x0008
+# define CASIO_STAT_TYPE_BLK   0x0010
+# define CASIO_STAT_TYPE_SOCK  0x0020
 
-/* And here is the stat structure.
- * The path is not in it. */
+/* And here is the stat structure. The elements it contains at runtime depend
+ * on the flags (useful for binary compatibility and filesystem metadata type).
+ * For example, if `~thestat.casio_stat_flags & CASIO_STAT_FLAG_PERM`,
+ * then you shouldn't try to read the permissions, as it might contain crap.
+ *
+ * The elements are the following:
+ * [ ] `casio_stat_type`:  the file type (see the `CASIO_STAT_TYPE_*` macros);
+ * [ ] `casio_stat_perm`:  Unix-like permissions (see `CASIO_STAT_PERM_*`);
+ * [X] `casio_stat_size`:  the file size;
+ * [X] `casio_stat_btime`: the file's birth time;
+ * [X] `casio_stat_atime`: the file's last access time;
+ * [X] `casio_stat_mtime`: the file's last modification time.
+ *
+ * Checked elements should not be read without checking that the corresponding
+ * flag is set (compatibility and filesystem feature reasons).
+ *
+ * The file path/name is not in it, because it is:
+ * - given by yourself when you are querying file information;
+ * - given beside with listing callbacks. */
 
 struct casio_stat_s {
-	unsigned int casio_stat_flags;
-	unsigned int casio_stat_type;
-	casio_off_t  casio_stat_size;
+	unsigned short casio_stat_flags;
+	unsigned short casio_stat_type;
+	unsigned short casio_stat_perm;
+	unsigned short casio_stat__reserved;
+
+	casio_off_t    casio_stat_size;
+	time_t         casio_stat_btime;
+	time_t         casio_stat_atime;
+	time_t         casio_stat_mtime;
 };
+
+/* Here is the file listing callback type you will give to `casio_list`.
+ *
+ * If you want to copy the path node, do not copy the pointer as it will
+ * probably disappear afterwards, duplicate the node using
+ * `casio_duplicate_pathnode`! */
 
 typedef void casio_fs_list_func_t OF((void *casio__cookie,
 	const casio_pathnode_t *casio__node, const casio_stat_t *casio__stat));
@@ -115,10 +189,17 @@ typedef int casio_fs_stat_t
 	OF((void *casio__cookie, void *casio__native_path,
 		casio_stat_t *casio__stat));
 
-/* The `casio_fs_makedir` callback is used to create a directory. */
+/* The `casio_fs_make` callback is used to create an element.
+ * The arguments depend on the file type:
+ * - `CASIO_STAT_TYPE_REG`: casio_off_t size;
+ * - `CASIO_STAT_TYPE_LNK`: void *casio__destination_path. */
 
-typedef int casio_fs_makedir_t
-	OF((void *casio__cookie, void *casio__native_path));
+# if defined(__STDC__) && __STDC__
+typedef int casio_fs_make_t(void *casio__cookie,
+	void *casio__native_path, const casio_stat_t *casio__stat, ...);
+# else
+typedef int casio_fs_make_t();
+# endif
 
 /* The `casio_fs_del` callback is used to delete an element of any type
  * from your filesystem. */
@@ -156,7 +237,7 @@ struct casio_fsfuncs_s {
 	casio_fs_freepath_t *casio_fsfuncs_freepath;
 
 	casio_fs_stat_t     *casio_fsfuncs_stat;
-	casio_fs_makedir_t  *casio_fsfuncs_makedir;
+	casio_fs_make_t     *casio_fsfuncs_make;
 	casio_fs_del_t      *casio_fsfuncs_del;
 	casio_fs_move_t     *casio_fsfuncs_move;
 

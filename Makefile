@@ -8,14 +8,14 @@ include Makefile.vars Makefile.msg
 # General targets                                                             #
 #*****************************************************************************#
 # Build everything.
-all: all-lib $(if $(INSTALL_MANPAGES),all-doc)
+all: all-lib
 
 # Mostly clean everything (remove everything but the end results).
-mostlyclean: mostlyclean-lib mostlyclean-doc
+mostlyclean: mostlyclean-lib
  mclean: mostlyclean
 
 # Clean everything.
-clean: clean-lib clean-doc
+clean: clean-lib
  fclean: clean
 
 # To original state.
@@ -29,10 +29,10 @@ mrproper: clean
 re: clean all
 
 # Install everything.
-install: install-lib $(if $(INSTALL_MANPAGES),install-doc)
+install: install-lib
 
 # Uninstall everything. (experimental)
-uninstall: uninstall-lib uninstall-doc
+uninstall: uninstall-lib
 
 # Reinstall everything. (experimental)
 reinstall: uninstall install
@@ -212,66 +212,11 @@ $(eval $(call make-obj-rule,$(src))))
 
 .PHONY: install-cfgtool uninstall-cfgtool
 #*****************************************************************************#
-# Documentation-related                                                       #
+# Documentation-related targets                                               #
 #*****************************************************************************#
-# Make all manpages.
- all-doc: $(foreach s,$(MAN_SECTIONS), $(MAN_$(s):%=$(MANDIR)/man$(s)/%.$(s)))
+# Make the HTML documentation.
+html:
+	@sphinx-build -b html docs docs/_build/html
 
-# Make manpages directories.
- $(MAN_SECTIONS:%=$(MANDIR)/man%):
-	$(call bcmd,mkdir,$@,$(MD) $@)
-
-# Make a manpage.
-define make-manpage-rule
- $(MANDIR)/man$1/%.$1: $(DOCDIR)/%.$1.txt | $(MANDIR)/man$1
-	$(call bcmd,a2x,$$<,$(A2X) -f manpage -D $$| $$< 2>/dev/null)
-endef
-$(foreach section, $(MAN_SECTIONS), \
-$(eval $(call make-manpage-rule,$(section))))
-
-# Mostly clean (do nothing, really)
- mostlyclean-doc:
- mclean-doc: mostlyclean-doc
-
-# Remove all built manpages.
- clean-doc:
-	$(call rmsg,Removing manpages directory.)
-	$(call qcmd,$(RM) -r $(MANDIR))
-
-# Remake all manpages.
-# (I don't really know why some people would want to do that though)
- re-doc: clean-doc all-doc
-
-# Install a manpages section.
-define make-installmansection-rule
- install-doc-$1: $(MAN_$1:%=$(MANDIR)/man$1/%.$1)
-	$(call imsg,Installing manpages section $1.)
-	$(call qcmd,$(INST) -m 755 -d "$(IMANDIR)/man$1")
-	$(call qcmd,$(INST) -m 644 -t "$(IMANDIR)/man$1" \
-		$(MAN_$1:%=$(MANDIR)/man$1/%.$1))
-	$(call qcmd,$(GZIP) $(MAN_$1:%="$(IMANDIR)/man$1/%.$1"))
-endef
-$(foreach section, $(MAN_SECTIONS), \
-$(eval $(call make-installmansection-rule,$(section))))
-
-# Install manpages.
- install-doc: $(CHECKCFG) $(MAN_SECTIONS:%=install-doc-%)
-
-# Clean a manpages section.
-define make-uninstall-doc-rule
- uninstall-doc-$1:
-	$(call rmsg,Uninstalling manpages section $1.)
-	$(call qcmd,$(RM) "$(IMANDIR)/man$1/lib$(NAME).$1"* \
-		"$(IMANDIR)/man$1/$(NAME)_"*".$1"* \
-		"$(IMANDIR)/man$1/lib$(NAME)-config.$1"*)
-endef
-$(foreach sec,$(MAN_SECTIONS), \
-$(eval $(call make-uninstall-doc-rule,$(sec))))
-
-# Uninstall manpages
- uninstall-doc: $(CHECKCFG) $(MAN_SECTIONS:%=uninstall-doc-%)
-
-.PHONY: all-doc mostlyclean-doc mclean-doc clean-doc re-doc
-.PHONY: install-doc uninstall-doc
-.PHONY: $(foreach s,$(MAN_SECTIONS),install-doc-$(s) uninstall-doc-$(s))
+.PHONY: html
 # End of file

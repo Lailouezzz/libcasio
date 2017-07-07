@@ -293,11 +293,15 @@ CASIO_EXTERN int CASIO_EXPORT casio_isreadable
 	OF((casio_stream_t *casio__stream));
 CASIO_EXTERN int CASIO_EXPORT casio_iswritable
 	OF((casio_stream_t *casio__stream));
+CASIO_EXTERN int CASIO_EXPORT casio_isseekable
+	OF((casio_stream_t *casio__stream));
 
 # define casio_isreadable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_READ)
 # define casio_iswritable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_WRITE)
+# define casio_isseekable(CASIO__STREAM) \
+	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_SEEK)
 
 CASIO_EXTERN casio_openmode_t           CASIO_EXPORT casio_get_openmode
 	OF((casio_stream_t *casio__stream));

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
+#define PATH_FTW
 #include "posix.h"
 #ifndef LIBCASIO_DISABLED_POSIX_FS
 
