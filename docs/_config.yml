@@ -1,0 +1,36 @@
+#******************************************************************************
+# _config.yml -- Documentation variables definition.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when
+# you use 'bundle exec jekyll serve'. If you change this file, please
+# restart the server process.
+#
+# The theme is based on the jekyll-docs-template theme:
+# https://github.com/bruth/jekyll-docs-template
+#******************************************************************************
+# Site settings.
+title: libcasio
+description: >-
+ Documentation for libcasio.
+url: ""
+baseurl: "/docs"
+
+# Build settings.
+output: web
+destination: _site
+gems: []
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Makefile
+  - README.md
+  - vendor
+
+# Markdown settings.
+markdown: kramdown
+
+# SASS settings.
+sass:
+ style: :expanded
+
+# End of file.
