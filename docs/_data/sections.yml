@@ -5,5 +5,8 @@
   name: Getting started
   uri: /getting-started.html
 -
+  name: Logging
+  uri: /logging.html
+-
   name: Streams
   uri: /streams.html

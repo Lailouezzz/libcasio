@@ -216,7 +216,7 @@ $(eval $(call make-obj-rule,$(src))))
 #*****************************************************************************#
 # Make the HTML documentation.
 html:
-	@sphinx-build -b html docs docs/_build/html
+	make -C docs
 
 .PHONY: html
 # End of file
