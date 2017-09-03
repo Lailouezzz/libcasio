@@ -2,14 +2,21 @@
 #*****************************************************************************#
 # Target for the end user                                                     #
 #*****************************************************************************#
+# Make it.
+all: -all
+
 # Preview in local how it will render.
 preview prev: -all-watch
+
+# Upload it to production (only for maintainers).
+show: -all -install
 
 .PHONY: preview prev
 #*****************************************************************************#
 # Internal                                                                    #
 #*****************************************************************************#
  JEK := bundle exec jekyll
+ ROOT := cake@p7.planet-casio.com:libcasio_doc
 
 # Prepare the bundle.
  -prepare:
@@ -23,5 +30,10 @@ preview prev: -all-watch
  -all-watch: -prepare
 	$(JEK) serve --watch $(JEKYLL_OPT)
 
-.PHONY: -prepare -all -all-watch
+# Upload.
+ -install:
+	find _site -type f -exec chmod 644 {} \;
+	rsync -Prlt --delete _site/ "$(ROOT)"
+
+.PHONY: -prepare -all -all-watch -install
 # End of file.

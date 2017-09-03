@@ -4,8 +4,7 @@ title: getting started
 ---
 The libcasio development happens [on Github][gh].  
 There is currently no mailing-list.  
-The release source codes are available [here][pub] (all P7 projects are
-in the same folder).
+The release tarballs are available [here][pub].
 
 libcasio is a development library, either shared or static.
 There are many configuration options for adapting the library to your
@@ -31,4 +30,4 @@ To configure, use `./configure <options>`. Options are used as
 Other options are packaging options (todo: add info about them here).
 
 [gh]: https://github.com/PlaneteCasio/libcasio
-[pub]: https://p7.planet-casio.com/pub/
+[pub]: https://libcasio.planet-casio.com/pub/

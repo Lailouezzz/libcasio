@@ -9,10 +9,28 @@ pre, code, pre code {
     border-radius: 0;
     background-color: #f9f9f9;
     font-size: 0.85em;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
 }
-
 .highlight {
-    background-color: #f9f9f9;
+	margin: 20px 0 10px;
+}
+.highlight > pre, .highlight > pre > code {
+	background-color: transparent;
+	padding: 0;
+}
+.highlight table {
+	width: 100%;
+}
+.highlight table td.gl {
+	width: 0;
+}
+.highlight table td {
+	padding: 0;
+}
+.highlight table pre {
+	margin: 0;
 }
 
 pre {
@@ -52,9 +70,17 @@ code {
     font-size: 0.9em;
 }
 
-#navigation li a {
-    padding-left: 10px;
-    padding-right: 10px;
+#navigation li {
+	padding-left: 0;
+}
+
+#navigation li p {
+	font-weight: bold;
+}
+
+#navigation li a, #navigation li p {
+	padding: 10px;
+	margin: 0;
 }
 
 #navigation .nav-header {

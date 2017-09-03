@@ -2,7 +2,8 @@
 layout: page
 title: introduction
 ---
-This is the libcasio developer documentation.
+This is the libcasio documentation. It targets library users and library
+developers.
 
 libcasio ought to become the _de facto_ standard when it comes to manipulating
 protocols and file formats used with CASIO calculators. Most of it is

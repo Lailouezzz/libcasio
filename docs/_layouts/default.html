@@ -6,10 +6,14 @@
 
 <title>{{ site.title }}{% if page.title %} : {{ page.title }}{% endif %}</title>
 <meta name="description" content="{{ site.subtitle }}">
+<link rel="icon" href="favicon.png">
+<!--[if IE]>
+<link rel="shortcut icon" href="favicon.ico">
+<[endif]-->
 
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/bootstrap.min.css">
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/syntax.css">
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/main.css">
+<link rel="stylesheet" href="assets/bootstrap.min.css?upd">
+<link rel="stylesheet" href="assets/syntax.css?upd">
+<link rel="stylesheet" href="assets/main.css?upd">
 </head><body>
 <div class="container">
 
@@ -21,8 +25,15 @@
 
 <div class="row">
 <div id="navigation" class="col-sm-2"><ul class="nav nav-list">
-{% for section in site.data.sections %}
-    <li><a href="{{ site.baseurl }}{{ section.uri }}">{{ section.name }}</a></li>
+{% for element in site.data.sections %}
+{% if element.name %}
+    <li><a href="{{ site.baseurl }}{{ element.uri }}">{{ element.name }}</a></li>
+{% else %}
+	<li><p>{{ element.sname }}</p></li>
+{% for document in element.docs %}
+	<li><a href="{{ site.baseurl }}{{ document.uri }}">{{ document.name }}</a></li>
+{% endfor %}
+{% endif %}
 {% endfor %}
 </ul></div>
 

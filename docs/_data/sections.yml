@@ -1,12 +1,39 @@
 -
-  name: Introduction
-  uri: /
+ name: Introduction
+ uri: /
 -
-  name: Getting started
-  uri: /getting-started.html
+ name: Getting started
+ uri: /getting-started.html
 -
+ sname: User documentation
+ docs:
+ -
   name: Logging
   uri: /logging.html
--
+ -
+  name: Error management
+  uri: /errors.html
+ -
+  name: Chararacter encoding
+  uri: /char.html
+ -
   name: Streams
   uri: /streams.html
+ -
+  name: Filesystems
+  uri: /filesystems.html
+ -
+  name: Main filesystems
+  uri: /mcs.html
+ -
+  name: Links and protocols
+  uri: /link.html
+ -
+  name: Decoding files
+  uri: /file.html
+-
+ sname: Developer documentation
+ docs:
+ -
+  name: Logging internals
+  uri: /logging-internals.html
