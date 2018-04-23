@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * utils/alloc.c -- dynamic memory allocation utilities.
- * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * libcasio/char.h -- libcasio FONTCHARACTER management.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,34 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../internals.h"
+#ifndef  LIBCASIO_FONTCHAR_H
+# define LIBCASIO_FONTCHAR_H
+# include "cdefs.h"
 
-/**
- *	casio_alloc:
- *	Allocate memory dynamically.
- *
- *	@arg	num		the number of elements.
- *	@arg	size	the size of an element.
- *	@return			the allocated memory region.
- */
+typedef casio_uint16_t FONTCHARACTER;
 
-void* CASIO_EXPORT casio_alloc(size_t num, size_t size)
-{
-	if (!num && !size)
-		return (NULL);
-	return (malloc(num * size));
-}
+/* A multi-character should resolve as a maximum of 16 characters. */
+# define CASIO_FONTCHAR_MULTI_MAX 16
 
-/**
- *	casio_free:
- *	Free dynamically allocated memory.
- *
- *	@arg	ptr		the pointer to the allocated memory.
- */
+CASIO_EXTERN int CASIO_EXPORT casio_is_fontchar_lead
+	OF((int casio__code));
+CASIO_EXTERN int CASIO_EXPORT casio_fontchar_to_uni
+	OF((casio_uint16_t casio__code, casio_uint32_t *casio__uni));
+CASIO_EXTERN int CASIO_EXPORT casio_uni_to_fontchar
+	OF((casio_uint32_t const *casio__uni, casio_uint16_t casio__code));
 
-void CASIO_EXPORT casio_free(void *ptr)
-{
-	if (!ptr)
-		return ;
-	free(ptr);
-}
+#endif /* LIBCASIO_CHAR_H */

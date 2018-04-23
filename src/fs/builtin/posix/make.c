@@ -34,8 +34,61 @@
 int CASIO_EXPORT casio_posix_make(void *cookie, const char *path,
 	const casio_stat_t *info, ...)
 {
-	/* TODO */
-	return (casio_error_op);
+	int err = 0;
+	mode_t mode;
+	va_list ap;
+
+	/* Start the variable argument list. */
+	va_start(ap, info);
+
+	/* Deduce the mode. */
+	if (info->casio_stat_flags & CASIO_STAT_FLAG_PERM) {
+		mode = 0;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IRUSR)
+			mode |= S_IRUSR;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IWUSR)
+			mode |= S_IWUSR;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IXUSR)
+			mode |= S_IXUSR;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IRGRP)
+			mode |= S_IRGRP;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IWGRP)
+			mode |= S_IWGRP;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IXGRP)
+			mode |= S_IXGRP;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IROTH)
+			mode |= S_IROTH;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IWOTH)
+			mode |= S_IWOTH;
+		if (info->casio_stat_perm & CASIO_STAT_PERM_IXOTH)
+			mode |= S_IXOTH;
+	} else
+		mode = S_IRWXU | S_IRWXG | S_IRWXO;
+
+	/* Make the file. */
+	switch (info->casio_stat_type) {
+	case CASIO_STAT_TYPE_DIR:
+		if (mkdir(path, mode))
+			goto fail;
+		break;
+
+	case CASIO_STAT_TYPE_LNK:
+		if (symlink(va_arg(ap, const char*), path))
+			goto fail;
+		break;
+
+	default:
+		err = casio_error_op;
+	}
+
+	/* End. */
+	va_end(ap);
+	return (err);
+
+fail:
+	va_end(ap);
+	/* TODO: check on `errno` */
+	return (casio_error_unknown);
 }
 
 #endif

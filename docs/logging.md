@@ -56,7 +56,7 @@ An example log level listing is the following:
 
 void callback(void *cookie, const char *str)
 {
-	(void)cookie; /* no cookie, we don't want to use you */
+	(void)cookie; /* no, cookie, we don't want to use you */
 	printf("- %s\n", str);
 }
 

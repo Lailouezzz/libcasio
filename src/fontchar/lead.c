@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * char/char.h -- libcasio internal macros for string encoding.
+ * fontchar/lead.c -- check if a byte is a FONTCHARACTER leader.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -16,10 +16,3 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LOCAL_CHAR_H
-# define LOCAL_CHAR_H 1
-# include "../internals.h"
-
-
-
-#endif /* LOCAL_CHAR_H */

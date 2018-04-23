@@ -67,9 +67,13 @@ struct group_corresp {
 
 #define TTERM {0, NULL, 0, NULL, NULL, 0}
 CASIO_LOCAL const struct type_corresp types_setup[] = {
+	/* There are setup files with three different types…? */
+
 	{0x14, "SETUP", 0, "$GLOBAL",
-		"setup", casio_mcstype_setup},
-	{0x00, "SETUP", 0, "$GLOBAL", /* setup is also with 0x00...? */
+		"setup (0x14)", casio_mcstype_setup},
+	{0x12, "SETUP", 0, "$GLOBAL",
+		"setup (0x12)", casio_mcstype_setup},
+	{0x00, "SETUP", 0, "$GLOBAL",
 		"setup", casio_mcstype_setup},
 	TTERM};
 CASIO_LOCAL const struct type_corresp types_alphamem[] = {

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/delete.c -- delete an element from a libcasio filesystem.
+ * fs/makedir.c -- make a directory in a libcasio filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -19,51 +19,61 @@
 #include "fs.h"
 
 /**
- *	casio_delete:
- *	Delete from a filesystem, using an abstract path.
+ *	casio_makedir:
+ *	Make a directory using an abstract path.
  *
  *	@arg	fs		the filesystem.
  *	@arg	path	the abstract path.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_delete(casio_fs_t *fs, casio_path_t *path)
+int CASIO_EXPORT casio_makedir(casio_fs_t *fs, casio_path_t *path)
 {
-	int err; void *nat;
-	casio_fs_del_t *delete;
+	casio_fs_make_t *mk;
+	int err; void *nat = NULL;
+	casio_stat_t st;
 
-	/* Get the function. */
-	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
-	if (!delete) return (casio_error_op);
+	/* Get the callback. */
+	mk = fs->casio_fs_funcs.casio_fsfuncs_make;
+	if (!mk) return (casio_error_op);
 
 	/* Make the native path. */
 	err = casio_make_native_path(fs, &nat, path);
 	if (err) return (err);
 
-	/* Make the operation. */
-	err = (*delete)(fs->casio_fs_cookie, nat);
+	/* Prepare the stat. */
+	st.casio_stat_flags = 0;
+	st.casio_stat_type = CASIO_STAT_TYPE_DIR;
+
+	/* Make the directory. */
+	err = (*mk)(fs->casio_fs_cookie, path, &st);
 	casio_free_native_path(fs, nat);
 	return (err);
 }
 
 /**
- *	casio_delete_nat:
- *	Delete from a filesystem, using a native path.
+ *	casio_makedir_nat:
+ *	Make a directory using a native path.
  *
  *	@arg	fs		the filesystem.
- *	@arg	nat		the native path.
+ *	@arg	path	the native path.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_delete_nat(casio_fs_t *fs, void *path)
+int CASIO_EXPORT casio_makedir_nat(casio_fs_t *fs, void *path)
 {
-	int err; casio_fs_del_t *delete;
+	casio_fs_make_t *mk;
+	int err; casio_stat_t st;
 
 	/* Get the callback. */
-	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
-	if (!delete) return (casio_error_op);
+	mk = fs->casio_fs_funcs.casio_fsfuncs_make;
+	if (!mk) return (casio_error_op);
 
-	/* Make the operation. */
-	err = (*delete)(fs->casio_fs_cookie, path);
+	/* Prepare the stat. */
+	st.casio_stat_flags = 0;
+	st.casio_stat_type = CASIO_STAT_TYPE_DIR;
+
+	/* Make the directory. */
+	err = (*mk)(fs->casio_fs_cookie, path, &st);
 	return (err);
 }

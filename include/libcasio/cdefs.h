@@ -16,6 +16,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
+/* Pre-ANSI C compilers don't support arguments (and argument types) in
+ * function declarations. This macro is inspired from zlib.
+ *
+ * It is defined outside of the include guard because it is not in
+ * the libcasio defined namespace, so we want it to be redefined, in case. */
+
+#if defined(OF)
+#elif defined(__STDC__) && __STDC__
+# define OF(CASIO_ARGS) CASIO_ARGS
+#else
+# define OF(CASIO_ARGS) ()
+#endif
+
+/* "Normal start" of the file is here. */
+
 #ifndef  LIBCASIO_CDEFS_H
 # define LIBCASIO_CDEFS_H
 # include "config.h"
@@ -56,18 +71,6 @@
 # define CASIO_EXTERN extern
 # define CASIO_EXPORT
 # define CASIO_LOCAL  static
-/* ************************************************************************* */
-/*  Function declaration arguments                                           */
-/* ************************************************************************* */
-/* Pre-ANSI C compilers don't support arguments (and argument types) in
- * function declarations. This macro is inspired from zlib. */
-
-# if defined(OF)
-# elif defined(__STDC__) && __STDC__
-#  define OF(CASIO_ARGS) CASIO_ARGS
-# else
-#  define OF(CASIO_ARGS) ()
-# endif
 /* ************************************************************************* */
 /*  Enumerations                                                             */
 /* ************************************************************************* */

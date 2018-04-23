@@ -214,9 +214,9 @@ int CASIO_EXPORT casio_seven_decode_ack(casio_link_t *handle,
 	if (d->preprog_rom_version[2] == 0xFF)
 		info->casio_link_info_wiped |= casio_link_info_wiped_preprog;
 	ifmsg(info->casio_link_info_wiped & casio_link_info_wiped_preprog,
-		(ll_info, "Preprogrammed ROM information looks wiped out!"));
+		(ll_info, "Preprogrammed ROM information looks wiped out!"))
 	elsemsg((ll_info, "Preprogrammed ROM version is %.10s",
-		d->preprog_rom_version));
+		d->preprog_rom_version))
 
 	/* preprogrammed ROM capacity */
 	info->casio_link_info_rom_capacity =
@@ -242,8 +242,8 @@ int CASIO_EXPORT casio_seven_decode_ack(casio_link_t *handle,
 	if (d->bootcode_version[2] == 0xFF)
 		info->casio_link_info_wiped |= casio_link_info_wiped_bootcode;
 	ifmsg(info->casio_link_info_wiped & casio_link_info_wiped_bootcode,
-		(ll_info, "Bootcode information looks wiped out!"));
-	elsemsg((ll_info, "Bootcode version is %.10s", d->bootcode_version));
+		(ll_info, "Bootcode information looks wiped out!"))
+	elsemsg((ll_info, "Bootcode version is %.10s", d->bootcode_version))
 
 	/* bootcode version */
 	version_of_string(&info->casio_link_info_bootcode_version,
@@ -263,8 +263,8 @@ int CASIO_EXPORT casio_seven_decode_ack(casio_link_t *handle,
 	if (d->os_version[2] == 0xFF)
 		info->casio_link_info_wiped |= casio_link_info_wiped_os;
 	ifmsg(info->casio_link_info_wiped & casio_link_info_wiped_os,
-		(ll_info, "OS information looks wiped out!"));
-	elsemsg((ll_info, "OS version is %.10s", d->os_version));
+		(ll_info, "OS information looks wiped out!"))
+	elsemsg((ll_info, "OS version is %.10s", d->os_version))
 
 	/* OS version */
 	version_of_string(&info->casio_link_info_os_version, d->os_version);

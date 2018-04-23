@@ -393,8 +393,8 @@ int CASIO_EXPORT casio_decode_casemul(casio_file_t **h, casio_stream_t *buffer,
 		e32toh(glb.casio_casemul_header_source_offset)));
 	ifmsg(glb.casio_casemul_header_flags & casemul_compiled, (ll_info,
 		"Header compiled offset is: 0x%08" CASIO_PRIX32,
-		e32toh(glb.casio_casemul_header_compiled_offset)));
-	elsemsg((ll_info, "The file has got no compiled part."));
+		e32toh(glb.casio_casemul_header_compiled_offset)))
+	elsemsg((ll_info, "The file has got no compiled part."))
 
 	/* read the source header */
 	if ((err = read_internal(buffer, MAKELONG('SR', 'CE'), VER)))

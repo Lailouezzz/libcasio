@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * utils/alloc.c -- dynamic memory allocation utilities.
- * Copyright (C) 2016-2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * char/conv/utf32/fontchar.c -- Unicode char to FONTCHARACTER.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,34 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../internals.h"
+#include "../../char.h"
 
 /**
- *	casio_alloc:
- *	Allocate memory dynamically.
+ *	casio_utf32_to_fontchar16:
+ *	Convert an UTF-32 encoded character buffer to a FONTCHAR-16 encoded
+ *	buffer.
  *
- *	@arg	num		the number of elements.
- *	@arg	size	the size of an element.
- *	@return			the allocated memory region.
+ *	@arg	inptr	the input buffer reference.
+ *	@arg	insize	the input buffer size reference.
+ *	@arg	outptr	the output buffer reference.
+ *	@arg	outsize	the output buffer size reference.
+ *	@return			the error that occurred.
  */
 
-void* CASIO_EXPORT casio_alloc(size_t num, size_t size)
+int CASIO_EXPORT casio_utf32_to_fontchar16(casio_uint32_t **inptr,
+	size_t *insize, FONTCHARACTER **outptr, size_t *outsize)
 {
-	if (!num && !size)
-		return (NULL);
-	return (malloc(num * size));
-}
+	casio_uint32_t cars[CASIO_FONTCHAR_MULTI_MAX];
+	casio_uint32_t *i = *inptr; FONTCHARACTER *o = *ouptr;
+	size_t is = *insize, os = *outsize;
+	unsigned long car;
 
-/**
- *	casio_free:
- *	Free dynamically allocated memory.
- *
- *	@arg	ptr		the pointer to the allocated memory.
- */
+	while (is--) {
+		car = *i++;
 
-void CASIO_EXPORT casio_free(void *ptr)
-{
-	if (!ptr)
-		return ;
-	free(ptr);
+
+	}
 }

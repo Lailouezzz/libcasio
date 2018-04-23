@@ -75,8 +75,10 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 
 	/* set communication thingies */
 	msg((ll_info, "Initializing stream settings."));
-	if (!settings) casio_init_attrs(handle->casio_link_stream);
-	else casio_set_attrs(handle->casio_link_stream, settings);
+	if (!settings)
+		casio_init_attrs(handle->casio_link_stream);
+	else
+		casio_set_attrs(handle->casio_link_stream, settings);
 
 	/* if active, start */
 	err = casio_seven_start(handle);

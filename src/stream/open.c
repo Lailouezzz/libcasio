@@ -28,12 +28,14 @@
  *	@arg	mode		the open mode.
  *	@arg	cookie		the stream cookie.
  *	@arg	callbacks	the stream callbacks.
+ *	@arg	ioff		the initial offset.
  *	@return				the error code (0 if ok).
  */
 
 int CASIO_EXPORT casio_open_stream(casio_stream_t **pstream,
 	casio_openmode_t mode, void *cookie,
-	const casio_streamfuncs_t *callbacks)
+	const casio_streamfuncs_t *callbacks,
+	casio_off_t ioff)
 {
 	int err; casio_stream_t *stream = NULL;
 	casio_streamfuncs_t *c;
@@ -62,7 +64,7 @@ int CASIO_EXPORT casio_open_stream(casio_stream_t **pstream,
 	/* initialize the stream properties */
 	stream->casio_stream_mode = mode;
 	stream->casio_stream_cookie = cookie;
-	stream->casio_stream_offset = 0;
+	stream->casio_stream_offset = ioff;
 	stream->casio_stream_lasterr = 0;
 	casio_init_attrs(stream);
 	casio_init_timeouts(stream);

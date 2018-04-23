@@ -100,23 +100,30 @@ typedef void casio_link_list_t OF((void *casio__cookie,
 /* ************************************************************************* */
 /*  Basic link handle operations                                             */
 /* ************************************************************************* */
-/* Initialization flags */
-# define CASIO_LINKFLAG_ACTIVE 0x00000001 /* start off as active */
-# define CASIO_LINKFLAG_CHECK  0x00000002 /* check (initial packet) */
-# define CASIO_LINKFLAG_TERM   0x00000004 /* terminate */
-# define CASIO_LINKFLAG_NODISC 0x00000008 /* if we are checking,
-                                           * no environment discovery */
+/* Initialization flags.
+ * `CASIO_LINKFLAG_ACTIVE`: start off as active;
+ * `CASIO_LINKFLAG_CHECK`: check (initial packet);
+ * `CASIO_LINKFLAG_TERM`: terminate;
+ * `CASIO_LINKFLAG_NODISC`: if we are checking, no environment discovery. */
+
+# define CASIO_LINKFLAG_ACTIVE 0x00000001
+# define CASIO_LINKFLAG_CHECK  0x00000002
+# define CASIO_LINKFLAG_TERM   0x00000004
+# define CASIO_LINKFLAG_NODISC 0x00000008
+
 CASIO_BEGIN_DECLS
 
 /* Cross-platform initialization. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_open_usb
 	OF((casio_link_t **casio__h, unsigned long casio__flags));
 CASIO_EXTERN int CASIO_EXPORT casio_open_com
-	OF((casio_link_t **casio__h,
-		unsigned long casio__flags, const char *casio__path,
+	OF((casio_link_t **casio__h, unsigned long casio__flags,
+		const char *casio__path,
 		const casio_streamattrs_t *casio__attributes));
 
 /* Initialize a handle using a custom stream. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_open_link
 	OF((casio_link_t **casio__h,
 		unsigned long casio__flags, casio_stream_t *casio__stream,

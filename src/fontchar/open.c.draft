@@ -1,0 +1,149 @@
+/* ****************************************************************************
+ * fontchar/open.c -- parse the binary set file produced from the
+ *                    community-made FONTCHARACTER reference.
+ * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ *
+ * This file is part of libcasio.
+ * libcasio is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * libcasio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
+ * ************************************************************************* */
+#include "fontchar.h"
+#include "reference.h"
+
+/* Globals. */
+
+casio_uint8_t* CASIO_EXPORT casio_fontchar_leaders = NULL;
+
+/**
+ *	casio_open_fontchar_ref:
+ *	Open the FONTCHARACTER reference.
+ */
+
+int CASIO_EXPORT casio_open_fontchar_ref(void)
+{
+	int err, num, i;
+	casio_stream_t *stream;
+	struct file_magic magic;
+	struct file_header header;
+	size_t char_size;
+	const char *chars = NULL;
+	const char *pool = NULL;
+
+	/* Open the file. */
+	err = casio_open_nat(casio_local_fs, &stream, PATH,
+		0, CASIO_OPENMODE_READ);
+	if (err) return (err);
+
+	/* Read the magic. */
+	err = casio_read(stream, &magic, sizeof(magic));
+	if (err) goto fail;
+	if (memcmp(magic.magic, FONTCHAR_MAGIC, 8)) {
+		msg((ll_error, "Invalid FONTCHARACTER file magic."));
+
+		err = casio_error_magic;
+		goto fail;
+	}
+	if (magic.version != 0x01) {
+		msg((ll_error, "Unsupported FONTCHARACTER file version."))
+
+		err = casio_error_magic;
+		goto fail;
+	}
+
+	/* Read the rest of the header. */
+	err = casio_read(stream, &header, sizeof(header));
+	if (err) goto fail;
+	if (~header.flags & FONTCHAR_FLAG_UNI) {
+		msg((ll_error, "Unicode support is required by the library!"));
+
+		err = casio_error_magic;
+		goto fail;
+	}
+
+	header.total = be16toh(header.total);
+	header.format = be16toh(header.format);
+	header.checksum = be32toh(header.checksum);
+	header.filesize = be32toh(header.filesize);
+	header.datasize = be32toh(header.datasize);
+
+	char_size = 16;
+	if (header.flags & FONTCHAR_FLAG_CAT)
+		char_size += 4;
+	if (header.flags & FONTCHAR_FLAG_NEWCAT)
+		char_size += 4;
+	if (header.flags & FONTCHAR_FLAG_CTF)
+		char_size += 4;
+	if (header.flags & FONTCHAR_FLAG_CASEMUL)
+		char_size += 4;
+
+	/* Check that the filesize corresponds. */
+	if (header.filesize != sizeof(struct file_lead)
+		+ sizeof(struct file_header)
+		+ sizeof(struct file_lead) * header.leading
+		+ char_size * header.total) {
+		msg((ll_error, "Erroneous file size field!"));
+
+		err = casio_error_magic;
+		goto fail;
+	}
+
+	/* Get the leading characters. */
+	num = header.leading;
+	casio_fontchar_leaders = casio_alloc(num, 1);
+	for (i = 0; i < num; i++) {
+		struct file_lead lead;
+
+		err = casio_read(stream, &lead, sizeof(lead));
+		if (err) goto fail;
+
+		casio_fontchar_leaders[i] = lead.code;
+	}
+
+	/* Prepare gathering of the characters and data pool. */
+	chars = casio_alloc(char_size, num);
+	if (!chars) {
+		err = casio_error_alloc;
+		goto fail;
+	}
+
+	err = casio_read(stream, &chars, char_size * num);
+	if (err)
+		goto fail;
+
+	pool = casio_alloc(
+
+	/* Get the characters. */
+	num = header.total;
+	chars = casio_alloc(char_size, num);
+	if (!chars) {
+		err = casio_error_alloc;
+		goto fail;
+	}
+	for (i = 0; i < num; i++) {
+		struct file_char ch;
+
+		/* Careful: char_size can not be `sizeof(char_size)`!
+		 * (but `ch` is always big enough to read the character data
+		 *  into it) */
+		err = casio_read(stream, &ch, char_size);
+		if (err) goto fail;
+
+
+	}
+
+	/* TODO */
+	return (0);
+fail:
+	casio_free(stream);
+	return (casio_error_op);
+}

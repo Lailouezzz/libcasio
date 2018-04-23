@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/delete.c -- delete an element from a libcasio filesystem.
+ * fs/open_file.c -- delete an element from a libcasio filesystem.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
@@ -19,51 +19,59 @@
 #include "fs.h"
 
 /**
- *	casio_delete:
- *	Delete from a filesystem, using an abstract path.
+ *	casio_open:
+ *	Open a file.
  *
  *	@arg	fs		the filesystem.
+ *	@arg	stream	the file stream to make.
  *	@arg	path	the abstract path.
+ *	@arg	size	the file size.
+ *	@arg	mode	the open mode.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_delete(casio_fs_t *fs, casio_path_t *path)
+int CASIO_EXPORT casio_open(casio_fs_t *fs, casio_stream_t **stream,
+	casio_path_t *path, casio_off_t size, casio_openmode_t mode)
 {
 	int err; void *nat;
-	casio_fs_del_t *delete;
+	casio_fs_open_t *open;
 
 	/* Get the function. */
-	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
-	if (!delete) return (casio_error_op);
+	open = fs->casio_fs_funcs.casio_fsfuncs_open;
+	if (!open) return (casio_error_op);
 
 	/* Make the native path. */
 	err = casio_make_native_path(fs, &nat, path);
 	if (err) return (err);
 
 	/* Make the operation. */
-	err = (*delete)(fs->casio_fs_cookie, nat);
+	err = (*open)(fs->casio_fs_cookie, nat, size, mode, stream);
 	casio_free_native_path(fs, nat);
 	return (err);
 }
 
 /**
- *	casio_delete_nat:
- *	Delete from a filesystem, using a native path.
+ *	casio_open_nat:
+ *	Open a file.
  *
  *	@arg	fs		the filesystem.
- *	@arg	nat		the native path.
+ *	@arg	stream	the file stream to make.
+ *	@arg	path	the native path.
+ *	@arg	size	the file size.
+ *	@arg	mode	the open mode.
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_delete_nat(casio_fs_t *fs, void *path)
+int CASIO_EXPORT casio_open_nat(casio_fs_t *fs, casio_stream_t **stream,
+	void *path, casio_off_t size, casio_openmode_t mode)
 {
-	int err; casio_fs_del_t *delete;
+	int err; casio_fs_open_t *open;
 
 	/* Get the callback. */
-	delete = fs->casio_fs_funcs.casio_fsfuncs_del;
-	if (!delete) return (casio_error_op);
+	open = fs->casio_fs_funcs.casio_fsfuncs_open;
+	if (!open) return (casio_error_op);
 
 	/* Make the operation. */
-	err = (*delete)(fs->casio_fs_cookie, path);
+	err = (*open)(fs->casio_fs_cookie, path, size, mode, stream);
 	return (err);
 }

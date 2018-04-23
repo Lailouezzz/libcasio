@@ -244,7 +244,7 @@ int CASIO_EXPORT casio_open_stream_file(casio_stream_t **stream,
 	cookie->_wstream = wstream;
 
 	/* initialize the stream */
-	return (casio_open_stream(stream, mode, cookie, &casio_file_callbacks));
+	return (casio_open_stream(stream, mode, cookie, &casio_file_callbacks, 0));
 fail:
 	if (rstream && rstream_cl) fclose(rstream);
 	if (wstream != rstream && wstream_cl) fclose(wstream);

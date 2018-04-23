@@ -32,45 +32,57 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 	casio_stream_t *buffer, casio_standard_header_t *std)
 {
 	int err = casio_error_alloc;
-	/* get number of subparts from the standard header */
-	unsigned int num = std->casio_standard_header_number;
+	unsigned int num;
 	unsigned long i;
 	casio_mcshead_t head; casio_file_t *handle;
 	casio_mcsfile_t *mcsfile;
 
-	/* make the handle */
+	/* Get number of subparts from the standard header. */
+
+	num = std->casio_standard_header_number;
+
+	/* Make the handle. */
+
 	err = casio_make_mcs(h, num);
-	if (err) return (err);
+	if (err)
+		return (err);
 	handle = *h;
 
-	/* read all of the parts */
+	/* Read all of the parts. */
+
 	msg((ll_info, "%u total mcs files to browse", num));
 	while (num) {
 		casio_mcs_subheader_t hd;
 
-		/* get the subheader */
+		/* Get the subheader. */
+
 		GDREAD(hd)
 
-		/* correct endianess */
+		/* Correct endianess. */
+
 		hd.casio_mcs_subheader_subcount =
 			be32toh(hd.casio_mcs_subheader_subcount);
 
-		/* log info about part */
+		/* Log info about part. */
+
 		msg((ll_info, "New group! Group name is '%.16s'.",
 			hd.casio_mcs_subheader_intname));
 		msg((ll_info, "%d mcs files to browse in that group",
 			hd.casio_mcs_subheader_subcount));
 
-		/* foreach subpart */
+		/* Foreach subpart. */
+
 		for (i = 0; i < hd.casio_mcs_subheader_subcount; i++) {
 			casio_mcs_fileheader_t fhd;
 			casio_uint32_t datalength;
 
-			/* get the part header */
+			/* Get the part header. */
+
 			GDREAD(fhd)
 			datalength = be32toh(fhd.casio_mcs_fileheader_datalength);
 
-			/* log info about the subpart */
+			/* Log info about the subpart. */
+
 			msg((ll_info, "[%lu] directory name is '%.8s'",
 				i, fhd.casio_mcs_fileheader_dirname));
 			msg((ll_info, "[%lu] filename is '%.8s'", i,
@@ -78,7 +90,8 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 			msg((ll_info, "[%lu] data length is %" CASIO_PRIu32,
 				i, datalength));
 
-			/* decode the head */
+			/* Decode the head. */
+
 			num--;
 			casio_decode_mcsfile_head(&head,
 				fhd.casio_mcs_fileheader_filetype,
@@ -87,12 +100,19 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 				fhd.casio_mcs_fileheader_filename,
 				datalength);
 
-			/* decode */
+			/* Decode. */
+
 			mcsfile = NULL;
 			err = casio_decode_mcsfile(&mcsfile, &head, buffer);
-			if (err) goto fail;
+			if (err) {
+				msg((ll_error, "could not decode file: %s",
+					casio_strerror(err)));
+				continue;
+			}
+
 			err = casio_put_mcsfile(handle->casio_file_mcs, mcsfile, 1);
-			if (err) goto fail;
+			if (err)
+				goto fail;
 		}
 	}
 

@@ -164,5 +164,5 @@ int CASIO_EXPORT casio_open_memory(casio_stream_t **stream,
 
 	/* initialize da stream */
 	return (casio_open_stream(stream, CASIO_OPENMODE_READ, cookie,
-		&casio_memory_callbacks));
+		&casio_memory_callbacks, 0));
 }

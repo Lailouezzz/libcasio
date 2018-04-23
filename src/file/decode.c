@@ -98,12 +98,14 @@ int CASIO_EXPORT casio_decode(casio_file_t **handle, const char *path,
 	unsigned char buf[0x20], altbuf[0x20];
 	int casemul_be;
 
-	/* match using extension */
+	/* Match using extension. */
+
 	err = lookup_extension(path, expected_types, &decode);
 	if (err == casio_error_wrong) return (err);
 	else if (!err) return ((*decode)(handle, buffer));
 
-	/* identify a CAS file */
+	/* Identify a CAS file. */
+
 	READ(buf, 1)
 	if (buf[0] == ':') {
 		if (expected_types && !(expected_types & casio_filetype_mcs))
@@ -111,7 +113,8 @@ int CASIO_EXPORT casio_decode(casio_file_t **handle, const char *path,
 		return (casio_decode_cas(handle, buffer));
 	}
 
-	/* identify a GraphCard file */
+	/* Identify a GraphCard file. */
+
 	READ(&buf[1], 2)
 	if (!buf[0] && buf[1] == 0x32 && buf[2] == ':') {
 		if (expected_types && !(expected_types & casio_filetype_mcs))
@@ -119,7 +122,8 @@ int CASIO_EXPORT casio_decode(casio_file_t **handle, const char *path,
 		return (casio_decode_grc(handle, buffer));
 	}
 
-	/* identify a Casemul file */
+	/* Identify a Casemul file. */
+
 	READ(&buf[3], 9) casemul_be = !memcmp(buf, "CAFS", 4);
 	if (casemul_be || !memcmp(buf, "ACFS", 4)) {
 		casio_casemul_intheader_t *ch = (void*)buf;
@@ -136,7 +140,8 @@ int CASIO_EXPORT casio_decode(casio_file_t **handle, const char *path,
 		return (casio_decode_casemul(handle, buffer, casemul_be));
 	}
 
-	/* identify a standard header (send a _copy_) */
+	/* Identify a standard header (send a _copy_). */
+
 	READ(&buf[12], 0x14) memcpy(altbuf, buf, 0x20);
 	return (casio_decode_std(handle, path, buffer,
 		(casio_standard_header_t*)altbuf, expected_types));

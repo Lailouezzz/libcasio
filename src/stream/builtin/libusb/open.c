@@ -172,7 +172,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 
 	/* final call. */
 	return (casio_open_stream(stream, openmode,
-		cookie, &casio_libusb_callbacks));
+		cookie, &casio_libusb_callbacks, 0));
 fail:
 	if (cookie)  casio_free(cookie);
 	if (dhandle) libusb_close(dhandle);

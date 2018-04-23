@@ -40,6 +40,7 @@ struct         casio_timeouts_s;
 typedef struct casio_timeouts_s     casio_timeouts_t;
 struct         casio_scsi_s;
 typedef struct casio_scsi_s         casio_scsi_t;
+
 /* ************************************************************************* */
 /*  Stream                                                                   */
 /* ************************************************************************* */
@@ -52,41 +53,60 @@ typedef struct casio_scsi_s         casio_scsi_t;
  * no partial success.
  *
  * An open mode represents the type of operations you will be able to
- * make with a stream.
- * Here are the open modes: */
+ * make with a stream. Available open mode flags are:
+ *
+ * `READ`: the stream is readable.
+ * `WRITE`: the stream is writable.
+ * `TRUNC`: the file will be truncated.
+ * `APPEND`: will append to the file.
+ *
+ * `SEEK`: the stream is seekable.
+ * `SERIAL`: serial operations are available.
+ * `SCSI`: SCSI operations are available.
+ * `USB`: USB operations are available. */
 
 typedef unsigned int casio_openmode_t;
 
-# define CASIO_OPENMODE_READ   0x0001 /* the stream is readable. */
-# define CASIO_OPENMODE_WRITE  0x0002 /* the stream is writable. */
-# define CASIO_OPENMODE_TRUNC  0x0004 /* the file will be truncated. */
-# define CASIO_OPENMODE_APPEND 0x0008 /* will append to the file. */
+# define CASIO_OPENMODE_READ   0x0001
+# define CASIO_OPENMODE_WRITE  0x0002
+# define CASIO_OPENMODE_TRUNC  0x0004
+# define CASIO_OPENMODE_APPEND 0x0008
+# define CASIO_OPENMODE_SEEK   0x0010
+# define CASIO_OPENMODE_SERIAL 0x0020
+# define CASIO_OPENMODE_SCSI   0x0040
+# define CASIO_OPENMODE_USB    0x0080
 
-# define CASIO_OPENMODE_SEEK   0x0010 /* the stream is seekable. */
-# define CASIO_OPENMODE_SERIAL 0x0020 /* the stream has serial ops. */
-# define CASIO_OPENMODE_SCSI   0x0040 /* the stream has SCSI ops. */
-# define CASIO_OPENMODE_USB    0x0080 /* the stream has USB ops. */
-
-/* Here is the offset type, to move within a stream: */
+/* Offset types, to move within a stream, are the following:
+ * `SET`: set the current position to the offset.
+ * `CUR`: add the offset to the current position.
+ * `END`: set the current position to the end minus the offset. */
 
 typedef long casio_off_t;
+
 typedef int casio_whence_t;
+
 # define CASIO_SEEK_SET 1
 # define CASIO_SEEK_CUR 2
 # define CASIO_SEEK_END 4
 
 /* Here are the callback types: */
 
-typedef int casio_stream_close_t    OF((void*));
+typedef int casio_stream_close_t    OF((void *));
 
-typedef int casio_stream_setattrs_t OF((void*, const casio_streamattrs_t*));
-typedef int casio_stream_settm_t    OF((void*, const casio_timeouts_t*));
+typedef int casio_stream_setattrs_t
+	OF((void *, const casio_streamattrs_t *));
+typedef int casio_stream_settm_t
+	OF((void *, const casio_timeouts_t *));
 
-typedef int casio_stream_read_t     OF((void*, unsigned char*, size_t));
-typedef int casio_stream_write_t    OF((void*, const unsigned char*, size_t));
-typedef int casio_stream_seek_t     OF((void*, casio_off_t*, casio_whence_t));
+typedef int casio_stream_read_t
+	OF((void *, unsigned char *, size_t));
+typedef int casio_stream_write_t
+	OF((void *, const unsigned char *, size_t));
+typedef int casio_stream_seek_t
+	OF((void *, casio_off_t *, casio_whence_t));
 
-typedef int casio_stream_scsi_t     OF((void*, casio_scsi_t*));
+typedef int casio_stream_scsi_t
+	OF((void *, casio_scsi_t*));
 
 /* Here is the callbacks structure: */
 
@@ -124,6 +144,7 @@ struct casio_streamfuncs_s {
  (casio_stream_read_t*)(CASIO__READ), \
  (casio_stream_write_t*)(CASIO__WRITE), \
  (casio_stream_seek_t*)(CASIO__SEEK), NULL, NULL}
+
 /* ************************************************************************* */
 /*  Stream settings values and flags                                         */
 /* ************************************************************************* */
@@ -283,7 +304,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_comlist
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_stream
 	OF((casio_stream_t **casio__stream, casio_openmode_t mode,
-		void *casio__cookie, const casio_streamfuncs_t *casio__callbacks));
+		void *casio__cookie, const casio_streamfuncs_t *casio__callbacks,
+		casio_off_t casio__initial_offset));
 CASIO_EXTERN int CASIO_EXPORT casio_close
 	OF((casio_stream_t *casio__stream));
 
@@ -302,6 +324,13 @@ CASIO_EXTERN int CASIO_EXPORT casio_isseekable
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_WRITE)
 # define casio_isseekable(CASIO__STREAM) \
 	(casio_get_openmode(CASIO__STREAM) & CASIO_OPENMODE_SEEK)
+
+# define casio_is_readable(CASIO__STREAM) \
+	casio_isreadable(CASIO__STREAM)
+# define casio_is_writable(CASIO__STREAM) \
+	casio_iswritable(CASIO__STREAM)
+# define casio_is_seekable(CASIO__STREAM) \
+	casio_isseekable(CASIO__STREAM)
 
 CASIO_EXTERN casio_openmode_t           CASIO_EXPORT casio_get_openmode
 	OF((casio_stream_t *casio__stream));

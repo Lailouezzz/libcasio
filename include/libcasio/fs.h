@@ -129,7 +129,7 @@ struct casio_path_s {
  *
  * The elements are the following:
  * [ ] `casio_stat_type`:  the file type (see the `CASIO_STAT_TYPE_*` macros);
- * [ ] `casio_stat_perm`:  Unix-like permissions (see `CASIO_STAT_PERM_*`);
+ * [X] `casio_stat_perm`:  Unix-like permissions (see `CASIO_STAT_PERM_*`);
  * [X] `casio_stat_size`:  the file size;
  * [X] `casio_stat_btime`: the file's birth time;
  * [X] `casio_stat_atime`: the file's last access time;
@@ -267,16 +267,27 @@ CASIO_EXTERN void CASIO_EXPORT casio_free_native_path
 /* Make a directory. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_makedir
-	OF((casio_fs_t *casio__fs, void *casio__path));
-CASIO_EXTERN int CASIO_EXPORT casio_makedir_path
 	OF((casio_fs_t *casio__fs, casio_path_t *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_makedir_nat
+	OF((casio_fs_t *casio__fs, void *casio__path));
 
 /* Delete an element. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_delete
-	OF((casio_fs_t *casio__fs, void *casio__path));
-CASIO_EXTERN int CASIO_EXPORT casio_delete_path
 	OF((casio_fs_t *casio__fs, casio_path_t *casio__path));
+CASIO_EXTERN int CASIO_EXPORT casio_delete_nat
+	OF((casio_fs_t *casio__fs, void *casio__path));
+
+/* Open a stream. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_open
+	OF((casio_fs_t *casio__fs, casio_stream_t **casio__stream,
+		casio_path_t *casio__path, casio_off_t casio__size,
+		casio_openmode_t casio__mode));
+CASIO_EXTERN int CASIO_EXPORT casio_open_nat
+	OF((casio_fs_t *casio__fs, casio_stream_t **casio__stream,
+		void *casio__path, casio_off_t casio__size,
+		casio_openmode_t casio__mode));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

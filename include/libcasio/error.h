@@ -88,6 +88,8 @@ typedef int casio_error_t;
 # define casio_error_checksum 0x71 /* (alias) */
 # define casio_error_wrong    0x72 /* was not one of the allowed
                                      * file types. */
+# define casio_error_seq      0x73 /* sequence error. */
+# define casio_error_noeq     0x74 /* character does not translate */
 
 /* Get a string describing the error. */
 CASIO_EXTERN const char* CASIO_EXPORT casio_error_strings[];

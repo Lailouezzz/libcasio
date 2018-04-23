@@ -18,13 +18,14 @@ baseurl: "/docs"
 # Build settings.
 output: web
 destination: _site
-gems: []
+gems:
+- jekyll-assets
 exclude:
-  - Gemfile
-  - Gemfile.lock
-  - Makefile
-  - README.md
-  - vendor
+- Gemfile
+- Gemfile.lock
+- Makefile
+- README.md
+- vendor
 
 # Markdown settings.
 markdown: kramdown

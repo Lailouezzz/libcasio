@@ -99,17 +99,17 @@ typedef int casio_loglevel_t;
 /* Here are the linked to conditional kind of macros. */
 
 #  define   ifmsg(CASIO__COND, CASIO__ARGS) \
-	if (CASIO__COND) msg(CASIO__ARGS)
+	if (CASIO__COND) { msg(CASIO__ARGS); }
 #  define   ifmem(CASIO__COND, CASIO__ARGS) \
-	if (CASIO__COND) mem(CASIO__ARGS)
+	if (CASIO__COND) { mem(CASIO__ARGS); }
 #  define elifmsg(CASIO__COND, CASIO__ARGS) \
-	else if (CASIO__COND) msg(CASIO__ARGS)
+	else if (CASIO__COND) { msg(CASIO__ARGS); }
 #  define elifmem(CASIO__COND, CASIO__ARGS) \
-	else if (CASIO__COND) mem(CASIO__ARGS)
+	else if (CASIO__COND) { mem(CASIO__ARGS); }
 #  define elsemsg(             CASIO__ARGS) \
-	else msg(CASIO__ARGS)
+	else { msg(CASIO__ARGS); }
 #  define elsemem(             CASIO__ARGS) \
-	else mem(CASIO__ARGS)
+	else { mem(CASIO__ARGS); }
 
 /* Conversion functions between strings and numbers.
  * Strings are for the external API, numbers for the internal one. */

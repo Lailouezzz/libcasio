@@ -35,5 +35,8 @@
  sname: Developer documentation
  docs:
  -
+  name: File organization
+  uri: /file-organization.html
+ -
   name: Logging internals
   uri: /logging-internals.html

@@ -94,7 +94,7 @@ void CASIO_EXPORT casio_log_mem(casio_loglevel_t loglevel, const char *func,
 		return ;
 	}
 
-	/* prepare line buffer, and loop-loop-loop-loop-loop */
+	/* prepare line buffer, and loop-loop-loop-loop-loop- */
 	memcpy(linebuf, "0000 0000 0000 0000 ", 20);
 	for (p = m; n > 0;) {
 		/* fill in ascii-hex part */

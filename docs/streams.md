@@ -76,4 +76,27 @@ fail:
 {% endhighlight %}
 
 ### Opening modes
-In libcasio, streams are cool.
+libcasio streams have different features that are activated by a flag in the
+open mode. Here are the existing ones:
+
+- `CASIO_OPENMODE_READ`: reading bytes from the stream is allowed (the
+  `casio_read()` and `casio_skip()` functions can be used);
+- `CASIO_OPENMODE_WRITE`: writing bytes to the stream is allowed (the
+  `casio_write()` and `casio_write_char()` can be used);
+- `CASIO_OPENMODE_SEEK`: seeking in the stream is allowed (the
+  `casio_seek()` can be used);
+- `CASIO_OPENMODE_SERIAL`: setting the serial properties of the stream is
+  allowed (the `casio_streamfuncs_setattrs` callback will be used);
+- `CASIO_OPENMODE_SCSI`: SCSI operations on the stream are allowed (the
+  `casio_streamfuncs_scsi` callback will be used);
+- `CASIO_OPENMODE_USB`: USB operations on the stream are allowed (no
+  callback corresponding to this is done yet).
+
+Notice that even if `CASIO_OPENMODE_SEEK` is not allowed, `casio_tell()` will
+work and tell the
+
+There also are a few open modes that aren't used by the core functions
+themselves but that above opening functions can use when appropriate:
+
+- `CASIO_OPENMODE_TRUNC`: the file will be truncated;
+- `CASIO_OPENMODE_APPEND`: will append to the file.

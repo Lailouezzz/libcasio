@@ -18,23 +18,22 @@
  * ************************************************************************* */
 #include "picture.h"
 
-/* ************************************************************************* */
-/*  Constants                                                                */
-/* ************************************************************************* */
-/* The dual 2-bit format colors */
+/* The dual 2-bit format colors. */
+
 CASIO_LOCAL casio_uint32_t dual2b_colors[] = {
-	0xFFFFFF,
-	0xAAAAAA,
-	0x777777,
-	0x000000
+	casio_pixel(255, 255, 255),
+	casio_pixel(170, 170, 170),
+	casio_pixel(119, 119, 119),
+	casio_pixel(0,   0,   0)
 };
 
-/* prizm colors */
+/* prizm colors. */
+
 CASIO_LOCAL const casio_uint32_t prizm_colors[16] = {
-	/* [casio_color_black]   = */ 0x000000,
-	/* [casio_color_blue]    = */ 0x0000ff,
-	/* [casio_color_green]   = */ 0x00ff00,
-	/* [casio_color_cyan]    = */ 0x00ffff,
+	/* [casio_color_black]   = */ casio_pixel(0,   0,   0),
+	/* [casio_color_blue]    = */ casio_pixel(0,   0, 255),
+	/* [casio_color_green]   = */ casio_pixel(0, 255,   0),
+	/* [casio_color_cyan]    = */ casio_pixel(0, 255, 255),
 	/* [casio_color_red]     = */ 0xff0000,
 	/* [casio_color_magenta] = */ 0xff00ff,
 	/* [casio_color_yellow]  = */ 0xffff00,
@@ -48,7 +47,7 @@ CASIO_LOCAL const casio_uint32_t casemul_colors[256] = {
 	0xFF8000, /* orange */
 	0x00FF00, /* green */
 	0x0000FF  /* blue */
-	/* other colours are black */
+	/* other colours are black, i.e. 0x00000000 */
 };
 /* ************************************************************************* */
 /*  Picture decoding                                                         */
@@ -80,7 +79,10 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 			msk = 0x80;
 			for (x = 0; x < width; x++) {
 				/* get pixel */
-				pixels[y][x] = (*raw & msk) ? 0x000000 : 0xFFFFFF;
+				if (*raw & msk)
+					casio_set_pixel(pixels[y][x], 0, 0, 0);
+				else
+					casio_set_pixel(pixels[y][x], 255, 255, 255);
 
 				/* go to next */
 				bit = msk & 1; raw += bit;
@@ -95,7 +97,10 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 			msk = 0x80;
 			for (x = 0; x < width; x++) {
 				/* get pixel */
-				pixels[y][x] = (*raw & msk) ? 0xFFFFFF : 0x000000;
+				if (*raw & msk)
+					casio_set_pixel(pixels[y][x], 255, 255, 255);
+				else
+					casio_set_pixel(pixels[y][x], 0, 0, 0);
 
 				/* go to next */
 				raw += msk & 1;
@@ -113,7 +118,10 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 		for (y = 0; y < height; y++)
 		  for (x = 0; x < width; x++) {
 			/* get pixel */
-			pixels[y][x] = (*raw & msk) ? 0x000000 : 0xFFFFFF;
+			if (*raw & msk)
+				casio_set_pixel(pixels[y][x], 0, 0, 0);
+			else
+				casio_set_pixel(pixels[y][x], 255, 255, 255);
 
 			/* go to next */
 			raw += msk & 1;
@@ -126,7 +134,10 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 		for (y = 0; y < height; y++)
 		  for (x = 0; x < width; x++) {
 			/* get pixel */
-			pixels[y][x] = (*raw & msk) ? 0xFFFFFF : 0x000000;
+			if (*raw & msk)
+				casio_set_pixel(pixels[y][x], 255, 255, 255);
+			else
+				casio_set_pixel(pixels[y][x], 0, 0, 0);
 
 			/* go to next */
 			raw += msk & 1;
@@ -140,7 +151,10 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 			msk = 0x80;
 			for (x = bx; x < bx + 8; x++) {
 				/* get pixel */
-				pixels[y][x] = (*raw & msk) ? 0x000000 : 0xFFFFFF;
+				if (*raw & msk)
+					casio_set_pixel(pixels[y][x], 0, 0, 0);
+				else
+					casio_set_pixel(pixels[y][x], 255, 255, 255);
 
 				/* go to next */
 				msk >>= 1;

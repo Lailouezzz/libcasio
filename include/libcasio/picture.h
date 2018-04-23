@@ -30,6 +30,33 @@ CASIO_BEGIN_NAMESPACE
 
 typedef casio_uint32_t casio_pixel_t;
 
+# define casio_pixel(CASIO__R, CASIO__G, CASIO__B) \
+	((((CASIO__R) & 0xFF) << 16) | (((CASIO__G) & 0xFF) << 8) \
+		| ((CASIO__B) & 0xFF))
+# define casio_set_pixel(CASIO__PIX, CASIO__R, CASIO__G, CASIO__B) \
+	(CASIO__PIX = casio_pixel(CASIO__R, CASIO__G, CASIO__B))
+
+# define casio_pixel_with_r(CASIO__PIX, CASIO__VAL) \
+	((CASIO__PIX & ~0xFF0000) | (((CASIO__VAL) & 0xFF) << 16))
+# define casio_pixel_with_g(CASIO__PIX, CASIO__VAL) \
+	((CASIO__PIX & ~0xFF00) | (((CASIO__VAL) & 0xFF) << 8))
+# define casio_pixel_with_b(CASIO__PIX, CASIO__VAL) \
+	((CASIO__PIX & ~0xFF) | ((CASIO__VAL) & 0xFF))
+
+# define casio_set_pixel_r(CASIO__PIX, CASIO__VAL) \
+	(CASIO__PIX = casio_pixel_with_r(CASIO__PIX, CASIO__VAL))
+# define casio_set_pixel_g(CASIO__PIX, CASIO__VAL) \
+	(CASIO__PIX = casio_pixel_with_g(CASIO__PIX, CASIO__VAL))
+# define casio_set_pixel_b(CASIO__PIX, CASIO__VAL) \
+	(CASIO__PIX = casio_pixel_with_b(CASIO__PIX, CASIO__VAL))
+
+# define casio_get_pixel_r(CASIO__PIX, CASIO__VAL) \
+	(((CASIO__PIX) >> 16) & 0xFF)
+# define casio_get_pixel_g(CASIO__PIX, CASIO__VAL) \
+	(((CASIO__PIX) >>  8) & 0xFF)
+# define casio_get_pixel_b(CASIO__PIX, CASIO__VAL) \
+	( (CASIO__PIX)        & 0xFF)
+
 /* The format pictures this file describes fit in a `casio_pictureformat_t`.
  * The (arbitrary) codes for them is more or less 0xBBVS, where 'BB' is the
  * number of bits each pixel occupy (in total), 'V' is the variation for

@@ -78,12 +78,14 @@ int CASIO_EXPORT casio_comlist_windows(casio_list_com_t callback, void *cookie)
 
 	/* error is `ERROR_MORE_DATA`, o ship shaddap */
 	werr = 0;
-
 fail:
-	ifmsg(werr, (ll_error, "Got error %08lu", werr));
-	/* free, close the key and return ! */
-	casio_free(value); casio_free(data);
-	if (hkey_open) RegCloseKey(hkey);
+	ifmsg(werr, (ll_error, "Got error %08lu", werr))
+
+	/* Free, close the key and return ! */
+	casio_free(value);
+	casio_free(data);
+	if (hkey_open)
+		RegCloseKey(hkey);
 	return (werr ? casio_error_unknown : 0);
 }
 

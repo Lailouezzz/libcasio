@@ -38,29 +38,39 @@ int CASIO_EXPORT casio_decode_mcs_cells(casio_mcsfile_t **h,
 	int one_imgn = 0;
 	unsigned long cw, ch, cx, cy;
 
-	/* read header */
+	/* Read header. */
+
 	DREAD(hd)
 
-	/* log info */
-	cw = be16toh(hd.casio_mcs_cellsheader_width);
-	ch = (head->casio_mcshead_type & casio_mcstype_list)
-		? 1 : be16toh(hd.casio_mcs_cellsheader_height);
+	if (head->casio_mcshead_type & casio_mcstype_list) {
+		/* Is a list, only one of the fields shall be read. */
+
+		cw = 1;
+		ch = be16toh(hd.casio_mcs_cellsheader_height);
+	} else {
+		cw = be16toh(hd.casio_mcs_cellsheader_width);
+		ch = be16toh(hd.casio_mcs_cellsheader_height);
+	}
+
 	msg((ll_info, "Matrix size is %lu*%lu", cw, ch));
 
-	/* make final head */
+	/* Make final head. */
+
 	head->casio_mcshead_width  = cw;
 	head->casio_mcshead_height = ch;
 	if ((err = casio_make_mcsfile(h, head)))
 		return (err);
 	handle = *h;
 
-	/* main copying loop */
+	/* Main copying loop. */
+
 	tab = handle->casio_mcsfile_cells;
 	for (cy = 0; cy < ch; cy++) for (cx = 0; cx < cw; cx++) {
 		casio_mcscell_t *cell = &tab[cy][cx];
 		casio_mcsbcd_t   rawbcd;
 
-		/* read the cell */
+		/* Read the cell. */
+
 		GDREAD(rawbcd)
 
 		/* store it. */

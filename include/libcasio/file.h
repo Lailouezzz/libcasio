@@ -43,6 +43,7 @@ typedef unsigned int casio_filetype_t;
 /* (with aliases) */
 # define casio_filetype_pict         casio_filetype_picture
 # define casio_filetype_eactivity    casio_filetype_eact
+# define casio_filetype_e_activity   casio_filetype_eact
 # define casio_filetype_add_in       casio_filetype_addin
 
 /* Those types can exist for each of the platformes.
