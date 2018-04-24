@@ -91,6 +91,7 @@ int  CASIO_EXPORT casio_make_posix_path(void *cookie,
 
 void CASIO_EXPORT casio_free_posix_path(void *cookie, void *nat)
 {
+	(void)cookie;
 	casio_free(nat);
 }
 

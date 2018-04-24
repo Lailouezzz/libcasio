@@ -137,12 +137,15 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 	mcs_decode_func_t *decode;
 	casio_mcshead_t head;
 
-	/* check that the head is there, correct it */
-	if (!mcshead) return (casio_error_op);
+	/* Check that the head is there, correct it. */
+
+	if (!mcshead)
+		return (casio_error_op);
 	memcpy(&head, mcshead, sizeof(casio_mcshead_t));
 	casio_correct_mcshead(&head, 0);
 
-	/* look for the decoding function */
+	/* Look for the decoding function. */
+
 	decode = lookup_mcsfile_decode(head.casio_mcshead_type);
 	if (!decode) {
 		msg((ll_error,
@@ -151,7 +154,8 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 		goto notparsing;
 	}
 
-	/* decode */
+	/* Decode. */
+
 	if (!head.casio_mcshead_size)
 		err = (*decode)(handle, buffer, &head);
 	else {
@@ -159,22 +163,27 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 		int alterr;
 
 		/* Open the limited buffer. */
-		msg((ll_info, "Making a limited buffer out of the buffer."));
+
+		msg((ll_info, "Making a limited buffer of "
+			"0x%" CASIO_PRIXSIZE " bytes", head.casio_mcshead_size));
 		err = casio_open_limited(&lbuf, buffer, head.casio_mcshead_size);
 		if (err) goto fail;
 
 		/* Call the decode error. */
+
 		msg((ll_info, "Decoding the file with the specific function."));
 		err = (*decode)(handle, lbuf, &head);
 		alterr = casio_empty_limited(lbuf);
 		casio_close(lbuf);
 
 		/* Check the error. */
+
 		if (!err && alterr)
 			err = alterr;
 	}
 
-	/* oh yeah, and go away. */
+	/* Oh yeah, and go away. */
+
 	if (err) goto fail;
 	return (0);
 

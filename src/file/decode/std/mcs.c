@@ -79,6 +79,7 @@ int CASIO_EXPORT casio_decode_std_mcs(casio_file_t **h,
 			/* Get the part header. */
 
 			GDREAD(fhd)
+
 			datalength = be32toh(fhd.casio_mcs_fileheader_datalength);
 
 			/* Log info about the subpart. */

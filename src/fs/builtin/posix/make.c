@@ -38,6 +38,8 @@ int CASIO_EXPORT casio_posix_make(void *cookie, const char *path,
 	mode_t mode;
 	va_list ap;
 
+	(void)cookie;
+
 	/* Start the variable argument list. */
 	va_start(ap, info);
 

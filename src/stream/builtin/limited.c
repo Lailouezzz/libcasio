@@ -37,12 +37,23 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest,
+	size_t size)
 {
 	int err; limited_cookie_t *cookie = (void*)vcookie;
+	size_t left;
 
 	if (size > cookie->_left) {
+		/* First, skip the required bytes. */
+
+		left = cookie->_left;
 		cookie->_left = 0;
+		if ((err = casio_skip(cookie->_stream, left)))
+			return (err);
+
+		/* Once the skip is done successfully, we return that we
+		 * have an EOF. */
+
 		return (casio_error_eof);
 	}
 
@@ -93,15 +104,18 @@ int CASIO_EXPORT casio_open_limited(casio_stream_t **stream,
 
 	/* FIXME: check original stream */
 	/* allocate the cookie */
+
 	cookie = casio_alloc(1, sizeof(limited_cookie_t));
 	if (!cookie) return (casio_error_alloc);
 
-	/* fill the cookie */
+	/* Fill the cookie. */
+
 	memcpy(cookie->_magic, "LIMITED\x7F", 8);
 	cookie->_stream = original;
 	cookie->_left = size;
 
-	/* initialize da stream */
+	/* Initialize da stream. */
+
 	return (casio_open_stream(stream,
 		casio_get_openmode(original) & CASIO_OPENMODE_READ,
 		cookie, &casio_limited_callbacks, 0));

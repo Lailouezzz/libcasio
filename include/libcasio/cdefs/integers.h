@@ -89,10 +89,16 @@ typedef unsigned long  casio_uint32_t;
 /* printf thing for `size_t` */
 # if defined(_WIN64)
 #  define CASIO_PRIuSIZE "l64u"
+#  define CASIO_PRIxSIZE "l64x"
+#  define CASIO_PRIXSIZE "l64X"
 # elif defined(_WIN32)
 #  define CASIO_PRIuSIZE "u"
+#  define CASIO_PRIxSIZE "x"
+#  define CASIO_PRIXSIZE "X"
 # else
 #  define CASIO_PRIuSIZE "zu"
+#  define CASIO_PRIxSIZE "zx"
+#  define CASIO_PRIXSIZE "zX"
 # endif
 
 CASIO_END_NAMESPACE

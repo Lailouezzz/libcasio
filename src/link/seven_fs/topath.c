@@ -37,12 +37,16 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	char *data; int off;
 	casio_pathnode_t *node;
 
+	(void)cookie;
+
 	/* Check the device. */
+
 	if (!memcmp(array->casio_path_device, "fls0", 4)
 	 || !memcmp(array->casio_path_device, "crd0", 4))
 		return (casio_error_invalid);
 
 	/* Get directory name and file name. */
+
 	if (!array->casio_path_nodes)
 		return (casio_error_invalid);
 	node = array->casio_path_nodes;
@@ -58,6 +62,7 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	}
 	if (node->casio_pathnode_next) {
 		/* too deep! */
+
 		return (casio_error_invalid);
 	}
 	filesz = node->casio_pathnode_size + 1;
@@ -65,11 +70,13 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	filename = (const char*)node->casio_pathnode_name;
 
 	/* Make the node. */
+
 	*ppath = casio_alloc(offsetof(sevenfs_path_t, sevenfs_path_data)
 		+ 4 + dirsz + filesz, 1);
 	path = *ppath; if (!path) return (casio_error_alloc);
 
 	/* Copy the data into the node. */
+
 	data = path->sevenfs_path_data; off = 0;
 	if (dirname) {
 		memcpy(data, dirname, dirsz - 1);
@@ -87,6 +94,7 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	path->sevenfs_path_dev = off;
 
 	/* No error! */
+
 	return (0);
 }
 
