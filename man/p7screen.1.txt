@@ -1,0 +1,39 @@
+P7SCREEN(1)
+===========
+Thomas "Cakeisalie5" Touhey
+:Email: thomas@touhey.fr
+:man source: p7utils
+:man manual: p7utils manual
+
+NAME
+----
+p7screen - display streamed screen from casio fx calculator
+
+SYNOPSIS
+--------
+[source,bash]
+----
+p7screen [-h|--help] [-v|--version]
+----
+
+DESCRIPTION
+-----------
+p7screen is a command-line utility to display streamed screen from casio fx
+calculator, using its communication protocol 7.00 and screenstreaming mode.
+
+OPTIONS
+-------
+Options start with one or two dashes. Some of the options require an additional
+value next to them.
+
+*-h, --help*::
+	Display help page and quit.
+*-v, --version*::
+	Display version and quit.
+*-z ZOOM, --zoom=ZOOM*::
+	Change the zoom (will change the window size too).
+
+SEE ALSO
+--------
+*p7*(1),
+*libcasio*(3)

@@ -3,7 +3,8 @@
 /obj
 /lib*.so*
 /lib*.dll*
-/man
+/man/*.[1-9]
+/man/*.gz
 
 /docs/_build
 build

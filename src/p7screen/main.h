@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************** */
-#ifndef MAIN_H
-# define MAIN_H
+#ifndef  MAIN_H
+# define MAIN_H 1
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <libcasio.h>
+
 # define Q(x) #x
 # define QUOTE(x) Q(x)
-# define log(S, ...) fprintf(stderr, S, ##__VA_ARGS__)
 
-/* all functions */
+/* Prototypes. */
+
 int parse_args(int ac, char **av, int *zoom);
 
 #endif /* MAIN_H */

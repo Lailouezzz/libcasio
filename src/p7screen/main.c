@@ -17,7 +17,6 @@
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************** */
 #include "main.h"
-#include <string.h>
 #include <SDL.h>
 
 /* ************************************************************************** */
@@ -64,47 +63,102 @@ static int zoom;
 static void display_callback(void *vcookie,
 	int w, int h, casio_uint32_t **pixels)
 {
-	static SDL_Surface *screen = NULL;
+	static SDL_Window *window = NULL;
+	static SDL_Renderer *rendr = NULL;
+	static SDL_Texture *texture = NULL;
 	static int saved_w = 0, saved_h = 0;
 
 	(void)vcookie;
-	/* Create screen if there isn't one. */
-	if (!screen || saved_w != w || saved_h != h) {
-		/* Create the window. */
-		if (!(screen = SDL_SetVideoMode(w * zoom, h * zoom, 32,
-		  SDL_SWSURFACE | SDL_DOUBLEBUF))) {
-			log("Couldn't set video mode: %s\n", SDL_GetError());
+
+	if (!window) {
+		int ret;
+
+		/* We haven't got a window, our objective is to create one,
+		 * with a renderer and a texture. First, let's create the window. */
+
+		window = SDL_CreateWindow("p7screen",
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			w * zoom, h * zoom, 0);
+		if (!window) {
+			fprintf(stderr, "Couldn't create the window: %s\n",
+				SDL_GetError());
 			return ;
 		}
-		SDL_WM_SetCaption("P7screen", NULL);
+
+		/* Then let's create the renderer. */
+
+		rendr = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+		if (!rendr) {
+			SDL_DestroyWindow(window);
+			window = NULL;
+
+			fprintf(stderr, "Couldn't create the renderer: %s\n",
+				SDL_GetError());
+			return ;
+		}
+
+		/* Finally, create the texture we're gonna use for drawing
+		 * the picture as a classic ARGB pixel matric (8 bits per
+		 * component). */
+
+		texture = SDL_CreateTexture(rendr, SDL_PIXELFORMAT_ARGB8888,
+			SDL_TEXTUREACCESS_STREAMING, w * zoom, h * zoom);
+		if (!texture) {
+			SDL_DestroyRenderer(rendr);
+			rendr = NULL;
+
+			SDL_DestroyWindow(window);
+			window = NULL;
+
+			fprintf(stderr, "Couldn't create the texture: %s\n",
+				SDL_GetError());
+			return ;
+		}
 
 		/* Save data and display message. */
-		saved_w = w; saved_h = h;
-		puts("Turn off your calculator (SHIFT+AC) when you have finished.");
-	}
 
-	/* Lock the screen. */
-	SDL_LockSurface(screen);
+		saved_w = w;
+		saved_h = h;
+
+		puts("Turn off your calculator (SHIFT+AC) when you have finished.");
+	} else if (saved_w != w || saved_h != h) {
+		/* The dimensions have changed somehow, we're gonna manage it!
+		 * FIXME: one day. */
+
+		return ;
+	}
 
 	/* Copy the data. */
-	uint32_t *px = (uint32_t*)screen->pixels;
-	int linesize = w * zoom;
-	for (int y = 0; y < h; y++) {
-		uint32_t *refline = px;
-		for (int x = 0; x < w; x++) {
-			uint32_t pixel = pixels[y][x];
-			for (int zx = 0; zx < zoom; zx++)
-				*px++ = pixel;
+
+	{
+		Uint32 *px;
+		int pitch;
+		int linesize = w * zoom;
+
+		SDL_LockTexture(texture, NULL, (void **)&px, &pitch);
+
+		for (int y = 0; y < h; y++) {
+			Uint32 *refline = px;
+
+			for (int x = 0; x < w; x++) {
+				Uint32 pixel = pixels[y][x];
+
+				for (int zx = 0; zx < zoom; zx++)
+					*px++ = pixel;
+			}
+			for (int zy = 1; zy < zoom; zy++) {
+				memcpy(px, refline, linesize * sizeof(uint32_t));
+				px += linesize;
+			}
 		}
-		for (int zy = 1; zy < zoom; zy++) {
-			memcpy(px, refline, linesize * sizeof(uint32_t));
-			px += linesize;
-		}
+
+		SDL_UnlockTexture(texture);
 	}
 
-	/* Unlock the screen, and flippin' flip it. */
-	SDL_UnlockSurface(screen);
-	SDL_Flip(screen);
+	/* Flippin' flip the screen! */
+
+	SDL_RenderCopy(rendr, texture, NULL, NULL);
+	SDL_RenderPresent(rendr);
 }
 /* ************************************************************************** */
 /*  Main function                                                             */
@@ -130,9 +184,15 @@ int main(int ac, char **av)
 	if ((err = casio_open_usb(&handle, 0))) {
 		/* display error */
 		switch (err) {
-			case casio_error_nocalc: log(error_noconnexion); break;
-			case casio_error_noaccess: log(error_noaccess); break;
-			default: log(error_unplanned, casio_strerror(err)); break;
+			case casio_error_nocalc:
+				fprintf(stderr, error_noconnexion);
+				break;
+			case casio_error_noaccess:
+				fprintf(stderr, error_noaccess);
+				break;
+			default:
+				fprintf(stderr, error_unplanned, casio_strerror(err));
+				break;
 		}
 
 		/* return */
@@ -141,7 +201,7 @@ int main(int ac, char **av)
 
 	/* Initialize SDL */
 	if (SDL_Init(SDL_INIT_VIDEO)) {
-		log("Failed to initialize SDL: %s\n", SDL_GetError());
+		fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
 		return (3);
 	}
 	atexit(SDL_Quit);
@@ -150,8 +210,12 @@ int main(int ac, char **av)
 	if ((err = casio_getscreen(handle, &display_callback, NULL))
 	 && err != casio_error_nocalc) {
 		switch (err) {
-			case casio_error_timeout: log(error_noconnexion); break;
-			default: log(error_unplanned, casio_strerror(err)); break;
+			case casio_error_timeout:
+				fprintf(stderr, error_noconnexion);
+				break;
+			default:
+				fprintf(stderr, error_unplanned, casio_strerror(err));
+				break;
 		}
 		return (1);
 	}

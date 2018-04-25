@@ -18,7 +18,7 @@
  * ************************************************************************* */
 #define PATHS_FTW
 #include "posix.h"
-#ifndef LIBCASIO_DISABLED_POSIX
+#ifndef LIBCASIO_DISABLED_POSIX_FS
 
 /**
  *	casio_posix_delete:

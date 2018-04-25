@@ -1,0 +1,61 @@
+P7OS(1)
+=======
+Thomas "Cakeisalie5" Touhey
+:Email: thomas@touhey.fr
+:man source: p7utils
+:man manual: p7utils manual
+
+NAME
+----
+p7os - backup and setup CASIO calculator's software components using protocol 7
+
+SYNOPSIS
+--------
+[source,bash]
+----
+p7os [-h|--help] [-v|--version] [--no-prepare] [--uexe <path>]
+     [<subcommand> [<args>]]
+----
+
+DESCRIPTION
+-----------
+p7os is a command-line utility to get and upload an OS on CASIO fx calculators,
+using its communication protocol 7.00 and OS update mode.
+
+Available submenus are :
+
+*prepare-only*::
+	Sends the update program, but leave it for other programs to interact
+	with it.
+*get [-o os.bin]*::
+	Backup the bootcode, CASIOWIN entry and OS.
+
+You have to *prepare* before doing any other action. Preparing means sending
+a P7 server on the calculator that will be able to execute commands required
+by other subcommands.
+
+OPTIONS
+-------
+Options start with one or two dashes. Some of the options require an additional
+value next to them.
+
+*-h, --help*::
+	Display command/subcommand help page and quit.
+*-v, --version*::
+	Display version and quit.
+*--com <device>*::
+	The serial device, if you want to communicate with a calculator connected
+	using a USB-to-serial cable.
+ ::
+	If this option isn't used, the program will look for a calculator connected
+	using direct USB.
+*--no-prepare*::
+	Use the current environment, instead of uploading one.
+*--uexe <path>*::
+	Use a custom update program.
+*-o OUT, --output=OUT*::
+	When getting something, where to store.
+
+SEE ALSO
+--------
+*libcasio*(3)

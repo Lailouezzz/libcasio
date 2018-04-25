@@ -78,7 +78,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 CASIO_EXTERN int CASIO_EXPORT casio_open_posix_fs
 	OF((casio_fs_t **casio__filesystem));
 # else
-#  define LIBCASIO_DISABLED_POSIX_FS
+#  define LIBCASIO_DISABLED_POSIX_FS 1
 # endif
 
 /* Make a Windows API filesystem interface. */

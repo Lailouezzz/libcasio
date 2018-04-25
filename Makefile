@@ -213,7 +213,7 @@ $(eval $(call make-obj-rule,$(src))))
 
 define make-util-rules
  ./build/$1$(if $(FOR_WINDOWS),.exe): $(U_OBJ_$1) \
-	$(if $(filter libcasio,$(U_DEPS_$1)),./build/lib$(LIB).so) | ./build/
+	$(if $(filter libcasio,$(U_DEPS_$1)),$(L_AS_DEP)) | ./build/
 	$(call bcmd,ld,$$@,$(LD) -o $$@ $(U_OBJ_$1) $(U_LDFLAGS_$1))
 
  all-$1: ./build/$1$(if $(FOR_WINDOWS),.exe)

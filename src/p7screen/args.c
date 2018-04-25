@@ -145,7 +145,7 @@ int parse_args(int ac, char **av, int *zoom)
 		case 'z':
 			*zoom = atoi(optarg);
 			if (*zoom <= 0 || *zoom > 16) {
-				log("-z, --zoom: should be between 1 and 16");
+				fprintf(stderr, "-z, --zoom: should be between 1 and 16");
 				return (1);
 			}
 			break;
@@ -157,7 +157,7 @@ int parse_args(int ac, char **av, int *zoom)
 		/* error (ignore) */
 		case '?':
 			if (optopt == 'z')
-				log("-z, --zoom: expected an argument\n");
+				fprintf(stderr, "-z, --zoom: expected an argument\n");
 			else
 				break;
 			return (1);

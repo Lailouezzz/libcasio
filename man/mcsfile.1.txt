@@ -1,0 +1,37 @@
+MCSFILE(1)
+==========
+Thomas "Cakeisalie5" Touhey
+:Email: thomas@touhey.fr
+:man source: p7utils
+:man manual: p7utils manual
+
+NAME
+----
+mcsfile - list subfiles in a CASIO MCS archive file
+
+SYNOPSIS
+--------
+[source,bash]
+----
+mcsfile [--help] [--version] <archive.g1m>
+----
+
+DESCRIPTION
+-----------
+mcsfile is a simple utility that looks like *file*(1), excepts it lists
+subfiles in a CASIO MCS archive file (things with extensions like *g1m*
+or *g2r*).
+
+OPTIONS
+-------
+Options start with one or two dashes. Some of the options require an additional
+value next to them.
+
+*-h, --help*::
+	Display command/subcommand help page and quit.
+*-v, --version*::
+	Display version and quit.
+
+SEE ALSO
+--------
+*libcasio*(3)

@@ -1,0 +1,86 @@
+P7(1)
+=====
+Thomas "Cakeisalie5" Touhey
+:Email: thomas@touhey.fr
+:man source: p7utils
+:man manual: p7utils manual
+
+NAME
+----
+p7 - command-line utility to communicate with casio calculators
+
+SYNOPSIS
+--------
+[source,bash]
+----
+p7 [-h|--help] [-v|--version] [<command> [<args>]]
+----
+
+DESCRIPTION
+-----------
+p7 is a command-line utility to communicate with machines using casio's
+communication protocol 7.00, like (almost only, not gonna lie) CASIO
+fx calculators. For now, it only implements file sending/getting functions
+on flash memories.
+
+Available submenus are:
+
+*send [-f] [-o oncalc.ext] [-d oncalcdir] local.ext*::
+	Send a file to the calculator.
+*get [-o local.ext] [-d oncalcdir] oncalc.ext*::
+	Get a file from calculator.
+*copy [-d sourcedir] [-t destdir] source.ext dest.ext*::
+	Copies a file into another on the calculator.
+*del [-d oncalcdir] oncalc.ext*::
+	Delete a file on the calculator.
+*ls*::
+	List files on the calculator.
+*reset*::
+	Reset a filesystem on the calculator.
+*optimize*::
+	Optimize the distant filesystem (defragment).
+*info*::
+	Dumps information about the calculator.
+
+OPTIONS
+-------
+Options start with one or two dashes. Some of the options require an additional
+value next to them.
+
+*-h, --help*::
+	Display command/subcommand help page and quit.
+*-v, --version*::
+	Display version and quit.
+*--com <device>*::
+	The serial device, if you want to communicate with a calculator connected
+	using a USB-to-serial cable.
+ ::
+	If this option isn't used, the program will look for a calculator connected
+	using direct USB.
+*--storage abc0*::
+	The storage device with which to interact.
+*--no-term, --no-exit*::
+	Do not terminate connection when action is completed.
+*--no-start, --no-init*::
+	Do not initialize connection -- should only be used when
+	*--no-term*/*--no-exit*	was used last time p7 was called.
+*-d DIR, --directory=DIR*::
+	The on-calc directory to work in.
+	Default for this option is device root.
+*-t DDIR, --to=DIR*::
+	The destination directory (for file copying/moving).
+	Default for this option is device root.
+*-o OUT, --output=OUT*::
+	For the *get* subcommand, the local file path to store in the output (or
+	'-' for stdout). For the *send* subcommand, the distant filename. For the
+	two subcommands, default is adapted from the input parameter.
+*-f, --force*::
+	For the *send* subcommand, force overwrite (default is interactive
+	confirmation from user).
+*-#*::
+	Displays a nice little loading bar for *send* and *get* subcommands. If
+	command is *get* and output is stdout, loading bar won't be displayed.
+
+SEE ALSO
+--------
+*libcasio*(3)
