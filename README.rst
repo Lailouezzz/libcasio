@@ -1,5 +1,5 @@
-libcasio - Library and utilitiess for using CASIO's protocols and file formats
-==============================================================================
+libcasio - Library and utilities for using CASIO's protocols and file formats
+=============================================================================
 
 This is the main repository for the P7 project, a project to free software
 surrounding CASIO calculators. It aims at being able to manage CASIO's

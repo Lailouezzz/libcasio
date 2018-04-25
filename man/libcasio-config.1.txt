@@ -1,0 +1,45 @@
+LIBCASIO-CONFIG(1)
+==================
+Thomas "Cakeisalie5" Touhey
+:Email: thomas@touhey.fr
+:man source: libcasio
+:man manual: libcasio manual
+
+NAME
+----
+libcasio-config - script to get info about the installed version of libcasio
+
+SYNOPSIS
+--------
+*libcasio-config* [--version] [--cflags] [--libs]
+
+DESCRIPTION
+-----------
+*libcasio-config* is a tool that is used to configure and determine the
+compiler and linker flags that should be used to compile and link programs,
+libraries, and plugins that use libcasio.
+
+OPTIONS
+-------
+*--cflags*::
+	Print the compiler flags that are necessary to compile a program or library
+	that uses libcasio.
+*--libs*::
+	Print the linker flags that are necessary to link a program that
+	uses libcasio.
+*--version*::
+	Prints the currently installed version of libcasio on standard output.
+
+EXAMPLES
+--------
+gcc -o main.o $(libcasio-config --cflags) main.c::
+	is how you might use *libcasio-config* to compile a C source file for an
+	executable program.
+gcc -o my_app $(libcasio-config --libs) main.o util.o::
+	is how you might use *libcasio-config* to link compiled objects into an
+	executable program.
+
+SEE ALSO
+--------
+*libcasio*(3),
+*pkg-config*(1)

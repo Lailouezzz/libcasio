@@ -41,11 +41,9 @@ default_storage=fls0
 # Installation directories.
 
 root=''
-[ x"$indev" != x ] && prefix='${root}/opt/p7-project' \
-	|| prefix='${root}/usr'
+prefix='${root}/usr'
 prefix_set=
-[ x"$indev" != x ] && hprefix='${root}/opt/p7-project' \
-	|| hprefix='${root}/usr'
+hprefix='${root}/usr'
 bindir='${prefix}/bin'
 hbindir='${hprefix}/bin'
 libdir='${prefix}/lib'"$platform"
