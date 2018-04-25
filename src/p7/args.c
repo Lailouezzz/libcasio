@@ -477,9 +477,11 @@ int parse_args(int ac, char **av, args_t *args)
 	}
 
 	/* set serial settings */
-	if (rst)
+	if (rst) {
 		args->do_the_set = 1;
-	else if (s_set) {
+		args->set = &args->_set;
+		casio_make_attrs(&args->_set, NULL);
+	} else if (s_set) {
 		args->do_the_set = 1;
 		if (args->com) args->set = &args->_set;
 		if (casio_make_attrs(&args->_set, s_set)) {

@@ -34,20 +34,25 @@ int CASIO_EXPORT casio_setlink(casio_link_t *handle,
 	int err; casio_streamattrs_t attrs;
 	unsigned int speed; int stopbits, parity;
 
-	/* make checks */
+	/* Make checks. */
+
 	chk_handle(handle);
 	chk_seven(handle);
 	chk_active(handle);
 
-	/* check settings. */
+	/* Check settings.
+	 * If we are not on a serial stream, this ain't gonna work. */
+
 	if (casio_get_attrs(handle->casio_link_stream, &attrs))
 		return (casio_error_op);
+
 	attrs.casio_streamattrs_speed = uattrs->casio_streamattrs_speed;
 	attrs.casio_streamattrs_flags =
 		(  attrs.casio_streamattrs_flags & ~MPARSTOP) |
 		(uattrs->casio_streamattrs_flags &  MPARSTOP);
 
-	/* get raw information for the command. */
+	/* Get raw information for the command. */
+
 	speed = attrs.casio_streamattrs_speed;
 	stopbits = attrs.casio_streamattrs_flags & CASIO_TWOSTOPBITS ? 2 : 1;
 	parity = (~attrs.casio_streamattrs_flags & CASIO_PARENB) ? 0

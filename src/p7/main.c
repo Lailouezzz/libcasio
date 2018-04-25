@@ -20,26 +20,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ************************************************************************** */
-/*  Error messages                                                            */
-/* ************************************************************************** */
+/* ---
+ * Error messages.
+ * --- */
+
 /* Couldn't initialize connexion with the calculator. */
+
 static const char error_noconnexion[] =
 "Could not connect to the calculator.\n"
 "- Is it plugged in and in receive mode?\n"
 "- Have you tried changing the cable?\n";
 
 /* Calculator was disconnected. */
+
 static const char error_disconnected[] =
 "Lost connexion to the calculator!\n"
 "Please reconnect the calculator, rerun receive mode and try again.\n";
 
 /* Calculator was found but program wasn't allowed to communicate with it. */
+
 static const char error_noaccess[] =
 "Could not get access to the calculator.\n"
 "Install the appropriate udev rule, or run as root.\n";
 
 /* Command was unsupported. */
+
 static const char error_unsupported[] =
 "The command is unsupported by the calculator.\n"
 "- Does the calculator have mass storage?\n"
@@ -47,10 +52,12 @@ static const char error_unsupported[] =
 "- Is it in Receive Mode (and not in OS Update)?\n";
 
 /* The device didn't exist. */
+
 static const char error_unsupported_device[] =
 "Device '%s' is not supported by the device.\n";
 
 /* The calculator acted in an unplanned way. */
+
 static const char error_unplanned[] =
 "The calculator didn't act as planned.\n"
 "Stop receive mode on calculator and start it again before re-running " \
@@ -58,22 +65,26 @@ static const char error_unplanned[] =
 "Error was: %s\n";
 
 /* Requested file didn't exist. */
+
 static const char error_noexists[] =
 "Requested file didn't exist.\n";
 
 /* Sent file cannot be empty. */
+
 static const char error_empty[] =
 "Can't send an empty file!\n";
 
 /* Not enough space left on the calculator. */
+
 static const char error_nospace[] =
 "Not enough space on the calculator for the file you're trying to send.\n"
 "If you believe there should be, try optimizing (OPT) on the calculator\n"
 "(in MEMORY menu) and try again.\n";
 
-/* ************************************************************************** */
-/*  Auxiliary functions                                                       */
-/* ************************************************************************** */
+/* ---
+ * Auxiliary functions.
+ * --- */
+
 /**
  *	sendfile_confirm:
  *	Confirm file sending.
@@ -171,9 +182,11 @@ static void print_file_info(void *cookie, const char *dir, const char *name,
 	/* put the string */
 	puts(buf);
 }
-/* ************************************************************************** */
-/*  Main function                                                             */
-/* ************************************************************************** */
+
+/* ---
+ * Main function.
+ * --- */
+
 /**
  *	main:
  *	User entry point of the program.
@@ -189,17 +202,18 @@ int main(int ac, char **av)
 	casio_link_t *handle = NULL;
 	casio_fs_t *fs = NULL;
 
-	/* Parse args */
+	/* Decode the arguments. */
+
 	if (!parse_args(ac, av, &args))
 		return (0);
 
-	/* Initialize the link */
+	/* Initialize the link. */
+
 	if (args.com)
 		err = casio_open_com(&handle, args.initflags, args.com, args.use);
 	else
 		err = casio_open_usb(&handle, args.initflags);
 	if (err) {
-		/* display error */
 		switch (err) {
 		case casio_error_nocalc:
 			fprintf(stderr, error_noconnexion);
@@ -212,7 +226,8 @@ int main(int ac, char **av)
 			break;
 		}
 
-		/* closing, removing if necessary */
+		/* Close and remove if necessary. */
+
 		if (args.menu == mn_send)
 			fclose(args.local);
 		if (args.menu == mn_get && args.local != stdout) {
@@ -222,7 +237,8 @@ int main(int ac, char **av)
 		return (1);
 	}
 
-	/* Change speed, and things */
+	/* Change speed, and things. */
+
 	if (args.do_the_set) {
 		err = casio_setlink(handle, args.set);
 		if (err)
@@ -230,6 +246,7 @@ int main(int ac, char **av)
 	}
 
 	/* Check according to menu */
+
 	switch (args.menu) {
 #if 0
 		case mn_send:
@@ -301,7 +318,8 @@ int main(int ac, char **av)
 			break;
 	}
 
-	/* put error */
+	/* Put the error. */
+
 	if (err && err != casio_error_noow)
 		goto fail;
 
@@ -309,7 +327,8 @@ int main(int ac, char **av)
 		puts("\b\b\b\b\b\bTransfer complete.");
 	if (args.local && args.local != stdout) fclose(args.local);
 
-	/* terminate communication and de-initialize link handle */
+	/* Terminate communication and de-initialize link handle. */
+
 	casio_close_fs(fs);
 	casio_close_link(handle);
 	handle = NULL;
