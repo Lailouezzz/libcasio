@@ -17,6 +17,8 @@
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************** */
 #include "main.h"
+#include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 
 /* ---
@@ -26,7 +28,7 @@
 /* Help message. */
 
 static const char *help_start =
-"Usage: mcsfile [--version|-v] [--help|-h] <g1m file>\n"
+"Usage: mcsfile [--version|-v] [--help|-h] <mcs archives>...\n"
 "\n"
 "Reads mcs files in a g1m file.\n"
 "\n"
@@ -127,23 +129,28 @@ static void put_version(void)
  *	@return			if execution should stop.
  */
 
-int parse_args(int ac, char **av, const char **path)
+int parse_args(int ac, char **av, int *num, const char ***paths)
 {
-	/* getopt elements */
+	int c, help = 0, version = 0, pc;
+	char **pv;
 	const char *optstring = "hv";
 	const struct option longopts[] = {
 		{"help", no_argument, NULL, 'h'},
 		{"version", no_argument, NULL, 'v'},
-		{}
+		{NULL, 0, NULL, 0}
 	};
 
-	/* get options */
-	int c; opterr = 0;
-	int help = 0, version = 0;
+	/* Get options. */
+
+	opterr = 0;
 	while ((c = getopt_long(ac, av, optstring, longopts, NULL)) != -1)
 	  switch (c) {
-		case 'h': help = 1; break;
-		case 'v': version = 1; break;
+		case 'h':
+			help = 1;
+			break;
+		case 'v':
+			version = 1;
+			break;
 		default: switch (optopt) {
 			default:
 				fprintf(stderr, "-%c: unknown option.\n", optopt);
@@ -151,15 +158,20 @@ int parse_args(int ac, char **av, const char **path)
 		return (1);
 	}
 
-	/* check parameters */
-	int pc = ac - optind;
-	char **pv = &av[optind];
-	if (pc != 1)
-		help = 1;
-	else
-		*path = *pv;
+	/* Check parameters. */
 
-	/* display version or help message */
+	pc = ac - optind;
+	pv = &av[optind];
+
+	if (!pc)
+		help = 1;
+	else {
+		*num = pc;
+		*paths = (const char **)pv;
+	}
+
+	/* Display version or help message. */
+
 	if (version) {
 		put_version();
 		return (1);
@@ -168,6 +180,5 @@ int parse_args(int ac, char **av, const char **path)
 		return (1);
 	}
 
-	/* no error */
 	return (0);
 }

@@ -1,4 +1,4 @@
 #!/usr/bin/make -f
-disable:
+#disable:
 libs:
 	@echo libcasio

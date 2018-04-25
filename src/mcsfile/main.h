@@ -21,6 +21,7 @@
 # include <libcasio.h>
 
 /* Some printf types */
+
 # ifdef _WIN64
 #  define PRIuSIZE "l64u"
 # elif _WIN32
@@ -29,8 +30,9 @@
 #  define PRIuSIZE "zu"
 # endif
 
-/* Prototypes */
-int parse_args(int ac, char **av, const char **paths);
+/* Prototypes. */
+
+int parse_args(int ac, char **av, int *num, const char ***paths);
 void print_files(casio_mcs_t *handle);
 
 #endif /* MAIN_H */

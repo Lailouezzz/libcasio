@@ -17,10 +17,16 @@
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************** */
 #include "main.h"
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <locale.h>
-#define cry(S, ...) fprintf(stderr, S "\n", ##__VA_ARGS__)
+
+struct entry {
+	int valid;
+	casio_file_t *handle;
+	const char *path;
+};
 
 /**
  *	main:
@@ -33,40 +39,86 @@
 
 int main(int ac, char **av)
 {
-	const char *path;
-	casio_file_t *handle;
-	int err;
+	int num, i, err, fst;
+	const char **paths;
+	struct entry *entries, *ep;
 
 	/* Set the locale and parse arguments. */
 
 	setlocale(LC_ALL, "");
-	if (parse_args(ac, av, &path))
+	if (parse_args(ac, av, &num, &paths))
 		return (0);
 
-	/* parse */
-	if ((err = casio_open_file(&handle, path, casio_filetype_mcs)))
-	  switch (err) {
-		case casio_error_wrong:
-			cry("An MCS file was expected (g1m/g1r, g1m/g2r, g3m)");
-			return (1);
-		case casio_error_nostream:
-			cry("Could not open file: %s", strerror(errno));
-			return (1);
-		case casio_error_magic:
-			cry("Magic error: file might be corrupted");
-			return (1);
-		case casio_error_eof:
-			cry("Unexpected end of file");
-			return (1);
-		default:
-			cry("Unknown error: %s", casio_strerror(err));
-			return (1);
+	/* Prepare the list. */
+
+	if (!(entries = malloc(sizeof(struct entry) * num))) {
+		fprintf(stderr, "error: a memory allocation has failed\n");
+		return (1);
 	}
 
-	/* Read the files, free the handle and exit. */
+	for (ep = entries, i = num; i; ep++, i--) {
+		ep->valid = 0;
+		ep->handle = NULL;
+		ep->path = paths[num - i];
 
-	print_files(handle->casio_file_mcs);
-	casio_free_file(handle);
+		/* Decode the file. */
+
+		err = casio_open_file(&ep->handle, ep->path, casio_filetype_mcs);
+
+		if (err) {
+			fprintf(stderr, "error: %s: ", ep->path);
+			switch (err) {
+			case casio_error_wrong:
+				fprintf(stderr, "an MCS file was expected "
+					"(g1m, g1r, g2m, g2r, g3m)\n");
+				break;
+
+			case casio_error_nostream:
+				fprintf(stderr, "could not open file: %s\n", strerror(errno));
+				break;
+
+			case casio_error_magic:
+			case casio_error_eof:
+				fprintf(stderr, "file might be corrupted\n");
+				break;
+
+			default:
+				fprintf(stderr, "%s\n", casio_strerror(err));
+				break;
+			}
+
+			continue;
+		}
+
+		ep->valid = 1;
+	}
+
+	/* List files in all of the given archives, and free the
+	 * file handles while we're at it. */
+
+	fst = 1;
+	for (ep = entries, i = num; i; ep++, i--) {
+		if (!ep->valid)
+			continue;
+
+		/* Print the header, with some spacing if not the first entry. */
+
+		if (fst)
+			fst = 0;
+		else
+			fputc('\n', stdout);
+
+		if (num > 1)
+			fprintf(stdout, "%s:\n\n", ep->path);
+
+		/* Print the entries in the archive. */
+
+		print_files(ep->handle->casio_file_mcs);
+
+		/* Free the handle. */
+
+		casio_free_file(ep->handle);
+	}
 
 	return (0);
 }
