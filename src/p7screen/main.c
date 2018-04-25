@@ -38,7 +38,7 @@ static const char error_noaccess[] =
 static const char error_unplanned[] =
 "The calculator didn't act as planned.\n"
 "Stop receive mode on calculator and start it again before re-running " \
-	QUOTE(BIN) ".\n"
+	BIN ".\n"
 "Error was: %s\n";
 
 /* ************************************************************************** */

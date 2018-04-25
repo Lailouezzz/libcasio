@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <libg1m.h>
 
 /* ************************************************************************** */
 /*  Main function                                                             */
@@ -36,15 +35,19 @@
 
 int main(int ac, char **av)
 {
-	int ret = 1; FILE *in = NULL;
-	g1m_handle_t *handle = NULL;
-
-	/* Parse args */
+	int ret = 1, err; FILE *in = NULL;
+	casio_file_t *handle = NULL;
+	unsigned char *p;
+	long off; size_t sz;
 	args_t args;
-	if (!parse_args(ac, av, &args))
-		return (0);
 
-	/* get file length */
+	/* Parse the arguments. */
+
+	if (parse_args(ac, av, &args))
+		return (1);
+
+	/* Get file length. */
+
 	in = fopen(args.infile, "r");
 	if (!in) {
 		err("couldn't open input file: %s", strerror(errno));
@@ -54,28 +57,31 @@ int main(int ac, char **av)
 		err("couldn't seek in file.");
 		goto fail;
 	}
-	long off = ftell(in);
+	off = ftell(in);
 	if (off < 0L)
 		goto fail;
-	size_t sz = (off < 0) ? SIZE_MAX : (size_t)off;
+	sz = (off < 0) ? SIZE_MAX : (size_t)off;
 	if (fseek(in, 0L, SEEK_SET))
 		goto fail;
 
-	/* make the handle */
-	int err = g1m_make_addin(&handle, g1m_platform_fx, sz,
+	/* Make the handle. */
+
+	err = casio_make_addin(&handle, casio_filefor_fx, sz,
 		args.name, args.intname, &args.version, &args.date);
 	if (err) {
-		err("couldn't make libg1m handle: %s", g1m_strerror(err));
+		err("couldn't make libg1m handle: %s", casio_strerror(err));
 		goto fail;
 	}
 
 	/* decode the icon */
-	open_icon(args.iconfile, handle->icon_unsel);
+	open_icon(args.iconfile, handle->casio_file_icon_unsel);
 
 	/* copy the file content */
-	unsigned char *p = handle->content;
+	p = handle->casio_file_content;
 	while (sz) {
-		size_t rd = fread(p, 1, sz, in);
+		size_t rd;
+
+		rd = fread(p, 1, sz, in);
 		if (!rd) {
 			err("couldn't read binary data: %s", strerror(errno));
 			goto fail;
@@ -84,17 +90,20 @@ int main(int ac, char **av)
 	}
 
 	/* encode */
-	err = g1m_write(handle, args.outfile);
+	err = casio_write_file(handle, args.outfile);
 	if (err) {
 		err("couldn't write to output file: %s",
-			err == g1m_error_nostream ? strerror(errno) : g1m_strerror(err));
+			err == casio_error_nostream ? strerror(errno)
+			: casio_strerror(err));
 		goto fail;
 	}
 
 	/* we're good */
 	ret = 0;
 fail:
-	if (in) fclose(in);
-	if (handle) g1m_free(handle);
+	if (in)
+		fclose(in);
+	if (handle)
+		casio_free_file(handle);
 	return (ret);
 }

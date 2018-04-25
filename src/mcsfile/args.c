@@ -18,8 +18,6 @@
  * ************************************************************************** */
 #include "main.h"
 #include <getopt.h>
-#define Q(x) #x
-#define QUOTE(x) Q(x)
 
 /* ---
  * Help and version messages.
@@ -42,13 +40,13 @@ static const char *help_loglevel_init =
 
 static const char *help_end =
 "\n"
-"Report bugs to " QUOTE(MAINTAINER) ".\n";
+"Report bugs to " MAINTAINER ".\n";
 
 /* Version message. */
 
 static const char *version_message =
-"mcsfile - from p7utils v" QUOTE(VERSION) " (licensed under GPLv2)\n"
-"Maintained by " QUOTE(MAINTAINER) ".\n"
+BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
+"Maintained by " MAINTAINER ".\n"
 "\n"
 "This is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or\n"

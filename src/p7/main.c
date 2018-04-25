@@ -54,7 +54,7 @@ static const char error_unsupported_device[] =
 static const char error_unplanned[] =
 "The calculator didn't act as planned.\n"
 "Stop receive mode on calculator and start it again before re-running " \
-	QUOTE(BIN) ".\n"
+	BIN ".\n"
 "Error was: %s\n";
 
 /* Requested file didn't exist. */
@@ -202,13 +202,13 @@ int main(int ac, char **av)
 		/* display error */
 		switch (err) {
 		case casio_error_nocalc:
-			log(error_noconnexion);
+			fprintf(stderr, error_noconnexion);
 			break;
 		case casio_error_noaccess:
-			log(error_noaccess);
+			fprintf(stderr, error_noaccess);
 			break;
 		default:
-			log(error_unplanned, casio_strerror(err));
+			fprintf(stderr, error_unplanned, casio_strerror(err));
 			break;
 		}
 
@@ -328,20 +328,20 @@ fail:
 	/* put the error string */
 	switch (err) {
 	case casio_error_fullmem:
-		log(error_nospace); break;
+		fprintf(stderr, error_nospace); break;
 	case casio_error_empty:
-		log(error_empty); break;
+		fprintf(stderr, error_empty); break;
 	case casio_error_notfound:
-		log(error_noexists); break;
+		fprintf(stderr, error_noexists); break;
 	case casio_error_nocalc:
-		log(error_disconnected); break;
+		fprintf(stderr, error_disconnected); break;
 #if 0
 	case casio_error_unsupported:
-		log(error_unsupported); break;
+		fprintf(stderr, error_unsupported); break;
 	case casio_error_unsupported_device:
-		log(error_unsupported_device, args.storage); break;
+		fprintf(stderr, error_unsupported_device, args.storage); break;
 #endif
-	default: log(error_unplanned, casio_strerror(err));
+	default: fprintf(stderr, error_unplanned, casio_strerror(err));
 	}
 
 	/* that doesn't mean you shouldn't exit, heh. */

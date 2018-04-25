@@ -23,26 +23,30 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-/* ************************************************************************** */
-/*  Help and version messages                                                 */
-/* ************************************************************************** */
+/* ---
+ * Help and version messages.
+ * --- */
+
 /* Version message */
+
 static const char version_message[] =
-QUOTE(BIN) " - from " QUOTE(NAME) " v" QUOTE(VERSION)
+BIN " - from " NAME " v" VERSION
 	" (licensed under GPLv2)\n"
-"Maintained by " QUOTE(MAINTAINER) ".\n"
+"Maintained by " MAINTAINER ".\n"
 "\n"
 "This is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or\n"
 "FITNESS FOR A PARTICULAR PURPOSE.";
 
 /* Parts */
+
 #define FOOT \
-	"\nType \"" QUOTE(BIN) " --help\" for other subcommands and general options."
+"\nType \"" BIN " --help\" for other subcommands and general options."
 
 /* Sending help message */
+
 static const char help_send[] =
-"Usage: " QUOTE(BIN) " send [-f] [-o <on-calc filename>]\n"
+"Usage: " BIN " send [-f] [-o <on-calc filename>]\n"
 "               [-d <on-calc directory>] [-#] <local file>\n"
 "Send a file to the calculator.\n"
 "\n"
@@ -56,8 +60,9 @@ static const char help_send[] =
 FOOT;
 
 /* Getting help message */
+
 static const char help_get[] =
-"Usage: " QUOTE(BIN) " get [-o <local file>]\n"
+"Usage: " BIN " get [-o <local file>]\n"
 "              [-d <on-calc directory>] <on-calc filename>\n"
 "Request a file from the calculator.\n"
 "\n"
@@ -69,8 +74,9 @@ static const char help_get[] =
 FOOT;
 
 /* Copying help message */
+
 static const char help_copy[] =
-"Usage: " QUOTE(BIN) " copy [-d <source directory]\n"
+"Usage: " BIN " copy [-d <source directory]\n"
 "               [-t <destination directory>] <source file> <dest file>\n"
 "Copies a file into the other on the calculator.\n"
 "\n"
@@ -80,8 +86,9 @@ static const char help_copy[] =
 FOOT;
 
 /* Deleting help message */
+
 static const char help_del[] =
-"Usage: " QUOTE(BIN) " delete [-d <on-calc directory] <on-calc filename>\n"
+"Usage: " BIN " delete [-d <on-calc directory] <on-calc filename>\n"
 "Delete a file on the calculator.\n"
 "\n"
 "Options are:\n"
@@ -90,38 +97,44 @@ static const char help_del[] =
 FOOT;
 
 /* Listing help message */
+
 static const char help_list[] =
-"Usage: " QUOTE(BIN) " list\n"
+"Usage: " BIN " list\n"
 "List files on the distant filesystem.\n"
 FOOT;
 
 /* Resetting help message */
+
 static const char help_reset[] =
-"Usage: " QUOTE(BIN) " reset\n"
+"Usage: " BIN " reset\n"
 "Reset the distant filesystem.\n"
 FOOT;
 
 /* Optimizing help message */
+
 static const char help_optimize[] =
-"Usage: " QUOTE(BIN) " optimize\n"
+"Usage: " BIN " optimize\n"
 "Optimize the distant filesystem.\n"
 FOOT;
 
 /* Dumping help message */
+
 static const char help_info[] =
-"Usage: " QUOTE(BIN) " info\n"
+"Usage: " BIN " info\n"
 "Dump information about the calculator.\n"
 FOOT;
 
 /* List serial devices */
+
 static const char help_listcom[] =
-"Usage: " QUOTE(BIN) " list-devices\n"
+"Usage: " BIN " list-devices\n"
 "List serial devices.\n"
 FOOT;
 
 /* Idle */
+
 static const char help_idle[] =
-"Usage: " QUOTE(BIN) " idle|laze\n"
+"Usage: " BIN " idle|laze\n"
 "Only initialize or end the communication.\n"
 "\n"
 "This subcommand is useful when used with `--no-init` and/or `--no-exit`.\n"
@@ -130,16 +143,20 @@ static const char help_idle[] =
 FOOT;
 
 /* Unlock */
+
 static const char help_unlock[] =
-"Usage: " QUOTE(BIN) " unlock\n"
+"Usage: " BIN " unlock\n"
 "Unlock examination mode.\n"
 FOOT;
-/* ************************************************************************** */
-/*  Help helpers                                                              */
-/* ************************************************************************** */
+
+/* ---
+ * Help helpers.
+ * --- */
+
 /* Main help message parts */
+
 static const char help_main_part0[] =
-"Usage: " QUOTE(BIN) " [--version|-v] [--help|-h] [--no-init] [--no-exit]\n"
+"Usage: " BIN " [--version|-v] [--help|-h] [--no-init] [--no-exit]\n"
 "          [--storage <fls0>] [--com <device>]\n"
 "          <subcommand> [options...]\n"
 "\n"
@@ -163,7 +180,7 @@ static const char help_main_part0[] =
 "                    If this option isn't used, the program will look for a\n"
 "                    calculator connected using direct USB.\n"
 "  --storage <abc0>  The storage device with which to interact (fls0, crd0).\n"
-"                    Default storage device is '" QUOTE(DEFAULT_STORAGE) "'.\n"
+"                    Default storage device is '" DEFAULT_STORAGE "'.\n"
 "  --no-exit         Does not terminate connection when action is completed.\n"
 "  --no-init         Does not initialize connection (should only be used\n"
 "                    when --no-exit was used last time p7 was called).\n"
@@ -180,8 +197,8 @@ static const char help_main_loglevel_init[] =
 static const char help_main_part1[] =
 "  --reset           Reset the default communication settings (9600N2).\n"
 "\n"
-"Type \"" QUOTE(BIN) " <subcommand> --help\" for some help about the subcommand.\n"
-"Report bugs to " QUOTE(MAINTAINER) ".\n";
+"Type \"" BIN " <subcommand> --help\" for some help about the subcommand.\n"
+"Report bugs to " MAINTAINER ".\n";
 
 /**
  *	put_loglevel:
@@ -233,10 +250,13 @@ static void put_main_help(void)
 
 	fputs(help_main_part1, stdout);
 }
-/* ************************************************************************** */
-/*  Main function                                                             */
-/* ************************************************************************** */
-/* useful macros */
+
+/* ---
+ * Main argument parsing function.
+ * --- */
+
+/* Useful macros. */
+
 #define sub_init(CMD, NARGS) \
 	args->menu = mn_##CMD; \
 	if (help || aac != 1 + (NARGS)) { \
@@ -262,8 +282,8 @@ int parse_args(int ac, char **av, args_t *args)
 	int c, help = 0, rst = 0;
 	const char *s_out = NULL, *s_dir = NULL, *s_todir = NULL;
 	const char *s_use = NULL, *s_set = NULL, *s_log = NULL;
-	char short_options[] = "hvfo:d:t:#";
-	struct option long_options[] = {
+	char short_opts[] = "hvfo:d:t:#";
+	struct option long_opts[] = {
 		{"help",            no_argument, NULL, 'h'},
 		{"version",         no_argument, NULL, 'v'},
 		{"com",       required_argument, NULL, 'c'},
@@ -295,7 +315,7 @@ int parse_args(int ac, char **av, args_t *args)
 	args->local = NULL;
 	args->force = 0;
 	args->com = 0;
-	args->storage = QUOTE(DEFAULT_STORAGE);
+	args->storage = DEFAULT_STORAGE;
 	args->initflags = CASIO_LINKFLAG_ACTIVE | CASIO_LINKFLAG_CHECK
 		| CASIO_LINKFLAG_TERM;
 	args->use = NULL;
@@ -304,7 +324,7 @@ int parse_args(int ac, char **av, args_t *args)
 
 	/* get all options */
 	opterr = 0;
-	while ((c = getopt_long(ac, av, short_options, long_options, NULL)) != -1) {
+	while ((c = getopt_long(ac, av, short_opts, long_opts, NULL)) != -1) {
 		switch (c) {
 		/* help */
 		case 'h': help = 1; break;
@@ -341,15 +361,15 @@ int parse_args(int ac, char **av, args_t *args)
 		/* in case of error */
 		case '?':
 			if (optopt == 'o')
-				log("-o, --output: expected an argument\n");
+				fprintf(stderr, "-o, --output: expected an argument\n");
 			else if (optopt == 'd')
-				log("-d, --directory: expected an argument\n");
+				fprintf(stderr, "-d, --directory: expected an argument\n");
 			else if (optopt == 't')
-				log("-t, --to: expected an argument\n");
+				fprintf(stderr, "-t, --to: expected an argument\n");
 			else if (optopt == 'c')
-				log("--com: expected an argument\n");
+				fprintf(stderr, "--com: expected an argument\n");
 			else if (optopt == 's')
-				log("--storage: expected an argument\n");
+				fprintf(stderr, "--storage: expected an argument\n");
 			else
 				break;
 			return (0);
@@ -423,22 +443,24 @@ int parse_args(int ac, char **av, args_t *args)
 		sub_init(unlock, 0)
 	} else {
 		/* unknown subcommand ! */
-		log("Unknown subcommand '%s'.\n", aav[0]);
+		fprintf(stderr, "Unknown subcommand '%s'.\n", aav[0]);
 		return (0);
 	}
 
 	/* check string lengths */
 	int noerror = 0;
-	if (args->filename && strnlen(args->filename, 13) == 13)
-		log("On-calc filename must have 12 chars or less!\n");
-	else if (args->newname && strnlen(args->newname, 13) == 13)
-		log("Destination filename must have 12 chars or less!\n");
-	else if (args->dirname && strnlen(args->dirname, 9) == 9)
-		log("On-calc directory name must have 8 chars or less!\n");
-	else if (args->newdir && strnlen(args->newdir, 9) == 9)
-		log("Destination directory name must have 8 chars or less!\n");
-	else if (strnlen(args->storage, 5) != 4)
-		log("Storage device (%s) should be 4 chars long!\n", args->storage);
+	if (args->filename && !memchr(args->filename, '\0', 13))
+		fprintf(stderr, "On-calc filename must have 12 chars or less!\n");
+	else if (args->newname && !memchr(args->newname, '\0', 13))
+		fprintf(stderr, "Destination filename must have 12 chars or less!\n");
+	else if (args->dirname && !memchr(args->dirname, '\0', 9))
+		fprintf(stderr, "On-calc directory name must have 8 chars or less!\n");
+	else if (args->newdir && !memchr(args->newdir, '\0', 9))
+		fprintf(stderr,
+			"Destination directory name must have 8 chars or less!\n");
+	else if (!memchr(args->storage, '\0', 5))
+		fprintf(stderr, "Storage device (%s) should be 4 chars long!\n",
+			args->storage);
 	else
 		noerror = 1;
 	if (!noerror) return (0);
@@ -447,8 +469,8 @@ int parse_args(int ac, char **av, args_t *args)
 	if (s_use) {
 		if (args->com) args->use = &args->_use;
 		if (casio_make_attrs(&args->_use, s_use)) {
-			log("--use: invalid format!\n");
-			log("--use: expected <speed><parity><stopbits>, "
+			fprintf(stderr, "--use: invalid format!\n");
+			fprintf(stderr, "--use: expected <speed><parity><stopbits>, "
 				"e.g. 9600N2 or 115200E1!\n");
 			return (0);
 		}
@@ -461,8 +483,8 @@ int parse_args(int ac, char **av, args_t *args)
 		args->do_the_set = 1;
 		if (args->com) args->set = &args->_set;
 		if (casio_make_attrs(&args->_set, s_set)) {
-			log("--set: invalid format!\n");
-			log("--set: expected <speed><parity><stopbits>, "
+			fprintf(stderr, "--set: invalid format!\n");
+			fprintf(stderr, "--set: expected <speed><parity><stopbits>, "
 				"e.g. 9600N2 or 115200E1!\n");
 			return (0);
 		}
@@ -473,7 +495,8 @@ int parse_args(int ac, char **av, args_t *args)
 		if (fpmode[0] == 'w' && !strcmp(args->localpath, "-"))
 			args->local = stdout;
 		else if (!(args->local = fopen(args->localpath, fpmode))) {
-			log("Could not open local file : %s\n", strerror(errno));
+			fprintf(stderr, "Could not open local file : %s\n",
+				strerror(errno));
 			if (fpmode[0] == 'w')
 				remove(args->localpath);
 			return (0);
@@ -481,7 +504,8 @@ int parse_args(int ac, char **av, args_t *args)
 	}
 
 	/* set the log level */
-	if (s_log) casio_setlog(s_log);
+	if (s_log)
+		casio_setlog(s_log);
 
 	/* everything went well */
 	return (1);

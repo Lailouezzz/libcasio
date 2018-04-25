@@ -51,10 +51,12 @@ hbindir='${hprefix}/bin'
 libdir='${prefix}/lib'"$platform"
 includedir='${prefix}/include'"$platform"
 pkgdir='${libdir}/pkgconfig'
+mandir='${prefix}/share/man'
 
 # Installation options.
 
 install_devel=yes
+install_manpages=yes
 
 # Tweaks.
 
@@ -93,7 +95,8 @@ Build options:
   --default-storage=STOR    the default storage device for p7 [$default_storage]
 
 Installation options:
-  --no-devel                should not install developement files
+  --no-devel                do not install developement files
+  --no-manpages             do not install manpages
 
 Installation directories:
   --root=ROOT               installation root [$root]
@@ -106,6 +109,7 @@ Fine tuning of the installation directories:
   --pkgdir=PKGDIR           pkg-config configurations directory [$pkgdir]
   --libdir=LIBDIR           library files of the linker [$libdir]
   --includedir=INCDIR       include files for the compiler [$includedir]
+  --mandir=MANDIR           man root [$mandir]
 
 Other tweaks:
   CFLAGS=CFLAGS             some more compilation flags
@@ -191,6 +195,7 @@ got '$level'"
 	# then set
 	default_storage="$storage" ;;
 --no-devel) install_devel= ;;
+--no-manpages) install_manpages= ;;
 --root=*) root="${arg#*=}" ;;
 --hprefix=*) hprefix="${arg#*=}" ;;
 --prefix=*) prefix="${arg#*=}"; prefix_set=y ;;
@@ -199,6 +204,7 @@ got '$level'"
 --pkgdir=*) pkgdir="${arg#*=}" ;;
 --libdir=*) libdir="${arg#*=}" ;;
 --includedir=*) includedir="${arg#*=}" ;;
+--mandir=*) mandir="${arg#*=}" ;;
 CFLAGS=*) cflags="${arg#*=}" ;;
 LDFLAGS=*) ldflags="${arg#*=}" ;;
 *) echo "$arg: didn't read" ;;
@@ -223,7 +229,7 @@ fi;; esac
 
 # Evaluate variables.
 
-vars="prefix bindir libdir pkgdir includedir hprefix hbindir"
+vars="prefix bindir libdir pkgdir includedir hprefix hbindir mandir"
 for var in $vars; do
 	eval $var'='$(eval 'echo $'$var)
 done
@@ -313,9 +319,11 @@ cat <<EOF
  IPKGDIR = $pkgdir
  ILIBDIR = $libdir
  IINCDIR = $includedir
+ IMANDIR = $mandir
 
 # Installation options
  INSTALL_DEVEL = $install_devel
+ INSTALL_MANPAGES = $install_manpages
 
 # Other tweaks
  CMOREFLAGS := $cflags

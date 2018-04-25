@@ -36,13 +36,14 @@ int dump(casio_link_t *handle)
 
 	/* Wiped out things */
 	if (info->casio_link_info_wiped & casio_link_info_wiped_preprog)
-		log("Warning: Preprogrammed ROM information looks wiped out!\n");
+		fprintf(stderr,
+			"Warning: Preprogrammed ROM information looks wiped out!\n");
 	if (info->casio_link_info_wiped & casio_link_info_wiped_bootcode)
-		log("Warning: Bootcode information looks wiped out!\n");
+		fprintf(stderr, "Warning: Bootcode information looks wiped out!\n");
 	if (info->casio_link_info_wiped & casio_link_info_wiped_os)
-		log("Warning: OS information looks wiped out!\n");
+		fprintf(stderr, "Warning: OS information looks wiped out!\n");
 	if (!info->casio_link_info_username[0])
-		log("Warning: Username is not set.\n");
+		fprintf(stderr, "Warning: Username is not set.\n");
 
 	/* main information */
 	printf("CPU ID (probably out of date): %s\n", info->casio_link_info_cpuid);

@@ -19,23 +19,27 @@
 #include "main.h"
 
 /* Couldn't initialize connexion to calculator. */
+
 static const char error_noconnexion[] =
 "Could not connect to the calculator.\n"
 "- Is it plugged in and in Receive mode/OS Update?\n"
 "- Have you tried changing the cable ?\n";
 
 /* Calculator was found but program wasn't allowed to communicate with it. */
+
 static const char error_noaccess[] =
 "Could not get access to the calculator.\n"
 "Install the appropriate udev rule, or run as root.\n";
 
 /* The calculator acted in a weird way. */
+
 static const char error_unplanned[] =
 "The calculator didn't act as planned: %s.\n"
 "Stop receive mode on calculator and start it again before re-running " \
-	QUOTE(BIN) ".\n";
+	BIN ".\n";
 
 /* Unsupported operation -> OS Update, not receive mode! */
+
 static const char error_unsupported[] =
 "Required operation was unsupported by the calculator.\n"
 "If you did not prepare, perhaps you should prepare?\n";

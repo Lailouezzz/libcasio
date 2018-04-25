@@ -18,7 +18,7 @@
  * ************************************************************************** */
 #include "main.h"
 #include <string.h>
-#include <magick/MagickCore.h>
+#include <MagickCore/MagickCore.h>
 
 /**
  *	open_icon:
@@ -30,15 +30,21 @@
 
 int open_icon(const char *path, uint32_t **icon)
 {
-	int ret = 1;
+	int ret = 1, i;
+	unsigned int width, height;
+	size_t x, y;
+	float r, g, b;
 	Image *images = NULL, *image = NULL;
 	ImageInfo *info = NULL;
 	ExceptionInfo *exception = NULL;
+	const Quantum *pixels;
 
-	/* initialize */
+	/* Initialize. */
+
 	MagickCoreGenesis("g1a-wrapper", MagickTrue);
 
-	/* read source image and image info */
+	/* Read source image and image info. */
+
 	exception = AcquireExceptionInfo();
 	info = CloneImageInfo((ImageInfo*)NULL);
 	strcpy(info->filename, path);
@@ -48,47 +54,58 @@ int open_icon(const char *path, uint32_t **icon)
 		goto fail;
 	}
 
-	/* get the first frame */
-	image = RemoveFirstImageFromList(&images);
-	if (!image) goto fail;
+	/* Get the first frame. */
 
-	/* check the dimensions */
-	unsigned int width = image->columns, height = image->rows;
+	image = RemoveFirstImageFromList(&images);
+	if (!image)
+		goto fail;
+
+	/* Check the dimensions. */
+
+	width = image->columns;
+	height = image->rows;
 	if (width != 30 || height < 17 || height > 19) {
 		err("icon must be between 30x17 and 30x19 pixels, is %ux%u",
 			width, height);
 		goto fail;
 	}
 
-	/* get the pixels */
-	const Quantum *pixels = GetVirtualPixels(image, 0, 0, width, height,
-		exception);
+	/* Get access to the pixels. */
+
+	pixels = GetVirtualPixels(image, 0, 0, width, height, exception);
 	if (!pixels) {
 		err("unable to access icon pixels.");
 		goto fail;
 	}
 
-	/* skip the first line */
-	if (height == 19) pixels += width * 4;
+	/* Skip the first line. */
 
-	/* get the pixels */
-	for (size_t y = 0; y < 17; y++) for (size_t x = 0; x < 30; x++) {
-		/* get the total */
-		float r = *pixels++;
-		float g = *pixels++;
-		float b = *pixels++;
+	if (height == 19)
+		pixels += width * 4;
+
+	/* Get the pixels. */
+
+	for (y = 0; y < 17; y++) for (x = 0; x < 30; x++) {
+		/* Calculate and check the total. */
+
+		r = *pixels++;
+		g = *pixels++;
+		b = *pixels++;
 		pixels++;
 
-		/* check the total */
 		icon[y][x] = (r + g + b > 0x198) ? 0xFFFFFF : 0x000000;
 	}
 
 	ret = 0;
 fail:
-	if (info) DestroyImageInfo(info);
-	if (exception) DestroyExceptionInfo(exception);
-	if (image) DestroyImage(image);
-	if (images) DestroyImage(images);
+	if (info)
+		DestroyImageInfo(info);
+	if (exception)
+		DestroyExceptionInfo(exception);
+	if (image)
+		DestroyImage(image);
+	if (images)
+		DestroyImage(images);
 	MagickCoreTerminus();
 	return (ret);
 }

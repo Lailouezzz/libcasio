@@ -26,8 +26,8 @@
 /* ************************************************************************* */
 /* Version message */
 static const char version_message[] =
-QUOTE(BIN) " - from " QUOTE(NAME) " v" QUOTE(VERSION) " (licensed under GPLv2)\n"
-"Maintained by " QUOTE(MAINTAINER) ".\n"
+BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
+"Maintained by " MAINTAINER ".\n"
 "\n"
 "This is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or\n"
@@ -35,7 +35,7 @@ QUOTE(BIN) " - from " QUOTE(NAME) " v" QUOTE(VERSION) " (licensed under GPLv2)\n
 
 /* Help message */
 static const char help_main0[] =
-"Usage: " QUOTE(BIN) " [--help|-h] [--version|-v]\n"
+"Usage: " BIN " [--help|-h] [--version|-v]\n"
 "\n"
 "Displays the streamed screen from a CASIO fx calculator.\n"
 "\n"
@@ -49,9 +49,9 @@ static const char help_log[] =
 
 static const char help_main1[] =
 "  -z ZOOM           Change the zoom (1 to 16)\n"
-"                    By default, the zoom will be " QUOTE(DEFAULT_ZOOM) ".\n"
+"                    By default, the zoom will be " DEFAULT_ZOOM ".\n"
 "\n"
-"Report bugs to " QUOTE(MAINTAINER) ".\n";
+"Report bugs to " MAINTAINER ".\n";
 /* ************************************************************************* */
 /*  Main function                                                            */
 /* ************************************************************************* */

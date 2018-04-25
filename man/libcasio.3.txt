@@ -16,7 +16,7 @@ by CASIO for its graphical calculators, produced from the 90s to to this day.
 It is part of a project named the P7 project, and is a personal project of
 Thomas Touhey, also known as “Cakeisalie5”, from Planète Casio.
 
-See more at <https://p7.planet-casio.com/>.
+Read more at <https://p7.planet-casio.com/>.
 
 SEE ALSO
 --------

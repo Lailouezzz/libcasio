@@ -7,7 +7,7 @@ include Makefile.vars Makefile.msg
 
 # Build everything.
 
-all: all-lib all-utils
+all: all-lib all-utils $(if $(INSTALL_MANPAGES),all-man)
 
 # Mostly clean everything (remove everything but the end results).
 
@@ -33,12 +33,15 @@ mrproper: clean
 	$(call qcmd,$(RM) $(INCDIR)/lib$(NAME)/config.h)
 
 # Remake everything (clean and build).
+
 re: clean all
 
 # Install everything.
-install: install-lib
 
-# Make a distribution tarball
+install: install-lib install-utils $(if $(INSTALL_MANPAGES),install-man)
+
+# Make a distribution tarball.
+
 dist: mrproper
 	$(call bcmd,mkdir,lib$(NAME)-$(VERSION),\
 		$(MD) .dist)
@@ -145,61 +148,60 @@ $(eval $(call make-obj-rule,$(src))))
 	$(if $(FOR_WINDOWS),,y)))
  IWINDLL := $(if $(FOR_WINDOWS),$(if $(STATIC),,y))
 
- install-lib: all-lib $(if $(INSTALL_DEVEL),install-cfgtool)
-	$(call imsg,Installing the library.)
-	$(call qcmd,$(INST) -m 755 -d "$(ILIBDIR)")
-	$(call qcmd,$(INST) -m 755 -t "$(ILIBDIR)" $(if $(STATIC),\
-		$(if $(FOR_WINDOWS),lib$(L_NAME).lib,lib$(L_NAME).a),\
-		$(if $(FOR_WINDOWS),lib$(NAME).dll.a,$(SONAME))))
-	
-	$(if $(IWINDLL),$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)"))
-	$(if $(IWINDLL),$(call qcmd,$(INST) -m 755 -t "$(IBINDIR)" \
-		lib$(NAME).dll))
-	
-	$(if $(LINK_TO_MAJOR),\
-		$(call imsg,Linking lib$(NAME).so to lib$(NAME).so.$(MAJOR).))
-	$(if $(LINK_TO_MAJOR),\
-		$(call qcmd,$(LN) lib$(NAME).so.$(MAJOR) "$(ILIBDIR)/lib$(NAME).so"))
-	
-	$(if $(INSTALL_DEVEL),\
-		$(call imsg,Installing development files.))
-	$(if $(INSTALL_DEVEL),\
-		$(call qcmd,$(INST) -m 755 -d $(patsubst %,\
-			"$(IINCDIR)/lib$(NAME)-$(VERSION)/%", $(sort $(dir $(INCp))))))
-	$(if $(INSTALL_DEVEL),$(foreach i,$(INCp),\
-		$(call qcmd,$(INST) -m 644 $(INCDIR)/$(i) \
-			"$(IINCDIR)/lib$(NAME)-$(VERSION)/$(i)"$(\n))))
-
-.PHONY: all-lib install-lib
-
-# ---
-# Configuration tools related.
-# ---
-
- install-cfgtool: $(CHECKCFG)
+ install-lib-cfgtool:
 	$(call imsg,Installing the configuration tool.)
 	$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)")
 	$(call qcmd,tools/write-config \
-		--name=$(NAME) --version=$(VERSION) --target="$(TARGET)" \
+		--name=$(LIB) --version=$(VERSION) --target="$(TARGET)" \
 		--maintainer="$(MAINTAINER_NAME) <$(MAINTAINER_MAIL)>" \
-		>"$(IBINDIR)/lib$(NAME)-config" \
-		&& chmod 755 "$(IBINDIR)/lib$(NAME)-config")
+		>"$(IBINDIR)/lib$(LIB)-config" \
+		&& chmod 755 "$(IBINDIR)/lib$(LIB)-config")
 	$(if $(TARGET),$(call qcmd,$(INST) -m 755 -d "$(HBINDIR)"))
 	$(if $(TARGET),$(call qcmd,$(LN) -r \
-		"$(IBINDIR)/lib$(NAME)-config" \
-		"$(HBINDIR)/$(TARGET)lib$(NAME)-config"))
-	
+		"$(IBINDIR)/lib$(LIB)-config" \
+		"$(HBINDIR)/$(TARGET)lib$(LIB)-config"))
+
+ install-lib-pkgconfig:
 	$(call imsg,Installing the pkg-config configuration.)
 	$(call qcmd,$(INST) -m 755 -d "$(IPKGDIR)")
 	$(call qcmd,tools/write-pkg-config \
-		--name=$(NAME) --version=$(VERSION) \
+		--name=$(LIB) --version=$(VERSION) \
 		--deps="$(DEPS)" --deps.private="$(DEPS_PRIV)" \
 		--description="$(DESCRIPTION)" \
-		--incdir="$(OIINCDIR)/lib$(NAME)-$(VERSION)" --libdir="$(OILIBDIR)" \
-		>"$(IPKGDIR)/lib$(NAME).pc" \
-		&& chmod 644 "$(IPKGDIR)/lib$(NAME).pc")
+		--incdir="$(OIINCDIR)/lib$(LIB)-$(VERSION)" --libdir="$(OILIBDIR)" \
+		>"$(IPKGDIR)/lib$(LIB).pc" \
+		&& chmod 644 "$(IPKGDIR)/lib$(LIB).pc")
 
-.PHONY: install-cfgtool
+ install-lib-shared:
+	$(call imsg,Installing the library.)
+	$(call qcmd,$(INST) -m 755 -d "$(ILIBDIR)")
+	$(call qcmd,$(INST) -m 755 -t "$(ILIBDIR)" $(if $(STATIC),\
+		./build/$(if $(FOR_WINDOWS),lib$(LIB).lib,lib$(LIB).a),\
+		./build/$(if $(FOR_WINDOWS),lib$(LIB).dll.a,$(L_SONAME))))
+
+ install-lib-dll:
+	$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)")
+	$(call qcmd,$(INST) -m 755 -t "$(IBINDIR)" lib$(LIB).dll)
+
+ install-lib-link:
+	$(call imsg,Linking lib$(LIB).so to lib$(LIB).so.$(MAJOR).)
+	$(call qcmd,$(LN) lib$(LIB).so.$(MAJOR) "$(ILIBDIR)/lib$(LIB).so")
+
+ install-lib-headers:
+	$(call imsg,Installing development files.)
+	$(foreach d,$(sort $(dir $(patsubst %,lib$(LIB)-$(VERSION)/%, \
+		$(L_INCp)))),$(call qcmd,$(INST) -m 755 -d "$(IINCDIR)/$(d)"$(\n)))
+	$(foreach i,$(L_INCp),$(call qcmd,$(INST) -m 644 $(L_INCDIR)/$(i) \
+		"$(IINCDIR)/lib$(LIB)-$(VERSION)/$(i)"$(\n)))
+
+ install-lib: $(CHECKCFG) all-lib install-lib-shared \
+ 	$(if $(LINK_TO_MAJOR),install-lib-link) $(if $(IWINDLL),install-lib-dll) \
+ 	$(if $(INSTALL_DEVEL),install-lib-cfgtool install-lib-pkgconfig \
+ 		install-lib-headers)
+
+.PHONY: all-lib install-lib install-lib-shared install-lib-link
+.PHONY: install-lib-dll install-lib-cfgtool install-lib-pkgconfig
+.PHONY: install-lib-headers
 
 # ---
 # Utilities related.
@@ -207,7 +209,7 @@ $(eval $(call make-obj-rule,$(src))))
 
 # Make the utilities.
 
- all-utils: $(CHECKCFG) $(DEFAULT_UTILS:%=all-%)
+ all-utils: $(CHECKCFG) $(DEFAULT_UTILS:%=all-%.exe)
 
 # Make a utility.
 
@@ -216,7 +218,7 @@ define make-util-rules
 	$(if $(filter libcasio,$(U_DEPS_$1)),$(L_AS_DEP)) | ./build/
 	$(call bcmd,ld,$$@,$(LD) -o $$@ $(U_OBJ_$1) $(U_LDFLAGS_$1))
 
- all-$1: ./build/$1$(if $(FOR_WINDOWS),.exe)
+ all-$1 all-$1.exe: ./build/$1$(if $(FOR_WINDOWS),.exe)
 endef
 $(foreach util,$(UTILS),\
 $(eval $(call make-util-rules,$(util))))
@@ -234,17 +236,24 @@ $(foreach util,$(UTILS),\
 $(foreach src,$(U_SRC_$(util)),\
 $(eval $(call make-util-obj-rules,$(util),$(src)))))
 
+# Install utils.
+
+ install-utils: $(DEFAULT_UTILS:%=install-%)
+
 # Install a utility.
 
 define make-util-install-rule
- install-$1 install-$1.exe: $(CHECKCFG)
+ install-$1 install-$1.exe: $(CHECKCFG) all-$1.exe
 	$(call imsg,Installing $1$(if $(FOR_WINDOWS),.exe).)
-	$(call qcmd,$(INSTALL) -m 755 -d "$(IBINDIR)")
-	$(call qcmd,$(INSTALL) -m 755 -t "$(IBINDIR)" $1$(if $(FOR_WINDOWS),.exe))
+	$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)")
+	$(call qcmd,$(INST) -m 755 -t "$(IBINDIR)" \
+		./build/$1$(if $(FOR_WINDOWS),.exe))
 endef
+$(foreach util,$(UTILS),\
+$(eval $(call make-util-install-rule,$(util))))
 
-.PHONY: all-utils $(foreach util,$(UTILS),all-$(util) install-$(util) \
-	install-$(util).exe)
+.PHONY: all-utils install-utils $(foreach util,$(UTILS),\
+	all-$(util) all-$(util).exe install-$(util) install-$(util).exe)
 
 # ---
 # Manpages related.
@@ -253,7 +262,7 @@ endef
 # Produce the manpages.
 
  all-man: $(foreach sec,$(M_SECTIONS),\
-	$(M_PAGES_$(sec):%=$(M_MANDIR)/man$(sec)/%.$(sec).gz))
+	$(M_PAGES_$(sec):%=$(M_MANDIR)/man$(sec)/%.$(sec)))
 
 # Produce one page.
 
@@ -267,6 +276,19 @@ endef
 $(foreach sec,$(M_SECTIONS),\
 $(foreach pg,$(M_PAGES_$(sec)),\
 $(eval $(call make-manpage-rules,$(sec),$(pg)))))
+
+# Install the manpages.
+
+ install-man: $(CHECKCFG) all-man
+	$(call imsg,Installing manpages.)
+	$(foreach s,$(M_SECTIONS),$(call qcmd,$(INST) -m 755 \
+		-d "$(IMANDIR)/man$(s)"$(\n)))
+	$(foreach s,$(M_SECTIONS),$(foreach p,$(M_PAGES_$(s)),\
+		$(call qcmd,$(INST) -m 644 $(M_MANDIR)/man$(s)/$(p).$(s) \
+			"$(IMANDIR)/man$(s)/$(p).$(s)" && \
+			$(GZIP) "$(IMANDIR)/man$(s)/$(p).$(s)"$(\n))))
+
+.PHONY: all-man install-man
 
 # ---
 # Documentation-related targets.

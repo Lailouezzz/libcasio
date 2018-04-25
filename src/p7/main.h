@@ -18,11 +18,8 @@
  * ************************************************************************** */
 #ifndef MAIN_H
 # define MAIN_H
-# define Q(x) #x
-# define QUOTE(x) Q(x)
 # include <stdio.h>
 # include <libcasio.h>
-# define log(S, ...) fprintf(stderr, S, ##__VA_ARGS__)
 
 /* Menus */
 typedef enum {

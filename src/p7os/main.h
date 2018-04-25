@@ -20,8 +20,6 @@
 # define MAIN_H
 # include <stdio.h>
 # include <libcasio.h>
-# define Q(x) #x
-# define QUOTE(x) Q(x)
 # define log(S, ...) fprintf(stderr, S, ##__VA_ARGS__)
 
 /* ************************************************************************** */

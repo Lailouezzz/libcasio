@@ -18,27 +18,26 @@
  * ************************************************************************** */
 #ifndef MAIN_H
 # define MAIN_H
-# define Q(x) #x
-# define QUOTE(x) Q(x)
 # include <stdio.h>
-# include <libg1m.h>
+# include <libcasio.h>
 # define warn(M, ...) \
 	fprintf(stderr, "g1a-wrapper: warning: " M "\n", ##__VA_ARGS__)
 # define err(M, ...) \
 	fprintf(stderr, "g1a-wrapper: error: " M "\n", ##__VA_ARGS__)
 
-/* Arguments */
 typedef struct {
-	/* general options */
+	/* General options. */
+
 	const char *infile;    /* path to the input file */
 	const char *outfile;   /* default: addin.g1a */
 	const char *iconfile;  /* icon file, default is blank */
 
-	/* build options */
-	const char *name;      /* default: truncated output filename */
-	const char *intname;   /* default: @ADDIN */
-	g1m_version_t version; /* default: 00.00.0000 */
-	time_t date;           /* default: current time */
+	/* Build options. */
+
+	const char *name;        /* default: truncated output filename */
+	const char *intname;     /* default: @ADDIN */
+	casio_version_t version; /* default: 00.00.0000 */
+	time_t date;             /* default: current time */
 } args_t;
 
 /* Command-line arguments parsing function */

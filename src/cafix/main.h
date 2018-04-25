@@ -1,5 +1,5 @@
-/* *****************************************************************************
- * p7servtest/main.h -- p7servtest main header.
+/* ****************************************************************************
+ * cafix/main.h -- cafix internals.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of p7utils.
@@ -15,15 +15,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
- * ************************************************************************** */
-#ifndef MAIN_H
-# define MAIN_H
-# include <stdio.h>
+ * ************************************************************************* */
+#ifndef  MAIN_H
+# define MAIN_H 2018042501
+# include <errno.h>
+# include <string.h>
+# include <stdlib.h>
+# include <ctype.h>
 # include <libcasio.h>
 
-int parse_args(int ac, char **av);
+/* Command-line arguments. */
 
-int run_server(int in, int out);
-int run_client(int in, int out);
+# define MODE_SEND    1 /* send a file */
+# define MODE_RECEIVE 2 /* receive data */
+# define MODE_CONTROL 3 /* remote control */
+
+typedef struct {
+	int mode;
+	int should_rename; /* should prompt to rename file */
+
+	const char *filename;
+} args_t;
+
+/* Utilities. */
+
+extern int parse_args(int ac, char **av, args_t *args);
 
 #endif /* MAIN_H */

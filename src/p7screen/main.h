@@ -23,9 +23,6 @@
 # include <string.h>
 # include <libcasio.h>
 
-# define Q(x) #x
-# define QUOTE(x) Q(x)
-
 /* Prototypes. */
 
 int parse_args(int ac, char **av, int *zoom);

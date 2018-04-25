@@ -28,8 +28,8 @@
 /* ************************************************************************* */
 /* The version message - that's when the President comes in */
 static const char version_message[] =
-QUOTE(BIN) " - from " QUOTE(NAME) " v" QUOTE(VERSION) " (licensed under GPLv2)\n"
-"Maintained by " QUOTE(MAINTAINER) ".\n"
+BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
+"Maintained by " MAINTAINER ".\n"
 "\n"
 "This is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or\n"
@@ -37,9 +37,13 @@ QUOTE(BIN) " - from " QUOTE(NAME) " v" QUOTE(VERSION) " (licensed under GPLv2)\n
 
 /* Main help message */
 static const char help_main0[] =
-"Usage: " QUOTE(BIN) " [--version|-v] [--help|-h] [--com <device>]\n"
+"Usage: " BIN " [--version|-v] [--help|-h] [--com <device>]\n"
 "            [--no-prepare] [--uexe <path>]\n"
 "            <subcommand> [options...]\n"
+"\n"
+"This program interacts with a CASIO calculator's firmware.\n"
+"Keep in mind that using it is dangerous and could easily brick your\n"
+"calculator if you aren't careful enough.\n"
 "\n"
 "Subcommands you can use are :\n"
 "   prepare-only      Set-up the update program, but leave it for other programs\n"
@@ -64,23 +68,23 @@ static const char help_main1[] =
 "  -u, --uexe <path>  Use a custom update program.\n"
 "                     If `--no-prepare` is not given, this option is required.\n"
 "\n"
-"Type \"" QUOTE(BIN) " <subcommand> --help\" for some help about a subcommand.\n"
-"Report bugs to " QUOTE(MAINTAINER) ".";
+"Type \"" BIN " <subcommand> --help\" for some help about a subcommand.\n"
+"Report bugs to " MAINTAINER ".";
 
 /* Subcommands help messages footer */
 #define FOOT \
-	"\nType \"" QUOTE(BIN) " --help\" for other subcommands and general options."
+	"\nType \"" BIN " --help\" for other subcommands and general options."
 
 /* Help message for prepare subcommand  */
 static const char help_prepare_only[] =
-"Usage: " QUOTE(BIN) " prepare-only\n"
+"Usage: " BIN " prepare-only\n"
 "Send the P7 server on the calculator for further operations.\n"
 "This must be used before any other p7os operation.\n"
 FOOT;
 
 /* Help message for get subcommand */
 static const char help_get[] =
-"Usage: " QUOTE(BIN) " get [-o <os.bin>]\n"
+"Usage: " BIN " get [-o <os.bin>]\n"
 "Get the calculator OS image.\n"
 "\n"
 "Options are :\n"
@@ -89,7 +93,7 @@ FOOT;
 
 /* Help message for flash subcommand. */
 static const char help_flash[] =
-"Usage: " QUOTE(BIN) " flash <rom.bin>\n"
+"Usage: " BIN " flash <rom.bin>\n"
 "Flash the calculator's OS image.\n"
 FOOT;
 /* ************************************************************************* */

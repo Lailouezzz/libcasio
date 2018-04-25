@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * p7os/utils/open_link.c -- open the link based on cli arguments and other stuff.
+ * cafix/main.c -- cafix main function.
  * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of p7utils.
@@ -16,33 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with p7utils; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "../main.h"
+#include "main.h"
 
 /**
- *	open_link:
- *	Open the link using the arguments.
- *
- *	@arg	link	the link to open.
- *	@arg	args	the command-line arguments.
- *	@arg	flags	the required flags.
- *	@arg	attrs	the serial attributes.
- *	@return			the error code (0 if ok).
+ *	main:
+ *	Entry point.
  */
 
-int open_link(casio_link_t **link, args_t *args,
-	unsigned long flags, casio_streamattrs_t *attrs)
+int main(int ac, char **av)
 {
-	int err;
+	args_t args;
 
-	/* Open the link. */
+	if (parse_args(ac, av, &args))
+		return (1);
 
-	if (args->com)
-		err = casio_open_com(link, flags, args->com, attrs);
-	else
-		err = casio_open_usb(link, flags);
-	if (err)
-		return (err);
+	switch (args.mode) {
+	case MODE_CONTROL:
+		fprintf(stderr,
+			"This mode prints \"doesn't work yet, sorry\" in the original\n"
+			"cafix, so I don't know what the original author meant...\n"
+			"sorry if you were expecting something cool to happen!\n");
+		return (1);
 
-	/* XXX: `--set`, `--use`? */
+	default:
+		fprintf(stderr, "Temporarily unmanaged mode.\n");
+		return (1);
+	}
+
 	return (0);
 }
