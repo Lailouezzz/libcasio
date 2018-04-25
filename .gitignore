@@ -6,5 +6,7 @@
 /man
 
 /docs/_build
+build
 
 .*.swp
+vgcore*

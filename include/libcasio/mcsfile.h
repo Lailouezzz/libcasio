@@ -45,7 +45,7 @@ CASIO_BEGIN_NAMESPACE
 typedef unsigned long casio_mcsfile_type_t;
 typedef unsigned long casio_mcstype_t;
 
-# define casio_mcstype_unknown     0x00000000,
+# define casio_mcstype_unknown     0x00000000
 
 /* A program. */
 

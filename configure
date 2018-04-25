@@ -1,9 +1,12 @@
 #!/bin/sh
 cd "$(dirname $0)"
-#*****************************************************************************#
-# Defaults                                                                    #
-#*****************************************************************************#
-# Project variables
+
+# ---
+# Defaults.
+# ---
+
+# Project variables.
+
 [ -f Makefile.cfg ] && mv Makefile.cfg Makefile.cfg.tmp
 name="$(make -s getname)"
 version="$(make -s getversion)"
@@ -11,15 +14,18 @@ indev="$(make -s isindev)"
 maintainer="$(make -s getmaintainer)"
 [ -f Makefile.cfg.tmp ] && mv Makefile.cfg.tmp Makefile.cfg
 
-# Platform
+# Platform.
+
 platform="$(command -v gcc 1>/dev/null && gcc --print-multiarch)"
 platform="$([ "$platform" ] && echo "/$platform")"
 
-# Make options
+# Make options.
+
 make_full_log=
 more_warnings=
 
-# Build options
+# Build options.
+
 target=
 no_file=
 no_libusb=
@@ -29,7 +35,11 @@ optimize_size=
 no_log=
 loglevel=none # none, info, warn, error, fatal
 
-# Installation directories
+default_zoom=8
+default_storage=fls0
+
+# Installation directories.
+
 root=''
 [ x"$indev" != x ] && prefix='${root}/opt/p7-project' \
 	|| prefix='${root}/usr'
@@ -42,15 +52,19 @@ libdir='${prefix}/lib'"$platform"
 includedir='${prefix}/include'"$platform"
 pkgdir='${libdir}/pkgconfig'
 
-# Installation options
+# Installation options.
+
 install_devel=yes
 
-# Tweaks
+# Tweaks.
+
 cflags=
 ldflags=
-#*****************************************************************************#
-# Help message                                                                #
-#*****************************************************************************#
+
+# ---
+# Help message.
+# ---
+
 usage() {
 cat <<EOF
 \`configure\` configures ${name} to adapt to systems that aren't mine.
@@ -69,10 +83,14 @@ Build options:
   --static                  build a static library (by default, dynamic)
   --windows                 build DLLs and .libs instead of ELF and archives
   --optimize-size           optimize size instead of speed
+
   --no-file                 do not use the libc FILE interface
   --no-libusb               do not use libusb
   --no-log                  disable logging
   --loglevel=LOGLEVEL       default library log level [$loglevel]
+
+  --default-zoom=ZOOM       the default zoom for p7screen [$default_zoom]
+  --default-storage=STOR    the default storage device for p7 [$default_storage]
 
 Installation options:
   --no-devel                should not install developement files
@@ -97,9 +115,11 @@ Report bugs to ${maintainer}.
 EOF
 exit 0
 }
-#*****************************************************************************#
-# Version message                                                             #
-#*****************************************************************************#
+
+# ---
+# Version message.
+# ---
+
 version() {
 cat <<EOF
 ${name} configure script v${version}
@@ -111,9 +131,11 @@ FITNESS FOR A PARTICULAR PURPOSE.
 EOF
 exit 0
 }
-#*****************************************************************************#
-# Check for help and version                                                  #
-#*****************************************************************************#
+
+# ---
+# Check for help and version.
+# ---
+
 put_version=
 put_help=
 for arg ; do case "$arg" in
@@ -122,9 +144,11 @@ for arg ; do case "$arg" in
 esac; done
 [ $put_version ] && version
 [ $put_help ] && usage
-#*****************************************************************************#
-# Parse arguments                                                             #
-#*****************************************************************************#
+
+# ---
+# Parse arguments.
+# ---
+
 for arg ; do case "$arg" in
 --make-full-log) make_full_log=yes ;;
 --maintainer) more_warnings=yes; loglevel=info ;;
@@ -148,6 +172,24 @@ got '$level'"
 	fi
 	# then set
 	loglevel=$level ;;
+--default-zoom=*)
+	zoom="${arg#*=}"
+	if ! [ $zoom -eq $zoom 2>/dev/null ]; then
+		echo "--default-zoom: a number is expected (got \"$zoom\")" >&2
+	elif [ $zoom -lt 1 ]; then
+		echo "--default-zoom: should be 1 or more (got $zoom)" >&2
+	elif [ $zoom -gt 16 ]; then
+		echo "--default-zoom: should be 16 or less (got $zoom)" >&2
+	else default_zoom=$zoom; fi ;;
+--default-storage=*)
+	storage="${arg#*=}"
+	# check if 4 chars long
+	if [ ! $(echo "$storage" | wc -c ) -eq 5 ]; then
+		echo "$0: --default-storage: must be 4 characters long"
+		continue
+	fi
+	# then set
+	default_storage="$storage" ;;
 --no-devel) install_devel= ;;
 --root=*) root="${arg#*=}" ;;
 --hprefix=*) hprefix="${arg#*=}" ;;
@@ -161,27 +203,33 @@ CFLAGS=*) cflags="${arg#*=}" ;;
 LDFLAGS=*) ldflags="${arg#*=}" ;;
 *) echo "$arg: didn't read" ;;
 esac; done
-#*****************************************************************************#
-# Little things                                                               #
-#*****************************************************************************#
-# Cross-compilation things
+
+# ---
+# Checks and tweaks.
+# ---
+
+# Cross-compilation things.
+
 if [ ! $prefix_set ] && [ $target ]; then
 	prefix="$prefix"/"$target"
 fi
 
-# Check MS-Windows targets
+# Check MS-Windows targets.
+
 win_target=
 case "$target" in *-mingw32) if [ ! "$static" ]; then
 	windows=y; win_target=y
 fi;; esac
 
-# Evaluate variables
+# Evaluate variables.
+
 vars="prefix bindir libdir pkgdir includedir hprefix hbindir"
 for var in $vars; do
 	eval $var'='$(eval 'echo $'$var)
 done
 
 # Check that static and MS-Windows are not asked.
+
 if [ "$static" ] && [ "$windows" ]; then
 cat >&2 <<EOF
 Sadly, there is no equivalent of MSVC's LIB.EXE for GNU/Linux.
@@ -191,6 +239,7 @@ exit 1
 fi
 
 # Check that MS-Windows has a target.
+
 if [ "$windows" ] && [ ! "$target" ]; then
 cat >&2 <<EOF
 You have selected the --windows option, but have selected no target.
@@ -200,10 +249,12 @@ EOF
 exit 1
 fi
 
-# Check if is on Cygwin
+# Check if is on Cygwin.
+
 [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ] && windows=y
 
 # Check that MS-Windows has a mingw* target.
+
 if [ "$windows" ] && [ ! "$win_target" ]; then
 cat >&2 <<EOF
 You have selected the --windows option, but have not selected a
@@ -215,21 +266,26 @@ If it is not, please reconfigure to use a mingw32/mingw64 toolchain!
 
 EOF
 fi
-#*****************************************************************************#
-# Create Makefile configuration                                               #
-#*****************************************************************************#
-# Clean before
+
+# ---
+# Create Makefile configuration.
+# ---
+
+# Clean before.
+
 make mrproper MAKE_FULL_LOG=y 1>/dev/null 2>/dev/null
 
-# Create the configuration header
+# Create the configuration header.
+
 tools/write-header-config --version=${version} \
 	--maintainer="$(echo ${maintainer} | sed 's/"/\\"/g')" \
 	$([ "$no_file" ] && echo --no-file) \
 	$([ "$no_libusb" ] && echo --no-libusb) \
 	$([ "$no_log" ] && echo --no-log) \
-	>include/${name}/config.h
+	>include/libcasio/config.h
 
 # Do it!
+
 exec 3>&1 1>Makefile.cfg
 cat <<EOF
 #!/usr/bin/make -f
@@ -248,6 +304,8 @@ cat <<EOF
  OPTIMIZE_SIZE := $optimize_size
  LOG_LEVEL = $loglevel
  NO_LIBUSB = $no_libusb
+ DEFAULT_ZOOM := $default_zoom
+ DEFAULT_STORAGE := $default_storage
 
 # Installation directories
  HBINDIR = $hbindir
@@ -269,6 +327,7 @@ exec 1>&3 3>&-
 chmod +x Makefile.cfg
 
 # Print the end message.
+
 echo "Configuration loaded, you can make now."
 
 # End of file.

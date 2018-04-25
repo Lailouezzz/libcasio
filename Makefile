@@ -1,24 +1,31 @@
 #!/usr/bin/make -f
-#*****************************************************************************#
-# Include variables and message subsystem                                     #
-#*****************************************************************************#
 include Makefile.vars Makefile.msg
 
-#*****************************************************************************#
-# General targets                                                             #
-#*****************************************************************************#
+# ---
+# General targets.
+# ---
+
 # Build everything.
-all: all-lib
+
+all: all-lib all-utils
 
 # Mostly clean everything (remove everything but the end results).
-mostlyclean: mostlyclean-lib
+
+mostlyclean:
+
  mclean: mostlyclean
 
 # Clean everything.
-clean: clean-lib
+
+clean:
+	$(call rmsg,Removing the build folder.)
+	$(call qcmd,$(RM) -r build obj)
+	$(call qcmd,$(RM) $(SONAMES) $(ANAMES))
+
  fclean: clean
 
 # To original state.
+
 mrproper: clean
 	$(call rmsg,Removing configuration.)
 	$(call qcmd,$(RM) Makefile.cfg)
@@ -30,12 +37,6 @@ re: clean all
 
 # Install everything.
 install: install-lib
-
-# Uninstall everything. (experimental)
-uninstall: uninstall-lib
-
-# Reinstall everything. (experimental)
-reinstall: uninstall install
 
 # Make a distribution tarball
 dist: mrproper
@@ -51,16 +52,20 @@ dist: mrproper
 	$(call qcmd,$(RM) -r lib$(NAME)-$(VERSION))
 
 .PHONY: all mostlyclean mclean clean fclean mrproper re
-.PHONY: dist install uninstall reinstall
-#*****************************************************************************#
-# Configuration (version) checking dependencies                               #
-#*****************************************************************************#
+.PHONY: dist install
+
+# ---
+# Configuration (version) checking dependencies.
+# ---
+
 # Define the dependencies.
+
  CHECKCFG := $(if $(shell test -f Makefile.cfg || echo y),check-config, \
 	$(if $(shell [ "$(VERSION)" = "$(CONFIG_VERSION)" ] || echo y), \
 		check-config-version))
 
 # Define the rules.
+
  check-config:
 	@echo -e "\033[1;31mNo configuration file found!"
 	@echo -e "You should configure before re-running this target.\033[0m"
@@ -71,75 +76,80 @@ dist: mrproper
 	@false
 
 .PHONY: check-config check-config-version
-#*****************************************************************************#
-# Information getting from the Makefile variables                             #
-#*****************************************************************************#
+
+# ---
+# Targets for gathering information from the Makefile variables.
+# ---
+
 # Get the project name.
+
  getname:
-	@echo lib$(NAME)
+	@echo $(NAME)
 
 # Get the project version.
+
  getversion:
 	@echo $(VERSION)
 
 # Check if is indev.
+
  isindev:
 	@$(if $(INDEV),echo $(INDEV),true)
 
 # Get the maintainer.
+
  getmaintainer:
 	@echo "$(MAINTAINER_NAME) <$(MAINTAINER_MAIL)>"
 
-.PHONY: getname getversion getmaintainer
-#*****************************************************************************#
-# Library-specific targets                                                    #
-#*****************************************************************************#
-# Make the library.
- all-lib: $(CHECKCFG) $(if $(STATIC),$(ANAME),$(SONAME))
+.PHONY: getname getversion isindev getmaintainer
 
-# Make a module object directory.
- $(OBJDIR)/ $(DIRS:%=$(OBJDIR)/%):
+# ---
+# Make directories.
+# ---
+
+ ./build/ $(L_OBJDIRS) $(U_OBJDIRS) $(M_SECTIONS:%=$(M_MANDIR)/man%/):
 	$(call bcmd,mkdir,$@,$(MD) $@)
 
+# ---
+# Library specific targets.
+# ---
+
+# Make the library.
+
+ all-lib: $(CHECKCFG) $(if $(STATIC),./build/$(L_ANAME),./build/$(L_SONAME))
+
+# Make the shared or static library.
+
+ifeq ($(FOR_WINDOWS),)
+ ./build/lib$(LIB).so: ./build/$(L_SONAME)
+	$(call bcmd,ln,$@,$(LN) $(L_SONAME) $@)
+endif
+
+ ./build/$(L_SONAME): $(L_SRC:%=$(L_OBJDIR)/%.o)
+	$(call bcmd,ld,$(L_SONAME),$(LD) -o $@ $^ $(L_LDFLAGS))
+ ./build/lib$(L_ANAME).a: $(L_SRC:%=$(L_OBJDIR)/%.o)
+	$(call bcmd,ar rc,lib$(L_ANAME).a,$(AR) rcs $@ $^)
+
 # Make an object out of a source file.
+
 define make-obj-rule
- $(OBJDIR)/$1.c.o: $(SRCDIR)/$1.c $(INC) $(INCI) | $(dir $(OBJDIR)/$1)
-	$(call bcmd,cc,$$@,$(CC) -c -o $$@ $$< $(CFLAGS))
+ $(L_OBJDIR)/$1.c.o: $(L_SRCDIR)/$1.c $(L_INC) | $(dir $(L_OBJDIR)/$1)
+	$(call bcmd,cc,$$@,$(CC) -c -o $$@ $$< $(L_CFLAGS))
 endef
-$(foreach src,$(basename $(SRC)),\
+$(foreach src,$(basename $(L_SRC)),\
 $(eval $(call make-obj-rule,$(src))))
 
-# Make the shared library.
- $(SONAME): $(SRC:%=$(OBJDIR)/%.o)
-	$(call bcmd,ld,$@,$(LD) -o $@ $^ $(LDFLAGS))
-
-# Make the static library.
- lib$(NAME).a: $(SRC:%=$(OBJDIR)/%.o)
-	$(call bcmd,ar rc,$@,$(AR) rcs $@ $^)
-
-# Remove the objects directory.
- mostlyclean-lib:
-	$(call rmsg,Removing object directory.)
-	$(call qcmd,$(RM) -r $(OBJDIR))
- mclean-lib: mostlyclean-lib
-
-# Clean and remove the built library.
- clean-lib: mclean-lib
-	$(call rmsg,Removing the library.)
-	$(call qcmd,$(RM) $(SONAMES) $(ANAMES))
-
-# Remake the library.
- re-lib: clean-lib all-lib
-
 # Install the library and development files.
+
  LINK_TO_MAJOR := $(if $(INSTALL_DEVEL),$(if $(STATIC),,\
 	$(if $(FOR_WINDOWS),,y)))
  IWINDLL := $(if $(FOR_WINDOWS),$(if $(STATIC),,y))
+
  install-lib: all-lib $(if $(INSTALL_DEVEL),install-cfgtool)
 	$(call imsg,Installing the library.)
 	$(call qcmd,$(INST) -m 755 -d "$(ILIBDIR)")
 	$(call qcmd,$(INST) -m 755 -t "$(ILIBDIR)" $(if $(STATIC),\
-		$(if $(FOR_WINDOWS),lib$(NAME).lib,lib$(NAME).a),\
+		$(if $(FOR_WINDOWS),lib$(L_NAME).lib,lib$(L_NAME).a),\
 		$(if $(FOR_WINDOWS),lib$(NAME).dll.a,$(SONAME))))
 	
 	$(if $(IWINDLL),$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)"))
@@ -160,26 +170,12 @@ $(eval $(call make-obj-rule,$(src))))
 		$(call qcmd,$(INST) -m 644 $(INCDIR)/$(i) \
 			"$(IINCDIR)/lib$(NAME)-$(VERSION)/$(i)"$(\n))))
 
-# Uninstall the library and development files. (experimental)
- uninstall-lib: $(CHECKCFG) uninstall-cfgtool
-	$(call rmsg,Uninstalling the library.)
-	$(call qcmd,$(RM) "$(IBINDIR)/lib$(NAME).dll")
-	$(call qcmd,$(RM) "$(ILIBDIR)/lib$(NAME).so"* \
-		"$(ILIBDIR)/lib$(NAME).a" "$(ILIBDIR)/lib$(NAME).dll"*)
-	$(call rmsg,Uninstalling development files.)
-	$(call qcmd,$(RM) -r "$(IINCDIR)/lib$(NAME)-$(VERSION)")
-	$(call qcmd,$(RM) "$(IINCDIR)/lib$(NAME).h")
-	$(call qcmd,$(RM) -r "$(IINCDIR)/lib$(NAME)")
+.PHONY: all-lib install-lib
 
-# Reinstall the library and development files.
- reinstall-lib: uninstall-lib install-lib
+# ---
+# Configuration tools related.
+# ---
 
-.PHONY: all-lib mostlyclean-lib mclean-lib clean-lib re-lib
-.PHONY: install-lib uninstall-lib reinstall-lib
-#*****************************************************************************#
-# Configuration tools-related                                                 #
-#*****************************************************************************#
-# Install it.
  install-cfgtool: $(CHECKCFG)
 	$(call imsg,Installing the configuration tool.)
 	$(call qcmd,$(INST) -m 755 -d "$(IBINDIR)")
@@ -203,20 +199,82 @@ $(eval $(call make-obj-rule,$(src))))
 		>"$(IPKGDIR)/lib$(NAME).pc" \
 		&& chmod 644 "$(IPKGDIR)/lib$(NAME).pc")
 
-# Uninstall it
- uninstall-cfgtool: $(CHECKCFG)
-	$(call rmsg,Uninstalling configuration tool and package.)
-	$(call qcmd,$(RM) "$(IPKGDIR)/lib$(NAME).pc" \
-		"$(IBINDIR)/lib$(NAME)-config" "$(IBINDIR)/"*"-lib$(NAME)-config" \
-		$(if $(TARGET),"$(HBINDIR)/$(TARGET)lib$(NAME)-config"))
+.PHONY: install-cfgtool
 
-.PHONY: install-cfgtool uninstall-cfgtool
-#*****************************************************************************#
-# Documentation-related targets                                               #
-#*****************************************************************************#
-# Make the HTML documentation.
+# ---
+# Utilities related.
+# ---
+
+# Make the utilities.
+
+ all-utils: $(CHECKCFG) $(DEFAULT_UTILS:%=all-%)
+
+# Make a utility.
+
+define make-util-rules
+ ./build/$1$(if $(FOR_WINDOWS),.exe): $(U_OBJ_$1) \
+	$(if $(filter libcasio,$(U_DEPS_$1)),./build/lib$(LIB).so) | ./build/
+	$(call bcmd,ld,$$@,$(LD) -o $$@ $(U_OBJ_$1) $(U_LDFLAGS_$1))
+
+ all-$1: ./build/$1$(if $(FOR_WINDOWS),.exe)
+endef
+$(foreach util,$(UTILS),\
+$(eval $(call make-util-rules,$(util))))
+
+# Make an object out of a file.
+
+define make-util-obj-rules
+ifeq ($(suffix $(U_OBJDIR)/$1/$2),.c)
+ $(U_OBJDIR)/$1/$2.o: $(U_SRCDIR)/$1/$2 $(U_INC_$1) \
+	| $(dir $(U_OBJDIR)/$1/$2)
+	$(call bcmd,cc,$$@,$(CC) -c -o $$@ $$< $(U_CFLAGS_$1))
+endif
+endef
+$(foreach util,$(UTILS),\
+$(foreach src,$(U_SRC_$(util)),\
+$(eval $(call make-util-obj-rules,$(util),$(src)))))
+
+# Install a utility.
+
+define make-util-install-rule
+ install-$1 install-$1.exe: $(CHECKCFG)
+	$(call imsg,Installing $1$(if $(FOR_WINDOWS),.exe).)
+	$(call qcmd,$(INSTALL) -m 755 -d "$(IBINDIR)")
+	$(call qcmd,$(INSTALL) -m 755 -t "$(IBINDIR)" $1$(if $(FOR_WINDOWS),.exe))
+endef
+
+.PHONY: all-utils $(foreach util,$(UTILS),all-$(util) install-$(util) \
+	install-$(util).exe)
+
+# ---
+# Manpages related.
+# ---
+
+# Produce the manpages.
+
+ all-man: $(foreach sec,$(M_SECTIONS),\
+	$(M_PAGES_$(sec):%=$(M_MANDIR)/man$(sec)/%.$(sec).gz))
+
+# Produce one page.
+
+define make-manpage-rules
+ $(M_MANDIR)/man$1/$2.$1.gz: $(M_MANDIR)/man$1/$2.$1
+	$(call bcmd,gzip,$$<,$(GZIP) $$<)
+
+ $(M_MANDIR)/man$1/$2.$1: $(M_SRCDIR)/$2.$1.txt | $(M_MANDIR)/man$1/
+	$(call bcmd,a2x,$$<,$(A2X) -f manpage -D $$| $$< 2>/dev/null)
+endef
+$(foreach sec,$(M_SECTIONS),\
+$(foreach pg,$(M_PAGES_$(sec)),\
+$(eval $(call make-manpage-rules,$(sec),$(pg)))))
+
+# ---
+# Documentation-related targets.
+# ---
+
 html:
 	make -C docs
 
 .PHONY: html
+
 # End of file

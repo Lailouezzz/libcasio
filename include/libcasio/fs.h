@@ -227,6 +227,20 @@ typedef int casio_fs_list_t
 	OF((void *casio__cookie, casio_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
 
+/* The `casio_fs_optim` callback is used to optimize the filesystem
+ * (run a defragmentation, …).
+ *
+ * FIXME: we need a `casio_path_t` equivalent to express devices.
+ * On CASIOWIN, the device is expressed as a path node/string (e.g.
+ * "fls0" in \fls0\file.txt), on WINDOWS, it can be expressed as a
+ * letter (e.g. C:), a path from the Local Device \\.\ or
+ * Root Local Device \\?\, or a mount point, and on Linux/Mac, as a
+ * mount point. This is a mess we need to clean up sometime, for now
+ * we're only considering this operation for CASIOWIN. */
+
+typedef int casio_fs_optim_t
+	OF((void *casio__cookie, const char *device));
+
 /* And here is the structure with all of the functions.
  * It is the one used when you want to open a libcasio filesystem interface
  * abstraction. */
@@ -243,17 +257,21 @@ struct casio_fsfuncs_s {
 
 	casio_fs_list_t     *casio_fsfuncs_list;
 	casio_fs_open_t     *casio_fsfuncs_open;
+
+	casio_fs_optim_t    *casio_fsfuncs_optim;
 };
 /* ************************************************************************* */
 /*  Filesystem public functions                                              */
 /* ************************************************************************* */
 CASIO_BEGIN_DECLS
 
-/* Open a custom filesystem. */
+/* Open a custom filesystem, and close any filesystem. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_fs
 	OF((casio_fs_t **casio__filesystem,
 		void *casio__cookie, const casio_fsfuncs_t *casio__funcs));
+CASIO_EXTERN int CASIO_EXPORT casio_close_fs
+	OF((casio_fs_t *casio__filesystem));
 
 /* Manipulate native paths. */
 
@@ -288,6 +306,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_nat
 	OF((casio_fs_t *casio__fs, casio_stream_t **casio__stream,
 		void *casio__path, casio_off_t casio__size,
 		casio_openmode_t casio__mode));
+
+/* Optimize the filesystem. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_optimize
+	OF((casio_fs_t *casio__fs, const char *casio__device));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
