@@ -177,12 +177,18 @@ CASIO_BEGIN_DECLS
  * packet sending functions also manage receiving if necessary, so don't use
  * it unless you're sure about what you're doing.
  *
- * `care_about_checksums` is only to set to zero if you don't want to react
- * to checksums; for example, in the screenstreaming packet flow, where the
- * receiver should not send anything. */
+ * Flags can be the following:
+ *
+ * `CHECKSUMS`: shall we care about checksums? Do not use if you don't want
+ *              to react to checksums; for example, in the screenstreaming
+ *              packet flow, the receiver should not send anything.
+ * `SCRALIGN`:  shall we try aligning ourselves to the next screen packet? */
+
+# define CASIO_SEVEN_RECEIVEFLAG_CHECKSUMS  1
+# define CASIO_SEVEN_RECEIVEFLAG_SCRALIGN   2
 
 CASIO_EXTERN int CASIO_EXPORT casio_seven_receive
-	OF((casio_link_t *casio__handle, int casio__care_about_checksums));
+	OF((casio_link_t *casio__handle, unsigned int casio__flags));
 
 /* These are the base functions to send a packet.
  * Unless `resp` is zero, it will also get the response to the packet,

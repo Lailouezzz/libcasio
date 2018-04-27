@@ -19,10 +19,12 @@
 #include "main.h"
 #include <SDL.h>
 
-/* ************************************************************************** */
-/*  Error messages                                                            */
-/* ************************************************************************** */
+/* ---
+ * Error messages.
+ * --- */
+
 /* Couldn't initialize connexion to calculator. */
+
 static const char error_noconnexion[] =
 "Could not connect to the calculator.\n"
 "- Is it plugged in and in PROJ mode?\n"
@@ -30,139 +32,165 @@ static const char error_noconnexion[] =
 "- Have you tried changing the cable?\n";
 
 /* Calculator was found but program wasn't allowed to communicate with it. */
+
 static const char error_noaccess[] =
 "Could not get access to the calculator.\n"
 "Install the appropriate udev rule, or run as root.\n";
 
 /* The calculator acted in a weird way. */
+
 static const char error_unplanned[] =
 "The calculator didn't act as planned.\n"
 "Stop receive mode on calculator and start it again before re-running " \
 	BIN ".\n"
 "Error was: %s\n";
 
-/* ************************************************************************** */
-/*  Globals                                                                   */
-/* ************************************************************************** */
-/* The z00m (omG) */
-static int zoom;
+/* ---
+ * Globals.
+ * --- */
 
-/* ************************************************************************** */
-/*  Auxiliary functions                                                       */
-/* ************************************************************************** */
+/* The z00m (omG). */
+
+static unsigned int zoom;
+
+/* ---
+ * Main functions.
+ * --- */
+
 /**
- *	display_callback:
- *	The main callback for screen streaming.
+ *	display_screen:
+ *	Display the screen.
  *
- *	@arg	vcookie		the cookie (unused).
- *	@arg	w			the width of the received image
- *	@arg	h			the height of the received image
- *	@arg	pixels		the image data
+ *	@arg	link	the link handle to use.
+ *	@return			the main code.
  */
 
-static void display_callback(void *vcookie,
-	int w, int h, casio_uint32_t **pixels)
+static int display_screen(casio_link_t *link)
 {
-	static SDL_Window *window = NULL;
-	static SDL_Renderer *rendr = NULL;
-	static SDL_Texture *texture = NULL;
-	static int saved_w = 0, saved_h = 0;
+	SDL_Window *window = NULL;
+	SDL_Renderer *rendr = NULL;
+	SDL_Texture *texture = NULL;
+	int ret = 1, err;
+	unsigned int w, saved_w, h, saved_h;
+	casio_screen_t *screen = NULL;
+	casio_pixel_t **pixels;
 
-	(void)vcookie;
+	while (1) {
+		/* Get the screen. */
 
-	if (!window) {
-		int ret;
+		switch ((err = casio_get_screen(link, &screen))) {
+		case 0:
+			break;
+		case casio_error_nocalc:
+			goto end;
+		case casio_error_timeout:
+			fprintf(stderr, error_noconnexion);
+			goto fail;
+		default:
+			fprintf(stderr, error_unplanned, casio_strerror(err));
+			goto fail;
+		}
 
-		/* We haven't got a window, our objective is to create one,
-		 * with a renderer and a texture. First, let's create the window. */
+		w = screen->casio_screen_width;
+		h = screen->casio_screen_height;
+		pixels = screen->casio_screen_pixels;
 
-		window = SDL_CreateWindow("p7screen",
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			w * zoom, h * zoom, 0);
 		if (!window) {
-			fprintf(stderr, "Couldn't create the window: %s\n",
-				SDL_GetError());
-			return ;
+			/* We haven't got a window, our objective is to create one,
+			 * with a renderer and a texture. First, let's create the
+			 * window. */
+
+			window = SDL_CreateWindow("p7screen",
+				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+				w * zoom, h * zoom, 0);
+			if (!window) {
+				fprintf(stderr, "Couldn't create the window: %s\n",
+					SDL_GetError());
+				goto fail;
+			}
+
+			/* Then let's create the renderer. */
+
+			rendr = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+			if (!rendr) {
+				fprintf(stderr, "Couldn't create the renderer: %s\n",
+					SDL_GetError());
+				goto fail;
+			}
+
+			/* Finally, create the texture we're gonna use for drawing
+			 * the picture as a classic ARGB pixel matric (8 bits per
+			 * component). */
+
+			texture = SDL_CreateTexture(rendr, SDL_PIXELFORMAT_ARGB8888,
+				SDL_TEXTUREACCESS_STREAMING, w * zoom, h * zoom);
+			if (!texture) {
+				fprintf(stderr, "Couldn't create the texture: %s\n",
+					SDL_GetError());
+				goto fail;
+			}
+
+			/* Save data and display message. */
+
+			saved_w = w;
+			saved_h = h;
+
+			puts("Turn off your calculator (SHIFT+AC) "
+				"when you have finished.");
+		} else if (saved_w != w || saved_h != h) {
+			/* The dimensions have changed somehow, we're gonna manage it!
+			 * FIXME: one day. */
+
+			fprintf(stderr, "Unmanaged dimensions changed.\n");
+			goto fail;
 		}
 
-		/* Then let's create the renderer. */
+		/* Copy the data. */
 
-		rendr = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-		if (!rendr) {
-			SDL_DestroyWindow(window);
-			window = NULL;
+		{
+			Uint32 *px;
+			int pitch, linesize = w * zoom;
+			unsigned int x, y, zx, zy;
 
-			fprintf(stderr, "Couldn't create the renderer: %s\n",
-				SDL_GetError());
-			return ;
+			SDL_LockTexture(texture, NULL, (void **)&px, &pitch);
+
+			for (y = 0; y < h; y++) {
+				Uint32 *refline = px;
+
+				for (x = 0; x < w; x++) {
+					Uint32 pixel = pixels[y][x];
+
+					for (zx = 0; zx < zoom; zx++)
+						*px++ = pixel;
+				}
+				for (zy = 1; zy < zoom; zy++) {
+					memcpy(px, refline, linesize * sizeof(uint32_t));
+					px += linesize;
+				}
+			}
+
+			SDL_UnlockTexture(texture);
 		}
 
-		/* Finally, create the texture we're gonna use for drawing
-		 * the picture as a classic ARGB pixel matric (8 bits per
-		 * component). */
+		/* Flippin' flip the screen! */
 
-		texture = SDL_CreateTexture(rendr, SDL_PIXELFORMAT_ARGB8888,
-			SDL_TEXTUREACCESS_STREAMING, w * zoom, h * zoom);
-		if (!texture) {
-			SDL_DestroyRenderer(rendr);
-			rendr = NULL;
-
-			SDL_DestroyWindow(window);
-			window = NULL;
-
-			fprintf(stderr, "Couldn't create the texture: %s\n",
-				SDL_GetError());
-			return ;
-		}
-
-		/* Save data and display message. */
-
-		saved_w = w;
-		saved_h = h;
-
-		puts("Turn off your calculator (SHIFT+AC) when you have finished.");
-	} else if (saved_w != w || saved_h != h) {
-		/* The dimensions have changed somehow, we're gonna manage it!
-		 * FIXME: one day. */
-
-		return ;
+		SDL_RenderCopy(rendr, texture, NULL, NULL);
+		SDL_RenderPresent(rendr);
 	}
 
-	/* Copy the data. */
-
-	{
-		Uint32 *px;
-		int pitch;
-		int linesize = w * zoom;
-
-		SDL_LockTexture(texture, NULL, (void **)&px, &pitch);
-
-		for (int y = 0; y < h; y++) {
-			Uint32 *refline = px;
-
-			for (int x = 0; x < w; x++) {
-				Uint32 pixel = pixels[y][x];
-
-				for (int zx = 0; zx < zoom; zx++)
-					*px++ = pixel;
-			}
-			for (int zy = 1; zy < zoom; zy++) {
-				memcpy(px, refline, linesize * sizeof(uint32_t));
-				px += linesize;
-			}
-		}
-
-		SDL_UnlockTexture(texture);
-	}
-
-	/* Flippin' flip the screen! */
-
-	SDL_RenderCopy(rendr, texture, NULL, NULL);
-	SDL_RenderPresent(rendr);
+end:
+	ret = 0;
+fail:
+	casio_free_screen(screen);
+	if (texture)
+		SDL_DestroyTexture(texture);
+	if (rendr)
+		SDL_DestroyRenderer(rendr);
+	if (window)
+		SDL_DestroyWindow(window);
+	return (ret);
 }
-/* ************************************************************************** */
-/*  Main function                                                             */
-/* ************************************************************************** */
+
 /**
  *	main:
  *	Entry point of the program.
@@ -176,13 +204,14 @@ int main(int ac, char **av)
 {
 	int err; casio_link_t *handle = NULL;
 
-	/* parse args */
+	/* Parse the arguments. */
+
 	if (parse_args(ac, av, &zoom))
 		return (0);
 
 	/* Make the libcasio link handle. */
+
 	if ((err = casio_open_usb(&handle, 0))) {
-		/* display error */
 		switch (err) {
 			case casio_error_nocalc:
 				fprintf(stderr, error_noconnexion);
@@ -199,30 +228,20 @@ int main(int ac, char **av)
 		return (1);
 	}
 
-	/* Initialize SDL */
+	/* Initialize the SDL. */
+
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
 		return (3);
 	}
 	atexit(SDL_Quit);
 
-	/* receive screen */
-	if ((err = casio_getscreen(handle, &display_callback, NULL))
-	 && err != casio_error_nocalc) {
-		switch (err) {
-			case casio_error_timeout:
-				fprintf(stderr, error_noconnexion);
-				break;
-			default:
-				fprintf(stderr, error_unplanned, casio_strerror(err));
-				break;
-		}
-		return (1);
-	}
+	/* Display the screen. */
 
-	/* close */
+	display_screen(handle);
+
+	/* Close the link and exit. */
+
 	casio_close_link(handle);
-
-	/* everything went well */
 	return (0);
 }

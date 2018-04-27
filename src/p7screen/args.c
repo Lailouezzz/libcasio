@@ -116,12 +116,10 @@ static void put_help(void)
  *	@return			0 if ok, other if not.
  */
 
-int parse_args(int ac, char **av, int *zoom)
+int parse_args(int ac, char **av, unsigned int *zoom)
 {
-	/* initialize args */
-	*zoom = DEFAULT_ZOOM;
-
-	/* define options */
+	int c, help = 0, version = 0;
+	const char *s_log = NULL;
 	const char short_options[] = "hvz:";
 	const struct option long_options[] = {
 		{"help", no_argument, NULL, 'h'},
@@ -131,30 +129,38 @@ int parse_args(int ac, char **av, int *zoom)
 		{NULL, 0, NULL, 0}
 	};
 
+	/* Initialize the arguments. */
+
+	*zoom = DEFAULT_ZOOM_I;
+
 	/* get all options */
-	int c; opterr = 0;
-	int help = 0, version = 0;
-	const char *s_log = NULL;
+	opterr = 0;
 	while ((c = getopt_long(ac, av, short_options, long_options, NULL)) != -1)
 	  switch (c) {
-		/* help */
-		case 'h': help = 1; break;
-		/* version */
-		case 'v': version = 1; break;
-		/* zoom */
+		/* Help, version, log level. */
+
+		case 'h':
+			help = 1;
+			break;
+		case 'v':
+			version = 1;
+			break;
+		case 'l':
+			s_log = optarg;
+			break;
+
+		/* Zoom. */
+
 		case 'z':
-			*zoom = atoi(optarg);
+			*zoom = (unsigned int)atoi(optarg);
 			if (*zoom <= 0 || *zoom > 16) {
 				fprintf(stderr, "-z, --zoom: should be between 1 and 16");
 				return (1);
 			}
 			break;
 
-		case 'l':
-			s_log = optarg;
-			break;
+		/* Error (ignore unknown options?). */
 
-		/* error (ignore) */
 		case '?':
 			if (optopt == 'z')
 				fprintf(stderr, "-z, --zoom: expected an argument\n");
@@ -163,16 +169,23 @@ int parse_args(int ac, char **av, int *zoom)
 			return (1);
 	}
 
-	/* check if there is any parameter */
-	if (ac - optind) help = 1;
+	/* Check if there is any parameter. */
 
-	/* set the log level */
+	if (ac - optind)
+		help = 1;
+
+	/* Set the log level. */
+
 	if (s_log)
 		casio_setlog(s_log);
 
-	/* print help or version if required, and return */
-	if (version) puts(version_message);
-	else if (help) put_help();
-	else return (0);
+	/* Print help or version if required, and return. */
+
+	if (version)
+		puts(version_message);
+	else if (help)
+		put_help();
+	else
+		return (0);
 	return (1);
 }

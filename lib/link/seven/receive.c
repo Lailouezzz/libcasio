@@ -25,9 +25,10 @@
 #define checksub8(BUF, SIZE, INI) \
 	casio_checksum_sub(&((char*)(BUF))[1], (SIZE) - 3, (INI))
 
-/* ************************************************************************* */
-/*  Logging                                                                  */
-/* ************************************************************************* */
+/* ---
+ * Functions useful for logging.
+ * --- */
+
 /** 
  *	getcmdstring:
  *	Get command code string (useful for logging).
@@ -154,9 +155,11 @@ CASIO_LOCAL const char *gettermstring(casio_seven_term_t code)
 	if (code > 0x03) return ("<unknown termination reason>");
 	return (strings[code]);
 }
-/* ************************************************************************* */
-/*  Main receiving function                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Main receiving function.
+ * --- */
+
 /**
  *	casio_seven_decode:
  *	Receive a packet.
@@ -166,6 +169,7 @@ CASIO_LOCAL const char *gettermstring(casio_seven_term_t code)
  *	It uses buffered I/O to read progressively all of the packet.
  *
  *	@arg	handle		the link handle
+ *	@arg	scralign	shall we align screen?
  *	@return				the error (0 if ok)
  */
 
@@ -175,15 +179,15 @@ CASIO_LOCAL const char *gettermstring(casio_seven_term_t code)
 		&buffer[received], (size_t)(N)); \
 	received += (N); if (COMP_PACKET_err) return (COMP_PACKET_err); }
 
-CASIO_LOCAL int casio_seven_decode(casio_link_t *handle)
+CASIO_LOCAL int casio_seven_decode(casio_link_t *handle, int scralign)
 {
-	/* prepare reception */
 	size_t received = 0;
 	int check_sum = 1, is_extended;
 	unsigned long csum, csum_ex;
 	unsigned int subtype, data_size;
 
-	/* get first three bytes, check if is CAL */
+	/* Get first three bytes, check if is CAL. */
+
 	do {
 		COMPLETE_PACKET(3)
 		if (memcmp(buffer, "CAL", 3))
@@ -200,10 +204,30 @@ CASIO_LOCAL int casio_seven_decode(casio_link_t *handle)
 		msg((ll_info, "Restart receiving the packet."));
 	} while (1);
 
-	/* get the type */
+	/* Align on the screen if required. */
+
+	if (scralign) {
+		int tries = MAX_PACKET_SIZE + 1;
+
+		/* Adjust. */
+
+		while (memcmp(buffer, "\x0BTY", 3)) {
+			if (!--tries)
+				return (casio_error_unknown);
+
+			buffer[0] = buffer[1];
+			buffer[1] = buffer[2];
+			received = 2;
+			COMPLETE_PACKET(1)
+		}
+	}
+
+	/* Get the type. */
+
 	response.casio_seven_packet_type = buffer[0];
 
-	/* image has a particular format starting from here, look for it now! */
+	/* Image has a particular format starting from here, look for it now! */
+
 	if (response.casio_seven_packet_type == casio_seven_type_ohp) {
 		unsigned int image_size;
 		size_t hdsize;
@@ -416,59 +440,76 @@ CASIO_LOCAL int casio_seven_decode(casio_link_t *handle)
 	/* finally, return the packet */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Receiving function with error management                                 */
-/* ************************************************************************* */
+
+/* ---
+ * Receiving function with error management.
+ * --- */
+
 /**
  *	casio_seven_receive:
  *	Receives packet, checks for errors.
  *
  *	@arg	handle			the link handle
- *	@arg	checksum		if 0 and invalid checksum, ignore and receive again
+ *	@arg	flags			receive flags.
  *	@return					if it worked
  */
 
-int CASIO_EXPORT casio_seven_receive(casio_link_t *handle, int checksum)
+int CASIO_EXPORT casio_seven_receive(casio_link_t *handle, unsigned int flags)
 {
 	int err, wasresend = 0;
 
-	/* make checks */
-	if (!handle) return (casio_error_init);
+	/* Make checks. */
 
-	/* main loop */
+	if (!handle)
+		return (casio_error_init);
+
+	/* Main loop. */
+
 	while (1) {
-		/* receive */
+		/* Receive the packet. */
+
 		msg((ll_info, "Receiving the packet..."));
-		err = casio_seven_decode(handle);
+		err = casio_seven_decode(handle,
+			!!(flags & CASIO_SEVEN_RECEIVEFLAG_SCRALIGN));
 
-		/* check out the error */
-		if (err && !(err == casio_error_csum && !checksum)) {
+		/* Check out the error. */
+
+		if (err && !(err == casio_error_csum
+		 && ~flags & CASIO_SEVEN_RECEIVEFLAG_CHECKSUMS)) {
 			switch (err) {
-			/* if calc couldn't be found, terminate communication */
-			case casio_error_nocalc: goto fail;
+			case casio_error_nocalc:
+				/* If the calculator couldn't be found, terminate
+				 * the communication. */
 
-			/* if it is a timeout, remove a try */
+				goto fail;
+
 			case casio_error_timeout:
-				/* send a check */
-				err = casio_seven_send_timeout_check(handle);
-				if (err) goto fail;
+				/* If it is a timeout, send a check, get the corresponding
+				 * ACK and remove a try. */
 
-				/* get the ack */
-				err = casio_seven_decode(handle);
+				err = casio_seven_send_timeout_check(handle);
+				if (err)
+					goto fail;
+
+				err = casio_seven_decode(handle, 0);
 				if (!err && response.casio_seven_packet_type
 				 != casio_seven_type_ack)
 					err = casio_error_unknown;
-				if (err) goto fail;
+				if (err)
+					goto fail;
 
-				/* try again
+				/* Try again.
 				 * TODO: check if we should resend the previous packet...? */
 				break;
 
-			/* if it is a bad checksum, ask for resend ; also,
-			 * reset tries number in case of bad checksum between timeouts */
 			case casio_error_csum:
-				/* check if we didn't already give a chance to the
-				 * other side */
+				/* If it is a bad checksum, ask for resend; also,
+				 * reset tries number in case of bad checksum between
+				 * timeouts.
+				 *
+				 * First of all, check if we didn't already give a chance
+				 * to the other side. */
+
 				if (wasresend) {
 					msg((ll_error, "Two checksum failures, ending now."));
 					casio_seven_send_basic(handle, casio_seven_type_end,
@@ -479,38 +520,44 @@ int CASIO_EXPORT casio_seven_receive(casio_link_t *handle, int checksum)
 					goto fail;
 				}
 
-				/* if we receive an invalid checksum while we are in packet
+				/* If we receive an invalid checksum while we are in packet
 				 * shifting mode, or if we received an error when we sent a
 				 * resend error, cut connexion... we can't do anything. */
+
 				if ((handle->casio_link_flags & casio_linkflag_shifted) \
 				 || wasresend) {
 					handle->casio_link_flags |= casio_linkflag_ended;
 					return (casio_error_damned);
 				}
 
-				/* otherwise, check tries and send resend error */
+				/* Otherwise, check tries and send resend error. */
+
 				err = casio_seven_send_err_resend(handle);
-				if (err) return (err);
+				if (err)
+					return (err);
 
 				/* set things */
 				wasresend = 1;
 				err = casio_error_csum;
 				break;
 
-			/* should not catch bad type & others */
-			default: return (casio_error_csum);
+			default:
+				/* Should not catch bad type & others. */
+
+				return (casio_error_csum);
 			}
 
-			/* then try again to get the answer :) */
+			/* Then try again to get the answer :) */
+
 			continue;
 		}
 
 		/* TODO: check out the type and stuff...? */
-		/* go away! */
+		/* Go away! */
+
 		break;
 	}
 
-	/* everything went well... or not? */
 	return (0);
 fail:
 	handle->casio_link_flags |= casio_linkflag_ended;

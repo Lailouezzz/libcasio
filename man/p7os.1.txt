@@ -7,7 +7,7 @@ Thomas "Cakeisalie5" Touhey
 
 NAME
 ----
-p7os - backup and setup CASIO calculator's software components using protocol 7
+p7os - interact with software components of CASIO calculators
 
 SYNOPSIS
 --------
@@ -29,6 +29,8 @@ Available submenus are :
 	with it.
 *get [-o os.bin]*::
 	Backup the bootcode, CASIOWIN entry and OS.
+*flash <os.bin>*::
+	Flash the calculator's CASIOWIN entry and OS image.
 
 You have to *prepare* before doing any other action. Preparing means sending
 a P7 server on the calculator that will be able to execute commands required
@@ -36,8 +38,8 @@ by other subcommands.
 
 OPTIONS
 -------
-Options start with one or two dashes. Some of the options require an additional
-value next to them.
+Options start with one or two dashes. Some of the options require an
+additional value next to them.
 
 *-h, --help*::
 	Display command/subcommand help page and quit.

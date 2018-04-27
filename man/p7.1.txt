@@ -57,6 +57,17 @@ value next to them.
  ::
 	If this option isn't used, the program will look for a calculator connected
 	using direct USB.
+*--use <settings>*::
+	If a serial connexion is used, tells p7 to use the given settings, which
+	are of the format <speed><parity><stop bits>, e.g. 9600N2.
+*--set <settings>*::
+	If a serial connexion is used, tells p7 to make an agreement with the
+	calculator to change the connexion settings to the given one. If different
+	from the default settings and not exiting, the next call to p7 or any
+	other similar utility will have to be called with the *--use* option.
+*--reset*::
+	Same as *--set*, except that the settings are set to be the default
+	ones for the protocol.
 *--storage abc0*::
 	The storage device with which to interact.
 *--no-term, --no-exit*::

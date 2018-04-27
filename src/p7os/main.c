@@ -57,48 +57,57 @@ int main(int ac, char **av)
 {
 	int err; args_t args;
 
-	/* parse args */
+	/* Parse the arguments. */
+
 	if (parse_args(ac, av, &args))
 		return (0);
 
-	/* prepare */
+	/* Prepare. */
+
 	if (!args.noprepare) {
 		err = prepare(&args);
 		if (err) goto fail;
 	}
 
-	/* check according to menu */
+	/* Check according to menu. */
+
 	switch (args.menu) {
-	case mn_prepare_only: break;
+	case mn_prepare_only:
+		/* Nothing here. */
+		break;
 	case mn_get:
-		err = backup_rom(&args); break;
+		err = backup_rom(&args);
+		break;
 	case mn_flash:
-#if 0
-		err = fxremote_flash(&args); break;
-#endif
-		fprintf(stderr,
-			"fxRemote-like flashing has been removed.\n"
-			"Sorry for the inconvenience.\n");
-		err = 0; break;
+		err = fxremote_flash(&args);
+		break;
 	}
 
 fail:
-	/* close the file, remove if necessary */
+	/* Close the file, remove if necessary. */
+
 	if (args.localpath) {
 		casio_close(args.local);
 		if (err && casio_iswritable(args.local))
 			remove(args.localpath);
 	}
 
-	/* displaying error */
-	if (err) switch (err) {
+	/* Display the error, if any. */
+
+	switch (err) {
+	case 0:
+		break;
 	case casio_error_nocalc:
-		log(error_noconnexion); break;
+		fprintf(stderr, error_noconnexion);
+		break;
 	case casio_error_noaccess:
-		log(error_noaccess); break;
+		fprintf(stderr, error_noaccess);
+		break;
 	case casio_error_command:
-		log(error_unsupported); break;
-	default: log(error_unplanned, casio_strerror(err));
+		fprintf(stderr, error_unsupported);
+		break;
+	default:
+		fprintf(stderr, error_unplanned, casio_strerror(err));
 	}
 
 	return (1);

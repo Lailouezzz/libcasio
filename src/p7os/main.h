@@ -20,19 +20,21 @@
 # define MAIN_H
 # include <stdio.h>
 # include <libcasio.h>
-# define log(S, ...) fprintf(stderr, S, ##__VA_ARGS__)
 
-/* ************************************************************************** */
-/*  CLI options                                                               */
-/* ************************************************************************** */
-/* Menu */
+/* ---
+ * Command-line arguments.
+ * --- */
+
+/* Menu. */
+
 enum menu_e {
 	mn_prepare_only = 1,
 	mn_get          = 2,
 	mn_flash        = 3
 };
 
-/* Arguments */
+/* Arguments. */
+
 typedef struct {
 	enum menu_e  menu;
 	int noprepare;
@@ -45,9 +47,11 @@ typedef struct {
 	const char     *localpath;
 	casio_stream_t *uexe;
 } args_t;
-/* ************************************************************************* */
-/*  Progress displayer                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Progress displayer.
+ * --- */
+
 typedef struct {
 	const char *msg, *success;
 
@@ -61,15 +65,19 @@ extern void osdisp(void *cookie, unsigned int id, unsigned int total);
 
 extern void osdisp_interrupt(osdisp_t *cookie);
 extern void osdisp_success(osdisp_t *cookie);
-/* ************************************************************************* */
-/*  Central functions                                                        */
-/* ************************************************************************* */
+
+/* ---
+ * Central functions.
+ * --- */
+
 /* Utilities. */
+
 extern int parse_args(int ac, char **av, args_t *args);
 extern int open_link(casio_link_t **link, args_t *args,
 	unsigned long flags, casio_streamattrs_t *attrs);
 
 /* Main functions. */
+
 extern int prepare(args_t *args);
 extern int backup_rom(args_t *args);
 extern int fxremote_flash(args_t *args);

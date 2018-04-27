@@ -18,8 +18,11 @@ p7screen [-h|--help] [-v|--version]
 
 DESCRIPTION
 -----------
-p7screen is a command-line utility to display streamed screen from casio fx
-calculator, using its communication protocol 7.00 and screenstreaming mode.
+p7screen is a command-line utility to display streamed screen from CASIO fx
+calculators, using its communication protocol 7.00 and screenstreaming mode.
+
+Notice that *p7*(1) serial-related options are not available here, as
+screenstreaming is only available on USB cables by choice from CASIO.
 
 OPTIONS
 -------
@@ -31,7 +34,7 @@ value next to them.
 *-v, --version*::
 	Display version and quit.
 *-z ZOOM, --zoom=ZOOM*::
-	Change the zoom (will change the window size too).
+	Change the zoom (size of a pixel square, will change the window size too).
 
 SEE ALSO
 --------

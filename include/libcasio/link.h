@@ -26,12 +26,14 @@
 # include "picture.h"
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  Link and link information                                                */
-/* ************************************************************************* */
+/* ---
+ * Link and link information.
+ * --- */
+
 /* The link structure is private, as it contains diiiirty things.
  * You should only manipulate pointers to it (unless you're contributing
  * to libcasio). */
+
 struct casio_link_s;
 typedef struct casio_link_s casio_link_t;
 
@@ -71,9 +73,11 @@ typedef struct casio_link_info_s {
 	char casio_link_info_hwid[9];
 	char casio_link_info_cpuid[17];
 } casio_link_info_t;
-/* ************************************************************************* */
-/*  Basic callbacks                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Basic callbacks.
+ * --- */
+
 /* The user shall confirm or not a link action. */
 
 typedef int casio_link_confirm_t OF((void *casio__cookie));
@@ -86,20 +90,31 @@ typedef int casio_link_confirm_t OF((void *casio__cookie));
 typedef void casio_link_progress_t OF((void *casio__cookie,
 	unsigned int casio__id, unsigned int casio__total));
 
-/* This callback is for displaying/using a received picture, with
- * `casio_getscreen` for example. */
-
-typedef void casio_link_screen_t OF((void *casio__cookie,
-	int casio__w, int casio__h,
-	casio_pixel_t **casio__pixels));
-
 /* List files. */
 
 typedef void casio_link_list_t OF((void *casio__cookie,
 	const char *casio__path, const casio_stat_t *casio__stat));
-/* ************************************************************************* */
-/*  Basic link handle operations                                             */
-/* ************************************************************************* */
+
+/* ---
+ * Other structures.
+ * --- */
+
+/* Screen. */
+
+typedef struct casio_screen_s {
+	unsigned int casio_screen_width;
+	unsigned int casio_screen_height;
+
+	unsigned int casio_screen_realwidth;
+	unsigned int casio_screen_realheight;
+
+	casio_pixel_t **casio_screen_pixels;
+} casio_screen_t;
+
+/* ---
+ * Basic link handle operations.
+ * --- */
+
 /* Initialization flags.
  * `CASIO_LINKFLAG_ACTIVE`: start off as active;
  * `CASIO_LINKFLAG_CHECK`: check (initial packet);
@@ -166,11 +181,18 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_serve
 CASIO_EXTERN int CASIO_EXPORT casio_setlink
 	OF((casio_link_t *casio__handle, const casio_streamattrs_t *casio__attrs));
 
-/* Set up a screen streaming receiver. */
+/* Receive and free a screen streaming frame.
+ * The screen is a double pointer because it is allocated or reallocated
+ * when required only. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_getscreen
-	OF((casio_link_t *casio__handle,
-		casio_link_screen_t *casio__callback, void *casio__scookie));
+CASIO_EXTERN int CASIO_EXPORT casio_get_screen
+	OF((casio_link_t *casio__handle, casio_screen_t **casio__screen));
+
+CASIO_EXTERN int CASIO_EXPORT casio_make_screen
+	OF((casio_screen_t **casio__screen, unsigned int casio__width,
+		unsigned int casio__height));
+CASIO_EXTERN int CASIO_EXPORT casio_free_screen
+	OF((casio_screen_t *casio__screen));
 
 /* Backup the ROM. */
 

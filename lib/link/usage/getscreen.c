@@ -21,58 +21,105 @@
 #define WIDTH  CASIO_SEVEN_MAX_VRAM_WIDTH
 #define HEIGHT CASIO_SEVEN_MAX_VRAM_HEIGHT
 
+/* ---
+ * Screen management.
+ * --- */
+
+int CASIO_EXPORT casio_make_screen(casio_screen_t **screenp,
+	unsigned int width, unsigned int height)
+{
+	casio_screen_t *screen;
+	casio_pixel_t **pixels, *base;
+	int y;
+
+	/* Allocate and prepare the screen. */
+
+	screen = casio_alloc(sizeof(casio_screen_t)
+		+ sizeof(casio_pixel_t*) * width
+		+ sizeof(casio_pixel_t) * width * height, 1);
+	if (!screen)
+		return (casio_error_alloc);
+
+	screen->casio_screen_width = width;
+	screen->casio_screen_realwidth = width;
+	screen->casio_screen_height = height;
+	screen->casio_screen_realheight = height;
+	screen->casio_screen_pixels = (casio_pixel_t **)&screen[1];
+
+	/* Prepare the pixels. */
+
+	pixels = screen->casio_screen_pixels;
+	base = (casio_pixel_t*)(&pixels[height]);
+	for (y = height - 1; y >= 0; y--)
+		pixels[y] = base + y * width;
+
+	*screenp = screen;
+	return (0);
+}
+
+int CASIO_EXPORT casio_free_screen(casio_screen_t *screen)
+{
+	casio_free(screen);
+	return (0);
+}
+
+/* ---
+ * Gather the screen.
+ * --- */
+
 /**
- *	casio_getscreen:
+ *	casio_get_screen:
  *	Get the screen.
  *
  *	@arg	handle		the link handle.
- *	@arg	callback	the main callback for the function.
- *	@arg	scookie		the callback cookie.
+ *	@arg	screen		the screen to allocate/reallocate/reuse.
  *	@return				if it worked.
  */
 
-int CASIO_EXPORT casio_getscreen(casio_link_t *handle,
-	casio_link_screen_t *callback, void *cbcookie)
+int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
+	casio_screen_t **screenp)
 {
-	int err = 0, y;
-	casio_pixel_t **pixels = NULL, *base;
-	unsigned int width, height;
+	int err = 0;
+	casio_screen_t *screen;
 
-	/* make checks. */
+	/* Make checks. */
+
 	chk_handle(handle);
 	chk_seven(handle); /* TODO: SCSI? */
 	chk_passive(handle);
 
-	/* allocate pixels. */
-	pixels = casio_alloc(sizeof(casio_pixel_t*) * HEIGHT
-		+ sizeof(casio_pixel_t) * WIDTH * HEIGHT, 1);
-	if (!pixels) failure(alloc);
+	/* Prepare the screen. */
 
-	/* prepare pixels. */
-	base = (casio_pixel_t*)(pixels + HEIGHT);
-	for (y = HEIGHT - 1; y >= 0; y--)
-		pixels[y] = base + y * WIDTH;
+	screen = *screenp;
+	if (!(screen && screen->casio_screen_realwidth == WIDTH
+	 && screen->casio_screen_realheight)) {
+		/* Allocate the thing first, so that if we fail, the screen is
+		 * still there to be used by the user, in case. */
 
-	/* main loop */
-	while (1) {
-		/* get packet */
-		if ((err = casio_seven_receive(handle, 0)))
-			goto fail;
-		if (response.casio_seven_packet_type != casio_seven_type_ohp)
-			failure(unknown);
+		if ((err = casio_make_screen(&screen, WIDTH, HEIGHT)))
+			return (err);
 
-		/* convert */
-		width  = response.casio_seven_packet_width;
-		height = response.casio_seven_packet_height;
-		casio_decode_picture(pixels,
-			response.casio_seven_packet_vram,
-			response.casio_seven_packet_pictype,
-			width, height);
-		(*callback)(cbcookie, width, height, pixels);
+		if (*screenp)
+			casio_free_screen(*screenp);
+		*screenp = screen;
 	}
 
-	err = 0;
-fail:
-	casio_free(pixels);
+	/* Get the screen packet. */
+
+	if ((err = casio_seven_receive(handle, CASIO_SEVEN_RECEIVEFLAG_SCRALIGN)))
+		return (err);
+	if (response.casio_seven_packet_type != casio_seven_type_ohp)
+		return (casio_error_unknown);
+
+	/* Convert the screen buffer. */
+
+	screen->casio_screen_width  = response.casio_seven_packet_width;
+	screen->casio_screen_height = response.casio_seven_packet_height;
+	casio_decode_picture(screen->casio_screen_pixels,
+		response.casio_seven_packet_vram,
+		response.casio_seven_packet_pictype,
+		screen->casio_screen_width,
+		screen->casio_screen_height);
+
 	return (0);
 }

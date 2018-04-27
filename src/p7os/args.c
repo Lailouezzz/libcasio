@@ -23,10 +23,12 @@
 #include <getopt.h>
 #include <errno.h>
 
-/* ************************************************************************* */
-/*  Help and version messages                                                */
-/* ************************************************************************* */
+/* ---
+ * Help and version messages.
+ * --- */
+
 /* The version message - that's when the President comes in */
+
 static const char version_message[] =
 BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
 "Maintained by " MAINTAINER ".\n"
@@ -36,17 +38,20 @@ BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
 "FITNESS FOR A PARTICULAR PURPOSE.";
 
 /* Main help message */
+
 static const char help_main0[] =
 "Usage: " BIN " [--version|-v] [--help|-h] [--com <device>]\n"
 "            [--no-prepare] [--uexe <path>]\n"
 "            <subcommand> [options...]\n"
 "\n"
 "This program interacts with a CASIO calculator's firmware.\n"
-"Keep in mind that using it is dangerous and could easily brick your\n"
-"calculator if you aren't careful enough.\n"
+"Keep in mind that using it is HIGHLY DANGEROUS and could easily brick your\n"
+"calculator if you aren't careful enough. AVOID USING IT IF YOU DO NOT\n"
+"KNOW WHAT YOU'RE DOING.\n"
 "\n"
 "Subcommands you can use are :\n"
-"   prepare-only      Set-up the update program, but leave it for other programs\n"
+"   prepare-only      Set-up the update program, but leave it for other "
+	"programs\n"
 "                     to interact with it.\n"
 "   get               Get the OS image.\n"
 "   flash             Flash the OS image.\n"
@@ -66,16 +71,19 @@ static const char help_main1[] =
 "                     calculator connected using direct USB.\n"
 "  --no-prepare       Use the current environment, instead of uploading one.\n"
 "  -u, --uexe <path>  Use a custom update program.\n"
-"                     If `--no-prepare` is not given, this option is required.\n"
+"                     If `--no-prepare` is not given, this option is "
+	"required.\n"
 "\n"
 "Type \"" BIN " <subcommand> --help\" for some help about a subcommand.\n"
 "Report bugs to " MAINTAINER ".";
 
-/* Subcommands help messages footer */
+/* Subcommands help messages footer. */
+
 #define FOOT \
 	"\nType \"" BIN " --help\" for other subcommands and general options."
 
 /* Help message for prepare subcommand  */
+
 static const char help_prepare_only[] =
 "Usage: " BIN " prepare-only\n"
 "Send the P7 server on the calculator for further operations.\n"
@@ -83,6 +91,7 @@ static const char help_prepare_only[] =
 FOOT;
 
 /* Help message for get subcommand */
+
 static const char help_get[] =
 "Usage: " BIN " get [-o <os.bin>]\n"
 "Get the calculator OS image.\n"
@@ -92,13 +101,16 @@ static const char help_get[] =
 FOOT;
 
 /* Help message for flash subcommand. */
+
 static const char help_flash[] =
 "Usage: " BIN " flash <rom.bin>\n"
 "Flash the calculator's OS image.\n"
 FOOT;
-/* ************************************************************************* */
-/*  Main help message.                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Put the help message.
+ * --- */
+
 /**
  *	put_loglevel:
  *	Put a loglevel (for listing).
@@ -111,7 +123,8 @@ static void put_loglevel(char **first, const char *level)
 {
 	if (!*first) {
 		*first = malloc(strlen(level) + 2);
-		if (!*first) return ;
+		if (!*first)
+			return ;
 		strcpy(*first + 1, level);
 		**first = 'F';
 		return ;
@@ -146,10 +159,13 @@ static void put_help(void)
 	/* second big part */
 	puts(help_main1);
 }
-/* ************************************************************************* */
-/*  Main function                                                            */
-/* ************************************************************************* */
-/* Help macro */
+
+/* ---
+ * Main argument parsing function.
+ * --- */
+
+/* Help macro. */
+
 #define sub_init(CMD, NARGS) { \
 	args->menu = mn_##CMD; \
 	if (help || pc != (NARGS)) { \
@@ -158,6 +174,7 @@ static void put_help(void)
 	}}
 
 /* Options. */
+
 static const char shopts[] = "hvu:o:#";
 static const struct option longopts[] = {
 	{"help",             no_argument, NULL, 'h'},
@@ -184,58 +201,82 @@ static const struct option longopts[] = {
 
 int parse_args(int ac, char **av, args_t *args)
 {
-	int c, help = 0, version = 0;
+	int c, help = 0, version = 0, pc;
+	char **pv, *sub;
 	const char *s_out = "os.bin", *s_uexe = NULL, *s_log = NULL;
 
 	/* Initialize the arguments. */
-	memset(args, 0, sizeof(*args));
 
-	/* get all options */
+	args->menu = 0;
+	args->noprepare = 0;
+	args->com = NULL;
+	args->local = NULL;
+	args->localpath = NULL;
+	args->uexe = NULL;
+
+	/* Get all options. */
+
 	opterr = 0;
-	while (1) {
-		c = getopt_long(ac, av, shopts, longopts, NULL);
-		if (c < 0) break;
+	while ((c = getopt_long(ac, av, shopts, longopts, NULL)) >= 0) switch (c) {
+		case 'h':
+			help = 1;
+			break;
+		case 'v':
+			version = 1;
+			break;
 
-		switch (c) {
-		case 'h': help    = 1; break;
-		case 'v': version = 1; break;
+		/* COM port, should prepare or not. */
 
-		/* COM port, should prepare or not */
-		case 'c': args->com       = optarg; break;
-		case 'n': args->noprepare = 1;      break;
+		case 'c':
+			args->com = optarg;
+			break;
+		case 'n':
+			args->noprepare = 1;
+			break;
 
 		/* log level, Update.Exe, output path */
-		case 'l': s_log  = optarg; break;
-		case 'u': s_uexe = optarg; break;
-		case 'o': s_out  = optarg; break;
 
-		/* error */
+		case 'l':
+			s_log = optarg;
+			break;
+		case 'u':
+			s_uexe = optarg;
+			break;
+		case 'o':
+			s_out = optarg;
+			break;
+
+		/* Error. */
+
 		case '?':
 			if (optopt == 'o')
-				log("-o, --output: expected an argument\n");
+				fprintf(stderr, "-o, --output: expected an argument\n");
 			else if (optopt == 'c')
-				log("--com: expected an argument\n");
+				fprintf(stderr, "--com: expected an argument\n");
 			else if (optopt == 'u')
-				log("-u, --uexe: expected an argument\n");
+				fprintf(stderr, "-u, --uexe: expected an argument\n");
 			else
 				break;
 			return (1);
-		}
 	}
 
-	/* check for version */
+	/* Check for version. */
+
 	if (version) {
 		puts(version_message);
 		return (1);
 	}
 
-	/* get non-option arguments (subcommand and parameters) */
-	int pc = ac - optind;
-	char **pv = &av[optind];
-	char *sub = pc ? pv[0] : NULL;
-	pc--; pv++;
+	/* Get non-option arguments (subcommand and parameters). */
 
-	/* subcommand. */
+	pc = ac - optind;
+	pv = &av[optind];
+	sub = pc ? pv[0] : NULL;
+	pc--;
+	pv++;
+
+	/* Subcommand parsing. */
+
 	char fpmode[3] = "r\0";
 	if (!sub || !strcmp(sub, "help")) {
 		put_help();
@@ -243,12 +284,12 @@ int parse_args(int ac, char **av, args_t *args)
 	} else if (!strcmp(sub, "version")) {
 		puts(version_message);
 		return (1);
-
 	} else if (!strcmp(sub, "prepare-only")) {
 		sub_init(prepare_only, 0)
 
 		if (args->noprepare) {
-			log("So we should prepare but we should not prepare? Duh!\n");
+			fprintf(stderr,
+				"So we should prepare but we should not prepare? Duh!\n");
 			return (1);
 		}
 	} else if (!strcmp(sub, "get")) {
@@ -259,15 +300,17 @@ int parse_args(int ac, char **av, args_t *args)
 		sub_init(flash, 1)
 		args->localpath = pv[0];
 	} else {
-		log("Unknown subcommand '%s'.\n", sub);
+		fprintf(stderr, "Unknown subcommand '%s'.\n", sub);
 		return (1);
 	}
 
-	/* open destination file */
+	/* Open destination file. */
+
 	if (args->localpath) {
 		FILE *localfile = fopen(args->localpath, fpmode);
 		if (!localfile) {
-			log("Could not open local file: %s\n", strerror(errno));
+			fprintf(stderr, "Could not open local file: %s\n",
+				strerror(errno));
 			return (1);
 		}
 
@@ -276,40 +319,51 @@ int parse_args(int ac, char **av, args_t *args)
 			fpmode[0] == 'w' || fpmode[1] == '+' ? localfile : NULL,
 			1, 1);
 		if (err) {
-			log("Could not make a stream out of local file: %s\n",
+			fprintf(stderr, "Could not make a stream out of local file: %s\n",
 				casio_strerror(err));
 			return (1);
 		}
 	}
 
-	/* open update.exe file */
+	/* Open update.exe file. */
+
 	if (!args->noprepare) {
+		FILE *uexe;
+		int err;
+
 		if (!s_uexe) {
-			log("One of `-u <file>` or `--no-prepare` is expected!\n");
-			if (args->local) casio_close(args->local);
+			fprintf(stderr,
+				"One of `-u <file>` or `--no-prepare` is expected!\n");
+			if (args->local)
+				casio_close(args->local);
 			return (1);
 		}
 
-		FILE *uexe = fopen(s_uexe, "r");
+		uexe = fopen(s_uexe, "r");
 		if (!uexe) {
-			log("Could not open update program: %s\n", strerror(errno));
-			if (args->local) casio_close(args->local);
+			fprintf(stderr, "Could not open update program: %s\n",
+				strerror(errno));
+			if (args->local)
+				casio_close(args->local);
 			return (1);
 		}
 
-		int err = casio_open_stream_file(&args->uexe,
+		err = casio_open_stream_file(&args->uexe,
 			uexe, NULL, 1, 0);
 		if (err) {
-			log("Could not make a stream out of the update.exe: %s\n",
+			fprintf(stderr,
+				"Could not make a stream out of the update.exe: %s\n",
 				casio_strerror(err));
-			if (args->local) casio_close(args->local);
+			if (args->local)
+				casio_close(args->local);
 			return (1);
 		}
 	}
 
-	/* set the log level */
-	if (s_log) casio_setlog(s_log);
+	/* Set the log level. */
 
-	/* everything went well :) */
+	if (s_log)
+		casio_setlog(s_log);
+
 	return (0);
 }

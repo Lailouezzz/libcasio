@@ -25,6 +25,6 @@
 
 /* Prototypes. */
 
-int parse_args(int ac, char **av, int *zoom);
+int parse_args(int ac, char **av, unsigned int *zoom);
 
 #endif /* MAIN_H */
