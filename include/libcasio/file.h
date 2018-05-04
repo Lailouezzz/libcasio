@@ -23,15 +23,17 @@
 # include "version.h"
 # include "date.h"
 
-/* ************************************************************************* */
-/*  Description                                                              */
-/* ************************************************************************* */
+/* ---
+ * Description.
+ * --- */
+
 /* This header is about files that are adapted for most filesystems out there,
  * such as G1M, G1A, G3E, et caetera.
  *
  * Here are the managed file types: */
 
 typedef unsigned int casio_filetype_t;
+
 # define casio_filetype_addin        0x0001
 # define casio_filetype_mcs          0x0002
 # define casio_filetype_eact         0x0004
@@ -51,6 +53,7 @@ typedef unsigned int casio_filetype_t;
  * pictures for the fx-CP platform. */
 
 typedef unsigned int casio_filefor_t;
+
 # define casio_filefor_none     0x0000
 # define casio_filefor_fx       0x0001
 # define casio_filefor_cp       0x0002
@@ -93,9 +96,11 @@ typedef struct casio_file_s {
 	char             casio_file_intname[12];
 	casio_version_t  casio_file_version;
 } casio_file_t;
-/* ************************************************************************* */
-/*  Methods                                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Methods.
+ * --- */
+
 /* Make a file. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_make_picture

@@ -22,7 +22,17 @@
 # ifndef LIBCASIO_DISABLED_LIBUSB
 #  include <libusb.h>
 
-# define BUFSIZE 2048
+/* These `ENDPOINT_IN` and `ENDPOINT_OUT` are taken from the definitions
+ * made by Nessotrin in UsbConnector. I can't really explain them, and
+ * knowing the type of person he is, I'm pretty sure he got these through
+ * test-driven development. */
+
+#  define ENDPOINT_IN (LIBUSB_ENDPOINT_IN | LIBUSB_TRANSFER_TYPE_BULK)
+#  define ENDPOINT_OUT (LIBUSB_ENDPOINT_OUT | LIBUSB_TRANSFER_TYPE_ISOCHRONOUS)
+
+/* Cookie definition used in the callbacks. */
+
+#  define BUFSIZE 2048
 
 typedef struct {
 	libusb_context *_context;
@@ -54,6 +64,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_libusb_read
 CASIO_EXTERN int CASIO_EXPORT casio_libusb_write
 	OF((cookie_libusb_t *casio__cookie,
 		const unsigned char *casio__data, size_t casio__size));
+
+/* SCSI callbacks. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_libusb_scsi_request
+	OF((cookie_libusb_t *casio__cookie, casio_scsi_t *casio__request));
 
 # endif
 #endif /* LOCAL_STREAM_BUILTIN_LIBUSB_H */

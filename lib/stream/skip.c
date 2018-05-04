@@ -29,27 +29,8 @@
 
 int CASIO_EXPORT casio_skip(casio_stream_t *stream, size_t size)
 {
-	unsigned char buf[128];
+	/* Use what has been implemented in the `casio_seek()` function to
+	 * skip N bytes. */
 
-	/* initial checks */
-	if (!stream->casio_stream_mode & CASIO_OPENMODE_READ)
-		return (casio_error_noread);
-	if (!size) return (0);
-
-	/* main loop */
-	msg((ll_info, "Skipping %" CASIO_PRIuSIZE " bytes.", size));
-	while (size) {
-		/* get the size of the data to read */
-		size_t rd = min(size, 128);
-
-		/* read */
-		int err = casio_read(stream, buf, rd);
-		if (err) return (err);
-
-		/* less size */
-		size -= rd;
-	}
-
-	/* no error! */
-	return (0);
+	return (casio_seek(stream, (casio_off_t)size, CASIO_SEEK_CUR));
 }

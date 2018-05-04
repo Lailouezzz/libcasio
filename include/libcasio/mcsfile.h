@@ -37,9 +37,11 @@ CASIO_BEGIN_NAMESPACE
  *
  * As there are few formats, it should be possible to manage them all
  * in libcasio. */
-/* ************************************************************************* */
-/*  Main memory file types                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory file types.
+ * --- */
+
 /* Here are all the file types that are managed by libcasio. */
 
 typedef unsigned long casio_mcsfile_type_t;
@@ -105,7 +107,8 @@ typedef unsigned long casio_mcstype_t;
 
 # define casio_mcstype_end         0x00000400
 
-/* Macros to check if the type uses the ID, and to interact with it */
+/* Macros to check if the type uses the ID, and to interact with it. */
+
 # define casio_mcshead_uses_id(CASIO__H) (((CASIO__H)->casio_mcshead_type & (\
 	casio_mcstype_list | casio_mcstype_mat  | casio_mcstype_vct | \
 	casio_mcstype_pict | casio_mcstype_capt | casio_mcstype_string) || \
@@ -113,9 +116,11 @@ typedef unsigned long casio_mcstype_t;
 	 (CASIO__H)->casio_mcshead_count == 1)))
 # define casio_get_id_major(CASIO__I) ((CASIO__I) >> 6)
 # define casio_get_id_minor(CASIO__I) ((CASIO__I) & 0x3F)
-/* ************************************************************************* */
-/*  Main memory flags and platforms                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory flags and platforms.
+ * --- */
+
 /* Main memory files in libcasio have various options.
  * Here are the core flags: */
 
@@ -141,13 +146,16 @@ typedef unsigned int casio_mcsinfo_t;
 # define casio_mcsfor_cas50     0x04000000 /* legacy CAS50  header */
 # define casio_mcsfor_cas100    0x08000000 /* legacy CAS100 header */
 
-/* Aliases */
+/* Aliases. */
+
 # define casio_mcsfor_cas       casio_mcsfor_cas40
 # define casio_mcsfor_caspro    casio_mcsfor_cas50
 # define casio_mcsfor_graph100  casio_mcsfor_cas100
-/* ************************************************************************* */
-/*  MCS cell                                                                 */
-/* ************************************************************************* */
+
+/* ---
+ * MCS Cell.
+ * --- */
+
 /* Numbers in various MCS file formats (lists, matrixes, variables,
  * spreadsheets) have a real part (BCD encoded), an imaginary part
  * (BCD encoded) and flags. Here is the structure representing this.
@@ -163,9 +171,11 @@ typedef struct casio_mcscell_s {
 	casio_bcd_t  casio_mcscell_real;
 	casio_bcd_t  casio_mcscell_imgn;
 } casio_mcscell_t;
-/* ************************************************************************* */
-/*  Main memory file head                                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory file head.
+ * --- */
+
 /* Filenames and directory names are not the only things which characterize
  * MCS files; that's why a separate structure representing the meta information
  * about MCS files are preferable. This head structure is also used to
@@ -208,9 +218,11 @@ typedef struct casio_mcshead_s {
 	char casio_mcshead_cas_app[4];
 	char casio_mcshead_datatype[3];
 } casio_mcshead_t;
-/* ************************************************************************* */
-/*  Main memory file                                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory file.
+ * --- */
+
 /* Here is the file data. Its content depends on what's in the head. */
 
 typedef struct casio_mcsfile_s {
@@ -239,10 +251,13 @@ typedef struct casio_mcsfile_s {
 	(F)->casio_mcsfile_head.casio_mcshead_password[0]
 # define casio_remove_password(F) \
 	(F)->casio_mcsfile_head.casio_mcshead_password[0] = 0
-/* ************************************************************************* */
-/*  Utilities                                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Utilities.
+ * --- */
+
 CASIO_BEGIN_DECLS
+
 /* Make a main memory file, prepare it, and free it. */
 
 CASIO_EXTERN int  CASIO_EXPORT casio_make_mcsfile

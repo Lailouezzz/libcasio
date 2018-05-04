@@ -35,10 +35,45 @@ int CASIO_EXPORT casio_seek(casio_stream_t *stream, casio_off_t offset,
 
 	failure(whence != CASIO_SEEK_SET && whence != CASIO_SEEK_CUR
 	 && whence != CASIO_SEEK_END, casio_error_op)
+
+	/* Check if the job isn't already done. */
+
+	if ((whence == CASIO_SEEK_CUR && !offset)
+	 || (whence == CASIO_SEEK_SET && offset == stream->casio_stream_offset))
+		return (0);
+
+	/* Try to seek using the dedicated function. */
+
 	s = getcb(stream, seek);
-	if (!s) return (casio_error_op);
-	err = (*s)(stream->casio_stream_cookie, &offset, whence);
-	failure(err, err)
+	if (s) {
+		/* The callback exists, let's use it! */
+
+		err = (*s)(stream->casio_stream_cookie, &offset, whence);
+		failure(err, err)
+	} else if (whence == CASIO_SEEK_CUR && offset > 0
+	 && stream->casio_stream_mode & CASIO_OPENMODE_READ) {
+		/* Fallback mehod for skipping bytes: read until N bytes have
+		 * been skipped. */
+
+		{
+			unsigned char buf[128];
+			size_t to_skip = (size_t)offset;
+
+			do {
+				size_t rd = min(to_skip, 128);
+
+				/* Read that much from the stream. */
+
+				if ((err = casio_read(stream, buf, rd)))
+					goto fail;
+
+				to_skip -= rd;
+			} while (to_skip);
+		}
+	} else {
+		err = casio_error_op;
+		goto fail;
+	}
 
 	stream->casio_stream_offset = offset;
 	err = 0;

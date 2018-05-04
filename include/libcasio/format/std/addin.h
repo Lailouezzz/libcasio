@@ -24,13 +24,16 @@ CASIO_BEGIN_NAMESPACE
 
 /* Add-ins are compiled programs. They only have one standard part,
  * These add-ins usually have the `g1a`, `g3a` or `c1a` extension. */
-/* ************************************************************************* */
-/*  Legacy fx systems add-ins (G1A)                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Legacy fx systems add-ins (G1A).
+ * --- */
+
 /* G1A subheader is the following: */
 
 # define G1A_ICON_WIDTH 30
 # define G1A_ICON_HEIGHT 17
+
 typedef struct casio_addin_subheader_s {
 	/* the internal name, of format "@APPNAME".
 	 *	useful for add-ins calling themselves... I guess? */
@@ -78,9 +81,11 @@ typedef struct casio_addin_subheader_s {
 } casio_addin_subheader_t;
 
 /* Then the G1A file will just contain the add-in code and stop. */
-/* ************************************************************************* */
-/*  Classpad and Prizm add-ins (C1A, G3A)                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Classpad and Prizm add-ins (C1A, G3A).
+ * --- */
+
 /* The two formats both have the Standard Subheader, then, for the C1A,
  * the Classpad-specific subheader, and for the G3A, the Prizm-specific
  * subheader.
@@ -89,8 +94,10 @@ typedef struct casio_addin_subheader_s {
 
 # define G3A_ICON_WIDTH 92
 # define G3A_ICON_HEIGHT 64
+
 typedef struct casio_prizm_addin_subheader_s {
-	/* selected and unselected icon image */
+	/* Selected and unselected icon image. */
+
 	casio_uint8_t casio_prizm_addin_subheader_selected_icon_image[0x3000];
 	casio_uint8_t casio_prizm_addin_subheader_unselected_icon_image[0x3000];
 } casio_prizm_addin_subheader_t;
@@ -99,14 +106,18 @@ typedef struct casio_prizm_addin_subheader_s {
 
 # define C1A_ICON_WIDTH 46
 # define C1A_ICON_HEIGHT 30
+
 typedef struct casio_classpad_addin_subheader_s {
-	/* unknown bytes */
+	/* Unknown bytes. */
+
 	casio_uint8_t  casio_classpad_addin_subheader__unknown0[0x2C];
 
-	/* this is an approximation (46x30 pixels, packed 1-bit) */
+	/* This is an approximation (46x30 pixels, packed 1-bit). */
+
 	casio_uint8_t  casio_classpad_addin_subheader_icon[172];
 
-	/* unknown */
+	/* Unknown. */
+
 	casio_uint8_t  casio_classpad_addin_subheader__unknown1[0xC54];
 } casio_classpad_addin_subheader_t;
 

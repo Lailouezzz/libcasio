@@ -29,8 +29,6 @@
  *	@return				the error code (0 if ok).
  */
 
-# define ENDPOINT_OUT (LIBUSB_ENDPOINT_OUT | LIBUSB_TRANSFER_TYPE_ISOCHRONOUS)
-
 int CASIO_EXPORT casio_libusb_write(cookie_libusb_t *cookie,
 	const unsigned char *data, size_t size)
 {

@@ -80,20 +80,23 @@ typedef struct casio_link_info_s {
 
 /* The user shall confirm or not a link action. */
 
-typedef int casio_link_confirm_t OF((void *casio__cookie));
+typedef int CASIO_EXPORT casio_link_confirm_t
+	OF((void *casio__cookie));
 
 /* This callback is for displaying the progress of an operation (usually
  * file/data transfer). It receives the packet ID and the total number of
  * packets. For initialization of the display, this callback is called
  * with a packet ID superior to the number of packets. */
 
-typedef void casio_link_progress_t OF((void *casio__cookie,
-	unsigned int casio__id, unsigned int casio__total));
+typedef void CASIO_EXPORT casio_link_progress_t
+	OF((void *casio__cookie, unsigned int casio__id,
+		unsigned int casio__total));
 
 /* List files. */
 
-typedef void casio_link_list_t OF((void *casio__cookie,
-	const char *casio__path, const casio_stat_t *casio__stat));
+typedef void CASIO_EXPORT casio_link_list_t
+	OF((void *casio__cookie, const char *casio__path,
+		const casio_stat_t *casio__stat));
 
 /* ---
  * Other structures.
@@ -162,20 +165,24 @@ CASIO_EXTERN void CASIO_EXPORT casio_unlock_link
 
 CASIO_EXTERN const casio_link_info_t* CASIO_EXPORT casio_get_link_info
 	OF((casio_link_t *casio__handle));
-/* ************************************************************************* */
-/*  Run servers.                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * Run servers.
+ * --- */
+
 /* Run a Protocol 7.00 server. */
 
-typedef int casio_seven_server_func_t OF((void *casio__cookie,
-	casio_link_t *casio__handle));
+typedef int CASIO_EXPORT casio_seven_server_func_t
+	OF((void *casio__cookie, casio_link_t *casio__handle));
 
 CASIO_EXTERN int CASIO_EXPORT casio_seven_serve
 	OF((casio_link_t *casio__handle,
 		casio_seven_server_func_t **casio__callbacks, void *casio__cookie));
-/* ************************************************************************* */
-/*  General-purpose link operations                                          */
-/* ************************************************************************* */
+
+/* ---
+ * General-purpose link operations.
+ * --- */
+
 /* Set the link settings. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_setlink

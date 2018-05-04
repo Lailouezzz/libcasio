@@ -49,7 +49,8 @@ int CASIO_EXPORT casio_add_default_usb_stream(casio_openusbstream_t *function)
 	struct corresp *c; int num;
 
 	for (c = openusbs, num = NUM; c->_valid && num; c++, num--);
-	if (!num) return (casio_error_op);
+	if (!num)
+		return (casio_error_op);
 
 	c->_valid = 1;
 	c->_openusb = function;
@@ -73,7 +74,8 @@ int CASIO_EXPORT casio_open_usb_stream(casio_stream_t **stream)
 	for (; c->_valid; c++) {
 		err = (*c->_openusb)(stream);
 
-		if (!err) return (0);
+		if (!err)
+			return (0);
 		if (err != casio_error_nocalc)
 			return (err);
 	}

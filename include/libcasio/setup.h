@@ -21,9 +21,6 @@
 # include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  Description                                                              */
-/* ************************************************************************* */
 /* The real setup from the calculator is either a group of 100/200 byte
  * register, or a string-byte map (e.g. "Axes" -> 0x01).
  * This structure reduces this big bulky thing to a single usable structure.
@@ -102,9 +99,11 @@ typedef struct casio_setup_s {
 	unsigned int  casio_setup_mflags;
 	unsigned char casio_setup_vals[casio_setup_nvals];
 } casio_setup_t;
-/* ************************************************************************* */
-/*  Methods                                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Utilities.
+ * --- */
+
 CASIO_BEGIN_DECLS
 
 /* Initialize the structure. */

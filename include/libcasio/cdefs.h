@@ -38,12 +38,15 @@
 # include <time.h>
 
 /* Check the library version. */
+
 # define LIBCASIO_PREREQ(CASIO__MAJ, CASIO__MIN) \
 	((CASIO__MAJ) >  (LIBCASIO_MAJOR) || \
 	((CASIO__MAJ) == (LIBCASIO_MAJOR) && (CASIO__MIN) >= (LIBCASIO_MINOR)))
-/* ************************************************************************* */
-/*  Check for compilers                                                      */
-/* ************************************************************************* */
+
+/* ---
+ * Check for compilers.
+ * --- */
+
 /* First, GCC. */
 
 # if defined(CASIO_GNUC_PREREQ)
@@ -62,18 +65,22 @@
 # else
 #  define CASIO_MSC_PREREQ(CASIO__MAJ, CASIO__MIN) 0
 # endif
-/* ************************************************************************* */
-/*  Extern functions                                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Extern functions.
+ * --- */
+
 /* Some platforms require more than simply 'extern'.
  * Here are macros to control this. */
 
 # define CASIO_EXTERN extern
 # define CASIO_EXPORT
 # define CASIO_LOCAL  static
-/* ************************************************************************* */
-/*  Enumerations                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * Enumerations.
+ * --- */
+
 /* Enumerations can be great thanks to the compiler: better warnings,
  * better debug, better coding! */
 
@@ -83,9 +90,11 @@
 # else /* K&R C, no enums! */
 #  define LIBCASIO_USE_ENUMS 0
 # endif
-/* ************************************************************************* */
-/*  C++ declarations and namespaces management                               */
-/* ************************************************************************* */
+
+/* ---
+ * C++ declarations and namespaces management.
+ * --- */
+
 /* libcasio is made in C. */
 
 # if 0 /* hey, what about this? */
@@ -104,10 +113,12 @@
 #  define       CASIO_END_DECLS
 #  define   CASIO_END_NAMESPACE
 # endif
-/* ************************************************************************* */
-/*  `casio_attr_wur`: warn if the result is unused.                          */
-/* ************************************************************************* */
-/* That's pretty much all of it. */
+
+/* ---
+ * Warn if the result is unused.
+ * --- */
+
+/* To do that, we'll use the `casio_attr_wur` attribute. */
 
 # if CASIO_GNUC_PREREQ(4, 0)
 #  define casio_attr_wur __attribute__((warn_unused_result))

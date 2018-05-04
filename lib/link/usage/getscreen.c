@@ -64,19 +64,28 @@ int CASIO_EXPORT casio_free_screen(casio_screen_t *screen)
 }
 
 /* ---
- * Gather the screen.
+ * Gather the screen on a legacy fx device, or using legacy fx-CG formats.
+ * This also gathers a screen from the Prizm with protocol 7.00 compatibility.
  * --- */
 
-/**
- *	casio_get_screen:
- *	Get the screen.
+/* Legacy screenstreaming uses tweaks in Protocol 7.00 (managed in the
+ * libcasio Protocol 7.00 link core code) to transmit a continuous feed
+ * of images, not expecting the other party to answer (so we're not answering).
  *
- *	@arg	handle		the link handle.
- *	@arg	screen		the screen to allocate/reallocate/reuse.
- *	@return				if it worked.
+ * In fact, not continuous: the calculator only sends a frame when it feels
+ * like it, usually when the screen changes. Also, as the calculator doesn't
+ * wait for us to send screens (it starts sending screens as soon as it is
+ * on), it might be in the middle of sending a screen when we're joining in.
+ * Fortunately, there is a "screen alignment" function in the packet receiving
+ * function that we can use, that looks for the packet beginning. It may fail
+ * sometimes, and get a weird screen, but it does its best. */
+
+/**
+ *	casio_get_seven_screen:
+ *	Get the screen through protocol 7.00.
  */
 
-int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
+CASIO_LOCAL int casio_get_seven_screen(casio_link_t *handle,
 	casio_screen_t **screenp)
 {
 	int err = 0;
@@ -84,8 +93,6 @@ int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
 
 	/* Make checks. */
 
-	chk_handle(handle);
-	chk_seven(handle); /* TODO: SCSI? */
 	chk_passive(handle);
 
 	/* Prepare the screen. */
@@ -111,7 +118,7 @@ int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
 	if (response.casio_seven_packet_type != casio_seven_type_ohp)
 		return (casio_error_unknown);
 
-	/* Convert the screen buffer. */
+	/* Convert the screen buffer and return. */
 
 	screen->casio_screen_width  = response.casio_seven_packet_width;
 	screen->casio_screen_height = response.casio_seven_packet_height;
@@ -122,4 +129,29 @@ int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
 		screen->casio_screen_height);
 
 	return (0);
+}
+
+/* ---
+ * Public function.
+ * --- */
+
+/**
+ *	casio_get_screen:
+ *	Get the screen.
+ *
+ *	@arg	handle		the link handle.
+ *	@arg	screen		the screen to allocate/reallocate/reuse.
+ *	@return				if it worked.
+ */
+
+int CASIO_EXPORT casio_get_screen(casio_link_t *handle,
+	casio_screen_t **screenp)
+{
+	int err = 0;
+	casio_screen_t *screen;
+
+	chk_handle(handle);
+	chk_seven(handle); /* TODO: SCSI? */
+
+	return (casio_get_seven_screen(handle, screenp));
 }

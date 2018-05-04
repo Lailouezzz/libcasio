@@ -19,6 +19,7 @@
 #ifndef  LIBCASIO_CDEFS_INTEGERS_H
 # define LIBCASIO_CDEFS_INTEGERS_H 1
 # include "../cdefs.h"
+
 CASIO_BEGIN_NAMESPACE
 
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
@@ -54,11 +55,14 @@ typedef uint32_t casio_uint32_t;
 typedef unsigned char casio_uint8_t;
 
 /* 16-bit integer. */
+
 #  if (USHRT_MAX > 0xffffUL)
 #   error "No 16-bit type, exiting!"
 #  endif
 #  define CASIO_P16 "h"
 typedef unsigned short casio_uint16_t;
+
+/* 32-bit integer. */
 
 #  if    (UINT_MAX == 0xffffffffUL)
 #   define CASIO_P32 ""
@@ -67,11 +71,13 @@ typedef unsigned int   casio_uint32_t;
 #   define CASIO_P32 "l"
 typedef unsigned long  casio_uint32_t;
 #  else
-/* There is nothing between `char` and `short` and `char` is always
+
+/* There is nothing between `char` and `short`, and `char` is always
  * byte-wide;
  * `long long` is not defined in C89, and even if it can be used as a
  * compiler extension for C89, it is supposed to be 64-bit or more.
  * So basically we're running out of options here. */
+
 #   error "No 32-bit type, exiting!"
 #  endif
 
@@ -87,6 +93,7 @@ typedef unsigned long  casio_uint32_t;
 # endif
 
 /* printf thing for `size_t` */
+
 # if defined(_WIN64)
 #  define CASIO_PRIuSIZE "l64u"
 #  define CASIO_PRIxSIZE "l64x"

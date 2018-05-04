@@ -20,11 +20,13 @@
 # define LIBCASIO_FORMAT_STD_LANG_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  G1L - Language files for fx calculators                                  */
-/* ************************************************************************* */
+/* ---
+ * G1L - Language files for fx calculators.
+ * --- */
+
 /* It all starts with a header: */
 
 typedef struct casio_lang_subheader_s {
@@ -50,27 +52,34 @@ typedef struct casio_lang_subheader_s {
  *
  * The messages are null-terminated - once you get the offsets, you get
  * them completely. */
-/* ************************************************************************* */
-/*  G3L - Language files for Prizm                                           */
-/* ************************************************************************* */
+
+/* ---
+ * G3L - Language files for the Prizm.
+ * --- */
+
 /* G3L and G3N start with the StandardHeader and the Standard Subheader,
  * then the Prizm-specific subheader. After this, both the G3L and G3N
  * have this language header: */
 
 typedef struct casio_prizm_lang_subheader_s {
-	/* sequence: '4C 59 37 35 35 00 00 00' (LY755   ) */
+	/* Sequence: '4C 59 37 35 35 00 00 00' (LY755   ) */
+
 	casio_uint8_t  casio_prizm_lang_subheader_sequence[8];
 
-	/* unknown: 0x02 */
+	/* Unknown: 0x02 */
+
 	casio_uint8_t  casio_prizm_lang_subheader__unknown;
 
-	/* unused byte. */
+	/* Unused byte. */
+
 	casio_uint8_t  casio_prizm_lang_subheader__unused0;
 
-	/* number of messages ("possibly 0 base indexed") */
+	/* Number of messages ("possibly 0 base indexed") */
+
 	casio_uint32_t casio_prizm_lang_subheader_count;
 
-	/* unused bytes */
+	/* Unused bytes */
+
 	casio_uint8_t  casio_prizm_lang_subheader__unused1[2];
 } casio_prizm_lang_subheader_t;
 
@@ -80,5 +89,6 @@ typedef struct casio_prizm_lang_subheader_s {
  * And don't forget the footer (see `libcasio/format/std.h`) */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_STD_LANG_H */

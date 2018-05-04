@@ -23,6 +23,7 @@ CASIO_BEGIN_NAMESPACE
 CASIO_BEGIN_DECLS
 
 /* Get and set the log level at runtime. */
+
 CASIO_EXTERN void        CASIO_EXPORT casio_setlog
 	OF((const char *casio__level));
 CASIO_EXTERN const char* CASIO_EXPORT casio_getlog

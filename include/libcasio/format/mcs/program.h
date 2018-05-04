@@ -20,20 +20,24 @@
 # define LIBCASIO_FORMAT_MCS_PROGRAM_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Programs have a simple header: */
 
 typedef struct casio_mcs_programheader_s {
-	/* the program password. not encrypted, anything */
+	/* The program password. not encrypted, anything. */
+
 	casio_uint8_t casio_mcs_programheader_password[8];
 
-	/* and some alignment. */
+	/* And some alignment. */
+
 	casio_uint8_t casio_mcs_programheader__align[2];
 } casio_mcs_programheader_t;
 
 /* Then comes their content, multi-byte FONTCHARACTER encoded. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_MCS_PROGRAM_H */

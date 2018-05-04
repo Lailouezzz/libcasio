@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_STD_EACT_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* E-Activities are the format CASIO uses for in-calc documents.
@@ -124,5 +125,6 @@ typedef struct casio_eact_line_descriptor_s {
  * Which means in each node, there can be a content to parse. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_STD_EACT_H */

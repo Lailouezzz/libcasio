@@ -39,9 +39,10 @@ CASIO_BEGIN_NAMESPACE
 # define CASIO_BCD_GOODBUFSIZE \
 	(2 + CASIO_BCD_MANTISSA_SIZE + 4 + 2 + 1)
 
-/* ************************************************************************* */
-/*  Main type                                                                */
-/* ************************************************************************* */
+/* ---
+ * Main type.
+ * --- */
+
 /* libcasio type definition.
  * This is the "unzipped" BCD format. There are several, this is the one
  * libcasio will always convert to.
@@ -73,9 +74,10 @@ typedef struct casio_bcd_s {
 	char          casio_bcd_mant[CASIO_BCD_MANTISSA_SIZE];
 } casio_bcd_t;
 
-/* ************************************************************************* */
-/*  Raw formats                                                              */
-/* ************************************************************************* */
+/* ---
+ * Raw formats.
+ * --- */
+
 /* CAS BCD -- the old BCD format.
  *
  * First two nibbles are the integer part, the fourteen that follow are
@@ -113,9 +115,10 @@ typedef struct casio_mcsbcd_s {
 	unsigned char casio_mcsbcd__align[3];
 } casio_mcsbcd_t;
 
-/* ************************************************************************* */
-/*  Conversion utilities                                                     */
-/* ************************************************************************* */
+/* ---
+ * Conversion utilities.
+ * --- */
+
 CASIO_BEGIN_DECLS
 
 /* From and to MCS BCD. */

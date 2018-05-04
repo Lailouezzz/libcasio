@@ -18,15 +18,19 @@
  * ************************************************************************* */
 #include "../../internals.h"
 
-/* cookie structure */
+/* ---
+ * Cookie structure.
+ * --- */
+
 struct thecookie {
 	casio_stream_t *_stream;
 	casio_uint32_t *_checksum;
 };
 
-/* ************************************************************************* */
-/*  Callbacks                                                                */
-/* ************************************************************************* */
+/* ---
+ * Callbacks.
+ * --- */
+
 /**
  *	csum32_read:
  *	Read from this stream.
@@ -72,9 +76,10 @@ CASIO_LOCAL const casio_streamfuncs_t csum32_callbacks =
 casio_stream_callbacks_for_virtual(csum32_close,
 	csum32_read, NULL, NULL);
 
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	casio_open_csum32:
  *	Open a 32-bit checksum stream.
@@ -91,7 +96,9 @@ int CASIO_EXPORT casio_open_csum32(casio_stream_t **stream,
 	struct thecookie *cookie = NULL;
 	casio_openmode_t openmode;
 
-	/* FIXME: check original stream */
+	if (!casio_isreadable(original))
+		return (casio_error_op);
+
 	/* Allocate the cookie. */
 
 	cookie = casio_alloc(1, sizeof(struct thecookie));

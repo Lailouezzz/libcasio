@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_MCS_PICTURE_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Captures start with a simple header: */
@@ -40,5 +41,6 @@ typedef struct casio_mcs_captureheader_s {
  * and that's all. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_MCS_PICTURE_H */

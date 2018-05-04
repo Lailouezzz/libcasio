@@ -19,6 +19,7 @@
 #ifndef  LIBCASIO_VERSION_H
 # define LIBCASIO_VERSION_H
 # include "cdefs.h"
+
 CASIO_BEGIN_NAMESPACE
 
 /* CASIO's versions look like 'MM.mm.ABCD', where 'MM' is the major, 'mm' is
@@ -66,6 +67,7 @@ typedef struct casio_version_s {
 } casio_version_t;
 
 CASIO_BEGIN_DECLS
+
 /* And here are the utilities to check that a version has the
  * right format (for user interface, such as command-line argument checking),
  * and to decode/encode a version. */

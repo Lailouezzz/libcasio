@@ -176,13 +176,15 @@ CASIO_LOCAL unsigned int command_masks[] = {
  * - Lephenixnoir, Hackcell (some but less models). */
 
 CASIO_LOCAL env_corresp_t known_environments[] = {
-	/* bootcodes */
+	/* Bootcodes. */
+
 	{"Gy362000", {"fx-7400GII/fx-9860GII bootcode", MASK_ALL}},
 	{"Gy363000", {"fx-9750GII-2/fx-9860GII(-2) bootcode", MASK_ALL}},
 	{"Gy490000", {"fx-7400GII-2 bootcode", MASK_ALL}},
 	{"Ly755000", {"fx-CG20 bootcode", MASK_ALL | MASK_MCS}},
 
-	/* fx devices */
+	/* fx devices. */
+
 	{"Gy490006", {"fx-7400GII (Graph 25)",
 		MASK_ALL | MASK_RESET | MASK_MCS}},
 	{"Gy49000F", {"Graph 25+E (modified fx-7400GII-2)",
@@ -205,7 +207,8 @@ CASIO_LOCAL env_corresp_t known_environments[] = {
 		MASK_ALL | MASK_RESET | MASK_MCS | MASK_FLS
 			| MASK_OSUPDATE_1}},
 
-	/* terminating entry */
+	/* Terminating entry. */
+
 	{NULL, {"Default environment", MASK_ALL | MASK_MCS | MASK_FLS}}
 };
 /* ************************************************************************* */

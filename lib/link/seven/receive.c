@@ -244,10 +244,21 @@ CASIO_LOCAL int casio_seven_decode(casio_link_t *handle, int scralign)
 			image_size = 1024;
 		} else if (!memcmp(&buffer[1], "TYPZ1", 5)
 		 || !memcmp(&buffer[1], "TYPZ2", 5)) {
+			int typz_size_length; /* size field length */
 			casio_typz_t *s = (void*)&buffer[6];
 
 			msg((ll_info, "Prizm VRAM!"));
+			if (buffer[5] == '1')
+				typz_size_length = 6;
+			else /* '2' */
+				typz_size_length = 8;
+
+			COMPLETE_PACKET(typz_size_length)
 			COMPLETE_PACKET(sizeof(casio_typz_t))
+
+			image_size = casio_getascii(&buffer[6], typz_size_length);
+			s = (void*)&buffer[6 + typz_size_length];
+
 			response.casio_seven_packet_width =
 				casio_getascii(s->casio_typz_width, 4);
 			response.casio_seven_packet_height =
@@ -267,7 +278,6 @@ CASIO_LOCAL int casio_seven_decode(casio_link_t *handle, int scralign)
 			elsemsg((ll_error, "Unknown encoding: %.3s", s->casio_typz_enc));
 
 			/* FIXME: check size according to format? */
-			image_size = casio_getascii(s->casio_typz_size, 6);
 			msg((ll_info, "Image size: %uB", image_size));
 			check_sum = 1;
 		} else {

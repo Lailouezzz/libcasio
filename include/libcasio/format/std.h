@@ -27,9 +27,11 @@ CASIO_BEGIN_NAMESPACE
  * In fact, there is no name for the general format, only names for the
  * "subformats" based on this one (which are mainly made of their extensions,
  * such as G1M or G3P). */
-/* ************************************************************************* */
-/*  Standard Header                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Standard Header.
+ * --- */
+
 /* It all starts with a header, called Standard Header by Simon Lothar.
  * This Standard Header contains the total filesize, the standard type (add-in,
  * MCS, e-acts), some data that will be useful for the MCS type, and some
@@ -85,9 +87,11 @@ typedef struct casio_standard_header_s {
  *
  * After the Standard Header is read and the type is read, we have parts,
  * each with their own subheaders and their own subtilities. */
-/* ************************************************************************* */
-/*  Standard Subheader                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Standard Subheader.
+ * --- */
+
 /* Some Prizm/Classpad-related formats (language, fkeys, add-ins) use a
  * common subheader followed by a platform-specific subheader (which is the
  * same size of Prizm and Classpad, but doesn't seem to have the same
@@ -204,9 +208,11 @@ typedef struct casio_standard_classpad_subheader_s {
 /* Also, if the platform is the Prizm, there is a footer at the end of the
  * file, which is only made of a 32-bit checksum that should be equal to
  * the subheader checksum. */
-/* ************************************************************************* */
-/*  Standard Picture Header                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Standard Picture Header.
+ * --- */
+
 /* Picture formats (C2P, G3P) have a common picture standard subheader, which
  * is the following: */
 
@@ -243,9 +249,11 @@ typedef struct casio_standard_picheader_s {
 } casio_standard_picheader_t;
 
 /* Then we have the specific header -- see `libcasio/format/std/picture.h`. */
-/* ************************************************************************* */
-/*  Flavors                                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Flavors.
+ * --- */
+
 /* Where do you want to go next? Pick your poison. */
 
 CASIO_END_NAMESPACE

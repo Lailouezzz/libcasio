@@ -24,9 +24,11 @@
  * to you the different formats surrounding CASIO calculators: open or closed,
  * legacy or legacy, obfuscated or not, I hope you'll enjoy them as much
  * as I don't! */
-/* ************************************************************************* */
-/*  The CASIOLINK (CAS) format                                               */
-/* ************************************************************************* */
+
+/* ---
+ * The CASIOLINK (CAS) format.
+ * --- */
+
 /* This is the first file format used by the CASIO community; it was
  * more or less a dump of the communications protocol CASIO used until
  * the fx-9860G (Graph 85) came out, around 2004/2005.
@@ -38,9 +40,11 @@
  * You can find its description in the following header: */
 
 # include "format/cas.h"
-/* ************************************************************************* */
-/*  The GraphCard (GRC) format                                               */
-/* ************************************************************************* */
+
+/* ---
+ * The GraphCard (GRC) format.
+ * --- */
+
 /* The GraphCard is an external micro SD card reader for CASIO calculators,
  * made by Util Pocket (not sold anymore).
  *
@@ -50,9 +54,11 @@
  * the end.
  *
  * See the description of the CAS format above. */
-/* ************************************************************************* */
-/*  The FXI format                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * The FXI format.
+ * --- */
+
 /* fx-Interface, an old but well done proprietary interface by CASIO, has its
  * own format: the FXI format. It's an obfuscated format (althrough the
  * obfuscation algorithm has been found).
@@ -68,9 +74,11 @@
 # if 0
 #  include "format/fxi.h" -- TODO */
 # endif
-/* ************************************************************************* */
-/*  The Casemul format                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * The Casemul format.
+ * --- */
+
 /* Casemul is a CASIO emulator for Microsoft Windows. It is an old software
  * that has not been updated since 2005. It can import and export other files,
  * but save its files in its own format, which use the .cas extension
@@ -86,17 +94,21 @@
 /* Discover the rest in its dedicated header: */
 
 # include "format/casemul.h"
-/* ************************************************************************* */
-/*  The G1S format                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * The G1S format.
+ * --- */
+
 /* This format is basically a raw dump of the storage memory from the fx-9860G.
  * It won't work with fx-CP or fx-CG calculators, as the storage memory
  * has changed since. */
 
 # include "format/storage.h"
-/* ************************************************************************* */
-/*  The standard format                                                      */
-/* ************************************************************************* */
+
+/* ---
+ * The Standard format.
+ * --- */
+
 /* Since around 2004/2005, CASIO has adopted a single "superformat"; we call it
  * CASIO's standard format, previously known as the G1M format (it doesn't
  * really have a *public* name, other than its magics, like 'USBPower' or

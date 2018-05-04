@@ -40,7 +40,8 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 	int err = 0;
 	casio_link_t *handle;
 
-	/* allocate handle */
+	/* Allocate the handle. */
+
 	msg((ll_info, "Allocating and building the link handle!"));
 	*h = NULL;
 	if (!(*h = casio_alloc(1, sizeof(casio_link_t)))) {
@@ -48,12 +49,15 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 		goto fail;
 	}
 
-	/* initialize handle */
-	handle = *h; memset(handle, 0, sizeof(casio_link_t)); /* important! */
+	/* Initialize the handle. */
+
+	handle = *h;
+	memset(handle, 0, sizeof(casio_link_t)); /* important! */
 	casio_init_lock(&handle->casio_link_lock);
 	handle->casio_link_stream = stream;
 
-	/* initialize flags */
+	/* Initialize the flags. */
+
 	handle->casio_link_flags = 0;
 	if (flags & CASIO_LINKFLAG_ACTIVE)
 		handle->casio_link_flags |= casio_linkflag_active;
@@ -73,22 +77,26 @@ int CASIO_EXPORT casio_open_link(casio_link_t **h, unsigned long flags,
 	msg((ll_info, "[Options] Terminate: %s",
 		flags & CASIO_LINKFLAG_TERM ? "yes" : "no"));
 
-	/* set communication thingies */
+	/* Set communication properties. */
+
 	msg((ll_info, "Initializing stream settings."));
 	if (!settings)
 		casio_init_attrs(handle->casio_link_stream);
 	else
 		casio_set_attrs(handle->casio_link_stream, settings);
 
-	/* if active, start */
-	err = casio_seven_start(handle);
-	if (err) goto fail;
+	/* If active, start. */
 
-	/* initialization went alright */
+	err = casio_seven_start(handle);
+	if (err)
+		goto fail;
+
 	return (0);
 fail:
-	if (*h) casio_close_link(*h);
+	if (*h)
+		casio_close_link(*h);
 	*h = NULL;
+
 	return (err);
 }
 
@@ -101,17 +109,22 @@ fail:
 
 void CASIO_EXPORT casio_close_link(casio_link_t *handle)
 {
-	/* check if handle is already freed */
-	if (!handle) return ;
+	/* Check if handle is already freed. */
+
+	if (!handle)
+		return ;
 	msg((ll_info, "Let's end that mess."));
 
-	/* end communication -- FIXME: check error? */
+	/* End communication -- FIXME: check error? */
+
 	casio_seven_end(handle);
 
-	/* close stream */
+	/* Close stream. */
+
 	casio_close(handle->casio_link_stream);
 
-	/* free handle */
+	/* Free the handle. */
+
 	msg((ll_info, "freeing the handle!"));
 	casio_free(handle);
 }

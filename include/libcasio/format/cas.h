@@ -53,9 +53,11 @@ CASIO_BEGIN_NAMESPACE
  * have a fixed width, so they are named by the number of bytes they occupy.
  * Notice that, for what I know, content formats don't vary between header
  * types. The checksuming technique neither. */
-/* ************************************************************************* */
-/*  CAS40 header                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * CAS40 header.
+ * --- */
+
 /* The first header to have appeared is the CAS40 (40 bytes long).
  * It is known in CaS as the protocol the CFX-9700G uses.
  *
@@ -72,9 +74,11 @@ typedef struct casio_cas40_s {
 
 /* The specific bytes are different according to the datatype, but its
  * length is fixed. */
-/* ************************************************************************* */
-/*  CASDYN header                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * CASDYN header.
+ * --- */
+
 /* The CASDYN (dynamic size, super header) header appeared later.
  * It is known in CaS as the protocol the CFX-9850G uses.
  *
@@ -131,27 +135,32 @@ typedef struct casio_casdyn_s {
  * is read: */
 
 typedef struct casio_cas50_s {
-	/* types */
+	/* Types. */
+
 	casio_uint8_t  casio_cas50_data[2];
 
-	/* data length */
+	/* Data length */
+
 	casio_uint16_t casio_cas50_width;
 	casio_uint16_t casio_cas50_height;
 	casio_uint8_t  casio_cas50_name[8];
 
-	/* variable-related data */
+	/* Variable-related data. */
+
 	casio_uint8_t  casio_cas50_prefix[8]; /* "Variable" for vars,
 	                                 * "PROG\x99" "0\xFF\xFF" for progs,
 	                                 *  0xFFs otherwise */
 	casio_uint8_t  casio_cas50_aux[8]; /* variable: "R\x0A"/"C\x0A",
 	                              * editor: password */
 
-	/* something else (?) */
+	/* Something else (?) */
+
 	casio_uint8_t  casio_cas50_option1[2]; /* 'NL'? "\xFF\xFF" for progs */
 	casio_uint8_t  casio_cas50__reserved[12]; /* other options?
 	                                           * -> cf. CAT format */
 
-	/* end of packet */
+	/* End of packet. */
+
 	casio_uint8_t  casio_cas50_checksum;
 } casio_cas50_t;
 
@@ -163,31 +172,39 @@ typedef struct casio_cas50_s {
  * Anyway, here is the CAS100 header after the CASDYN header is read: */
 
 typedef struct casio_cas100_s {
-	/* drive?
+	/* Drive?
 	 * - "INF": system
 	 * - "FR0": segment
 	 * - "MSG": language
 	 * - "MR0": ?
 	 * - "S00": ? */
+
 	casio_uint8_t  casio_cas100_drive[3];
 
-	/* driver number, in ASCII (0x30 + <num>)
+	/* Driver number, in ASCII (0x30 + <num>)
 	 * "INF" is 1, "FR0" is 1-6, "MSG" is 1, "MR0" is 4, "S00" is 0 */
+
 	casio_uint8_t  casio_cas100_id;
 
-	/* group size (size of each fragment group part to be sent): 0x400, 1024 */
+	/* Group size (size of each fragment group part to be sent):
+	 * 0x400, 1024 */
+
 	casio_uint32_t casio_cas100_size;
 
 	/* ExportDrive: 0x80, type? */
+
 	casio_uint32_t casio_cas100_type;
 
-	/* drive size: 0x20000 bytes */
+	/* Drive size: 0x20000 bytes */
+
 	casio_uint32_t casio_cas100_drive_size;
 
 	/* 0xFFs */
+
 	casio_uint8_t  casio_cas100__unknown[18];
 
-	/* checksum */
+	/* Checksum */
+
 	casio_uint8_t  casio_cas100_checksum;
 } casio_cas100_t;
 
@@ -196,28 +213,35 @@ typedef struct casio_cas100_s {
  * source code, once again. */
 
 typedef struct casio_cas100info_s {
-	/* board identifier? "ZX945" */
+	/* Board identifier? "ZX945" */
+
 	casio_uint8_t  casio_cas100info_board[5];
 	casio_uint8_t  casio_cas100info_delim0; /* 0xFF */
 
-	/* serial settings? "038400N"
+	/* Serial settings? "038400N"
 	 * this would mean 38400 bauds, no parity (2 stop bits?) */
+
 	casio_uint8_t  casio_cas100info_settings[11];
 
 	/* ROM version? "1.00" or "1.01" */
+
 	casio_uint8_t  casio_cas100info_version[4];
 
-	/* values? */
+	/* Values? */
+
 	casio_uint32_t casio_cas100info__val1; /* 0xF00 or 0x1000;common: 0x1000 */
 	casio_uint32_t casio_cas100info__val2; /* 0x400 */
 	casio_uint32_t casio_cas100info__val3; /* 0x100 */
 
-	/* hex value with prefix... what? */
-	casio_uint8_t  casio_cas100info_hex[4]; /* "0x07", litterally,
-	                                   * or 0x07 followed by three 0xFFs */
-	casio_uint8_t  casio_cas100info_delim1; /* 0xFF */
+	/* Hex value with prefix... what?
+	 * `hex` is "0x07" literally, or 0x07 followed by three 0xFFs.
+	 * `delim1` is 0xFF. */
 
-	/* checksum */
+	casio_uint8_t  casio_cas100info_hex[4];
+	casio_uint8_t  casio_cas100info_delim1;
+
+	/* Checksum */
+
 	casio_uint8_t  casio_cas100info_checksum;
 } casio_cas100info_t;
 
@@ -229,6 +253,7 @@ typedef struct casio_cas100info_s {
  * Here are the content formats for the two header types: */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 # include "cas/program.h" /* programs, f-mem */
 # include "cas/cell.h" /* lists, matrixes, variables */

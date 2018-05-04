@@ -20,13 +20,16 @@
 # define LIBCASIO_FORMAT_STD_FKEY_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Function keys are the little boxes at the bottom with text in it, to tell
  * you what you're going to access if you press F1-F6. */
-/* ************************************************************************* */
-/*  G1N - Function-keys files for fx calculators                             */
-/* ************************************************************************* */
+
+/* ---
+ * G1N - Function-keys files for fx calculators.
+ * --- */
+
 /* In G1Ns, function keys are 19x8 1-bit with fill bits images.
  *
  * TODO: it is unknown yet how to identify G1N files, as no non-community-made
@@ -50,9 +53,11 @@ typedef struct casio_fkey_subheader_s {
 
 /* Then there is a table of 16-bits offsets (iconXXX - icon0), then the icons.
  * The first "icon" is in fact the name of the language. */
-/* ************************************************************************* */
-/*  G3L-N - Function-keys files for CG calculators                           */
-/* ************************************************************************* */
+
+/* ---
+ * G3L-N - Function-keys files for CG calculators.
+ * --- */
+
 /* G3N (also named G3L-N) have exactly the same structure than G3Ls (see
  * `libcasio/format/std/lang.h`), but messages are 64x24 1-bit pictures. */
 
@@ -65,5 +70,6 @@ typedef struct casio_fkey_subheader_s {
  * integration in libcasio! */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_STD_FKEY_H */

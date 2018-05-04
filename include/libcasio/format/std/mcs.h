@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_STD_MCS_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* MCS is the main filesystem on CASIO calculators. They contain settings,
@@ -70,6 +71,7 @@ typedef struct casio_mcs_fileheader_s {
 } casio_mcs_fileheader_t;
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 
 /* Beneath the file header, the file have different structures according to

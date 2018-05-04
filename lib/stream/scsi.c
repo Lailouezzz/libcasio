@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * libcasio/char.h -- libcasio FONTCHARACTER management.
- * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * stream/scsi.c -- make a SCSI request.
+ * Copyright (C) 2018 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,21 +16,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#ifndef  LIBCASIO_FONTCHAR_H
-# define LIBCASIO_FONTCHAR_H
-# include "cdefs.h"
+#include "stream.h"
 
-typedef casio_uint16_t FONTCHARACTER;
+/**
+ *	casio_scsi_request:
+ *	Make a SCSI request.
+ *
+ *	@arg	stream		the stream to use.
+ *	@arg	request		the request to execute.
+ *	@return				the error code (0 if ok).
+ */
 
-/* A multi-character should resolve as a maximum of 16 characters. */
+int CASIO_EXPORT casio_scsi_request(casio_stream_t *stream,
+	casio_scsi_t *request)
+{
+	int err;
+	casio_stream_scsi_t *s;
 
-# define CASIO_FONTCHAR_MULTI_MAX 16
+	s = getcb(stream, scsi);
+	if (!s)
+		return (casio_error_op);
 
-CASIO_EXTERN int CASIO_EXPORT casio_is_fontchar_lead
-	OF((int casio__code));
-CASIO_EXTERN int CASIO_EXPORT casio_fontchar_to_uni
-	OF((casio_uint16_t casio__code, casio_uint32_t *casio__uni));
-CASIO_EXTERN int CASIO_EXPORT casio_uni_to_fontchar
-	OF((casio_uint32_t const *casio__uni, casio_uint16_t casio__code));
+	err = (*s)(stream->casio_stream_cookie, request);
+	failure(err, err)
 
-#endif /* LIBCASIO_CHAR_H */
+	err = 0;
+fail:
+	stream->casio_stream_lasterr = err;
+	return (err);
+}

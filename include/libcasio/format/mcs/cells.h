@@ -21,6 +21,7 @@
 # include "../../cdefs.h"
 # include "../../number.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Lists, matrixes and vectors have exactly the same format.
@@ -59,5 +60,6 @@ typedef struct casio_mcs_cellsheader_s {
  * CASIOWIN 2.00. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_MCS_CELLS_H */

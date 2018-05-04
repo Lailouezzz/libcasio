@@ -26,6 +26,7 @@
  * signification in the two).
  *
  * Known settings are:
+ *
  * [0x13] Angle (0x00: degrees, 0x01: radians, 0x02: gradians);
  * [0x14] SHIFT/Alpha status (0x00: both off, 0x01: shift only on,
  *        0x04: alpha only on, 0x84: both on);

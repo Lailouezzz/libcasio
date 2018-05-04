@@ -20,14 +20,23 @@
 # define LOCAL_LINK_H 1
 # include "../internals.h"
 
-/* Internals macros. */
+/* Internal macros. */
+
 # define response (handle->casio_link_response)
 # define command_is_supported(CASIO__N) \
 	casio_seven_command_is_supported(&handle->casio_link_env, CASIO__N)
-/* ************************************************************************* */
-/*  Link structure                                                           */
-/* ************************************************************************* */
+
+/* Internal stream for making Protocol 7.00 streams over SCSI. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_open_seven_scsi
+	OF((casio_stream_t **casio__stream, casio_stream_t *casio__original));
+
+/* ---
+ * Link structure.
+ * --- */
+
 /* Link handle internal flags. */
+
 # define casio_linkflag_sendalt  0x0001 /* use alternative buffer */
 # define casio_linkflag_alloc    0x0002 /* was allocated */
 # define casio_linkflag_active   0x0004 /* active status */
@@ -72,6 +81,7 @@ struct casio_link_s {
 };
 
 /* Decode the data field of specific packets. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_seven_decode_data
 	OF((casio_link_t *casio__handle,
 		const unsigned char *casio__raw, unsigned int casio__raw_size));
@@ -83,16 +93,19 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_decode_ack
 		const unsigned char *casio__raw, unsigned int casio__raw_size));
 
 /* Special send functions. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_again
 	OF((casio_link_t *casio__handle));
 
 /* Special packet functions. */
+
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_err_resend
 	OF((casio_link_t *casio__handle));
 CASIO_EXTERN int CASIO_EXPORT casio_seven_send_timeout_check
 	OF((casio_link_t *casio__handle));
 
 /* Encode and decode raw data. */
+
 CASIO_EXTERN unsigned int CASIO_EXPORT casio_seven_decoderaw
 	OF((void *casio__dest, const void *casio__encoded,
 		unsigned int casio__size));

@@ -23,9 +23,10 @@
 # include "typz.h"
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  Packets                                                                  */
-/* ************************************************************************* */
+/* ---
+ * Packets.
+ * --- */
+
 /* Protocol 7.00 (the latest proprietary protocol from CASIO) is a protocol
  * using several-bytes packets. Every packet, with one exception we'll detail
  * later, contains a type, a subtype, an optional payload, and a checksum.
@@ -86,9 +87,11 @@ typedef unsigned int casio_seven_term_t;
  * for some types, subheaders. libcasio translates this into a VRAM and a
  * picture format, which you can see in the Protocol 7.00 packet
  * representation. */
-/* ************************************************************************* */
-/*  Screenstreaming                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Screenstreaming.
+ * --- */
+
 /* Screenstreaming packet flow is totally different from the normal packet
  * flow: it's just the calculator sending its screen repeateadly, not
  * expecting any answer from the 'passive' side. It is only available when
@@ -100,9 +103,11 @@ typedef unsigned int casio_seven_term_t;
  * - "TYP01" is the basic monochrome capture (1-bit, 128x64);
  * - "TYPZ1"/"TYPZ2" is the extended capture (see
  *   `libcasio/protocol/typz.h`). */
-/* ************************************************************************* */
-/*  Command payload                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Command payload.
+ * --- */
+
 /* The command has a payload which contain, even in the cases where they are
  * not useful, the overwrite status (OW), the MCS raw data type (DT),
  * the file size (FS), and the six arguments (of variable length,
@@ -142,9 +147,11 @@ typedef unsigned int casio_seven_ow_t;
  * 6 | ??? (unused everywhere) |
  *
  * Whether arguments are used or not depend on the command. */
-/* ************************************************************************* */
-/*  Protocol 7.00 limits                                                     */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 limits.
+ * --- */
+
 /* The Protocol 7.00 packet representation includes all the data
  * you could have in a packet. First, here are the buffer sizes: */
 
@@ -165,10 +172,13 @@ typedef unsigned int casio_seven_ow_t;
  * although some functions such as `casio_getscreen` do decode it to a 32-bit
  * pixel matrix (easier for the user, and extensible).
  * Check `libcasio/picture.h` for picture format descriptions and utilities. */
-/* ************************************************************************* */
-/*  Protocol 7.00 packet receiving and sending utilities                     */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 packet receiving and sending utilities.
+ * --- */
+
 CASIO_BEGIN_DECLS
+
 /* This is the main function to receive a packet.
  * It manages checksum errors, and timeouts; the only thing you should care
  * about is the returned error.
@@ -273,11 +283,15 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_send_cmd_data
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
+
 # include <libcasio/protocol/seven/commands.h>
-/* ************************************************************************* */
-/*  Protocol 7.00 environment                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 environment.
+ * --- */
+
 CASIO_BEGIN_NAMESPACE
+
 /* A Protocol 7.00 environment is the type of calculator there is on the
  * other side. Environment identification is required for a more precise
  * error guessing. */
@@ -297,9 +311,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_command_is_supported
 	OF((const casio_seven_env_t *casio__env, unsigned int casio__code));
 
 CASIO_END_DECLS
-/* ************************************************************************* */
-/*  Protocol 7.00 packet representation                                      */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 packet representation.
+ * --- */
+
 /* This representation contains all the possible fields, and only some of them
  * are used depending on the packet type/code. */
 
@@ -341,9 +357,11 @@ typedef struct casio_seven_packet_s {
 } casio_seven_packet_t;
 
 /* To extract it from the handle, use the extractors in `libcasio/link.h`. */
-/* ************************************************************************* */
-/*  Packet flows                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * Packet flows.
+ * --- */
+
 /* Once the communication is initialized (`casio_init_link` with the
  * `CASIO_LINKFLAG_ACTIVE | CASIO_LINKFLAG_CHECK` flags takes care of that),
  * Protocol 7.00 is basically a set of packet flows.
@@ -367,10 +385,13 @@ typedef struct casio_seven_packet_s {
  * If you have finished doing what you wanted to do and the communication is
  * still active, send an END packet, to which the other calculator should
  * respond with an ACK. */
-/* ************************************************************************* */
-/*  Protocol 7.00 packet flow utilities                                      */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 packet flow utilities.
+ * --- */
+
 CASIO_BEGIN_DECLS
+
 /* Start and end the communication.
  * Is used by the link opening and closing functions;
  * you shouldn't use them unless you know what you're doing
@@ -426,9 +447,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_open_data_stream
 	OF((casio_stream_t **casio__stream,
 		casio_link_t *casio__link, casio_off_t casio__size,
 		casio_link_progress_t *casio__disp, void *casio__dcookie));
-/* ************************************************************************* */
-/*  Protocol 7.00 high-level abstractions                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Protocol 7.00 high-level abstractions.
+ * --- */
+
 /* Make the MCS interface. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_seven_mcs

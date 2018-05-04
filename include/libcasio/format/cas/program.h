@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_CAS_PROGRAM_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* TODO: describe programs to the newcomer.
@@ -43,5 +44,6 @@ typedef struct casio_cas_spe_program_s {
  * F-MEM (saves of series of commands) are stored like very small programs. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_CAS_PROGRAM_H */

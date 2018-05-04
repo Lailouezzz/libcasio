@@ -29,8 +29,6 @@
  *	@return				the error code (0 if ok).
  */
 
-# define ENDPOINT_IN (LIBUSB_ENDPOINT_IN | LIBUSB_TRANSFER_TYPE_BULK)
-
 int CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
 	unsigned char *dest, size_t size)
 {
@@ -59,28 +57,29 @@ int CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
 		libusberr = libusb_bulk_transfer(cookie->_handle, ENDPOINT_IN,
 			cookie->_buffer, BUFSIZE, &recv, cookie->tmread);
 		switch (libusberr) {
-			case 0:
-				break;
+		case 0:
+			break;
 
-			case LIBUSB_ERROR_PIPE:
-			case LIBUSB_ERROR_NO_DEVICE:
-			case LIBUSB_ERROR_IO:
-				msg((ll_error, "The calculator is not here anymore :("));
-				return (casio_error_nocalc);
+		case LIBUSB_ERROR_PIPE:
+		case LIBUSB_ERROR_NO_DEVICE:
+		case LIBUSB_ERROR_IO:
+			msg((ll_error, "The calculator is not here anymore :("));
+			return (casio_error_nocalc);
 
-			case LIBUSB_ERROR_TIMEOUT:
-				return (casio_error_timeout);
+		case LIBUSB_ERROR_TIMEOUT:
+			return (casio_error_timeout);
 
-			default:
-				msg((ll_fatal, "libusb error was %d: %s", libusberr,
-					libusb_strerror(libusberr)));
-				return (casio_error_unknown);
+		default:
+			msg((ll_fatal, "libusb error was %d: %s", libusberr,
+				libusb_strerror(libusberr)));
+			return (casio_error_unknown);
 		}
 
 		/* Get the current size to copy. */
 
 		tocopy = (size_t)recv;
-		if (tocopy > size) tocopy = size;
+		if (tocopy > size)
+			tocopy = size;
 
 		/* Copy to destination. */
 

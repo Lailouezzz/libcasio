@@ -28,9 +28,11 @@
 /* In these protocols, there are two types of packets: one-byte packets,
  * and multi-byte packets (headers, headers data, data).
  * Multi-byte packets are managed elsewhere. */
-/* ************************************************************************* */
-/*  Checks                                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Checks.
+ * --- */
+
 /* At the beginning of the communication, the active side sends one of two
  * possible bytes: 0x15 if the communication is supposed to be interactive,
  * 0x16 if not. */
@@ -41,9 +43,11 @@
 /* Then the passive side is supposed to send an initial packet confirmation: */
 
 # define casio_legacy_start_ack            0x13
-/* ************************************************************************* */
-/*  Main communication                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Main communication.
+ * --- */
+
 /* The active side starts by sending a header (starting with 0x3A, ':').
  * The passive side then answers with either an ACK (0x06), or
  * an overwrite error (0x21) if the file already exists.

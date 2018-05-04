@@ -21,6 +21,7 @@
 # include "../../cdefs.h"
 # include "../../number.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Spreadsheets are more complicated than that.
@@ -28,10 +29,12 @@ CASIO_BEGIN_NAMESPACE
  * For normal ones, there is a header: */
 
 typedef struct casio_mcs_spreadsheet_header_s {
-	/* has subheader: 0x01 if yes */
+	/* Has subheader: 0x01 if yes. */
+
 	casio_uint8_t  casio_mcs_spreadsheet_header_has_subheader;
 
-	/* column count (max: 26), on 24 bits and non-aligned */
+	/* Column count (max: 26), on 24 bits and non-aligned. */
+
 	casio_uint32_t casio_mcs_spreadsheet_header_column_count :24;
 } casio_mcs_spreadsheet_header_t;
 
@@ -41,13 +44,16 @@ typedef struct casio_mcs_spreadsheet_header_s {
  * Here's the subheader: */
 
 typedef struct casio_mcs_spreadsheet_subheader_s {
-	/* alignment or magic? {0, 0, 0, 0} */
+	/* Alignment or magic? {0, 0, 0, 0} */
+
 	casio_uint8_t  casio_mcs_spreadsheet_subheader__align0[4];
 
-	/* number of column definitions */
+	/* Number of column definitions. */
+
 	casio_uint32_t casio_mcs_spreadsheet_subheader_defs_size;
 
-	/* alignment or magic II? {0, 0, 0, 0} */
+	/* Alignment or magic II? {0, 0, 0, 0} */
+
 	casio_uint8_t  casio_mcs_spreadsheet_subheader__align1[4];
 } casio_mcs_spreadsheet_subheader_t;
 
@@ -63,5 +69,6 @@ typedef struct casio_mcs_spreadsheet_subheader_s {
  * a column quicker. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_MCS_SPREADSHEET_H */

@@ -20,11 +20,13 @@
 # define LIBCASIO_FORMAT_STD_PICTURE_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  G3P: pictures for Prizm                                                  */
-/* ************************************************************************* */
+/* ---
+ * G3P: pictures for Prizm
+ * --- */
+
 /* G3P are pictures for fx-CG. They start with a Standard Header, and
  * a Standard Picture Header.
  *
@@ -106,9 +108,11 @@ typedef struct casio_prizm_picture_subheader_s {
  * raw, uncompressed data (and is appended to it before deflating/obfuscating).
  *
  * TODO: footers */
-/* ************************************************************************* */
-/*  C2P: Images for Classpads                                                */
-/* ************************************************************************* */
+
+/* ---
+ * C2P: Images for Classpads.
+ * --- */
+
 /* C2P are pictures for CASIO Classpad calculators (fx-CP*). They start with
  * a Standard Header, followed by a Standard Picture Header.
  *
@@ -152,5 +156,6 @@ typedef struct casio_classpad_picture_footer_s {
 } casio_classpad_picture_footer_s;
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_STD_PICTURE_H */

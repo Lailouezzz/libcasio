@@ -31,13 +31,15 @@ void CASIO_EXPORT casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
 {
 	int neg = 0, exp = 1, i;
 
-	/* check if is negative */
+	/* Check if is negative. */
+
 	if (dbl < 0) {
 		neg = 1;
 		dbl = -dbl;
 	}
 
-	/* check the exponent, normalize the number */
+	/* Check the exponent, normalize the number. */
+
 	while (dbl >= 10) {
 		exp++;
 		dbl /= 10;
@@ -47,14 +49,16 @@ void CASIO_EXPORT casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
 		dbl *= 10;
 	}
 
-	/* get the mantissa */
+	/* Get the mantissa. */
+
 	for (i = 0; i < 15; i++) {
 		double work = floor(dbl);
 		bcd->casio_bcd_mant[i] = (int)work;
 		dbl = (dbl - work) * 10;
 	}
 
-	/* set the flags */
+	/* Set the flags */
+
 	bcd->casio_bcd_flags = casio_make_bcdflags(0, neg, 15);
 	bcd->casio_bcd_exp = exp;
 }
@@ -67,9 +71,28 @@ void CASIO_EXPORT casio_bcd_fromdouble(casio_bcd_t *bcd, double dbl)
  *	@return			the double.
  */
 
-double CASIO_EXPORT casio_bcd_todouble(const casio_bcd_t *bcd)
+double CASIO_EXPORT casio_bcd_todouble(casio_bcd_t const *bcd)
 {
-	/* TODO */
-	(void)bcd;
-	return (0);
+	double val = 0.0;
+	double power = 1.0;
+	int i;
+
+	/* Use the mantissa. */
+
+	for (i = 0; i < casio_bcd_precision(bcd); i++) {
+		val += bcd->casio_bcd_mant[i] * power;
+		power /= 10.0;
+	}
+
+	/* Use the exponent. */
+
+	power = pow(10, (double)bcd->casio_bcd_exp);
+	val *= power;
+
+	/* Use the flags. */
+
+	if (casio_bcd_is_negative(bcd))
+		val = -val;
+
+	return (val);
 }

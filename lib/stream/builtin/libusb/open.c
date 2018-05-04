@@ -22,11 +22,12 @@
 /* Stream callbacks. */
 
 CASIO_LOCAL const casio_streamfuncs_t casio_libusb_callbacks = {
-	(casio_stream_close_t*)&casio_libusb_close,
-	(casio_stream_settm_t*)&casio_libusb_settm,
-	(casio_stream_read_t*)&casio_libusb_read,
-	(casio_stream_write_t*)&casio_libusb_write,
-	NULL, NULL, NULL
+	(casio_stream_close_t *)&casio_libusb_close,
+	(casio_stream_settm_t *)&casio_libusb_settm,
+	(casio_stream_read_t *)&casio_libusb_read,
+	(casio_stream_write_t *)&casio_libusb_write,
+	NULL, NULL,
+	(casio_stream_scsi_t *)&casio_libusb_scsi_request
 };
 
 /**

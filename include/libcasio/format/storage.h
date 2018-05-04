@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_STORAGE_H
 # include "../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* Storage backup files (G1S) contain backups of the storage memory.
@@ -31,9 +32,11 @@ CASIO_BEGIN_NAMESPACE
  *
  * These files are not managed by the calculator directly; however, they
  * are managed by FA-124. */
-/* ************************************************************************* */
-/*  Directory list                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * Directory list.
+ * --- */
+
 /* The SMEM (content of the G1S file once 0x270000 bytes were skipped) starts
  * with a big entry list. An entry is 32-bytes long: it starts with a common
  * part, then with a type-specific part (then unused bytes if the subheader
@@ -81,9 +84,11 @@ typedef struct casio_storage_entry_s {
  * then there is no parent.
  *
  * For now, only directories as parents for files have been encountered. */
-/* ************************************************************************* */
-/*  Sectors                                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Sectors.
+ * --- */
+
 /* Sectors represent the physical sectors of the storage memory (space!).
  * They are 64 KiB large.
  *
@@ -103,13 +108,15 @@ typedef struct casio_storage_sector_s {
 	 *	not be set as parent nodes :) */
 	casio_uint32_t casio_storage_sector_logical_sector_number;
 } casio_storage_sector_t;
-/* ************************************************************************* */
-/*  Directories                                                              */
-/* ************************************************************************* */
+
+/* ---
+ * Directories.
+ * --- */
+
 /* After the sectors come the directories.
  *
- * Their spec# include "../cdefs.h"ial nibble is either 0x05 if active or 0x00 if deleted.
- * Here is their subheader structure: */
+ * Their spec# include "../cdefs.h"ial nibble is either 0x05 if active or
+ * 0x00 if deleted. Here is their subheader structure: */
 
 typedef struct casio_storage_directory_s {
 	/* the parent type and id */
@@ -119,9 +126,11 @@ typedef struct casio_storage_directory_s {
 	/* the name (FONTCHARACTER-encoded) */
 	casio_uint16_t  casio_storage_directory_name[12];
 } casio_storage_directory_t;
-/* ************************************************************************* */
-/*  Files                                                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Files.
+ * --- */
+
 /* After the directories come the files (interrupted by fragments - see after).
  *
  * Their special nibble have the same meaning that for directories.
@@ -135,9 +144,11 @@ typedef struct casio_storage_file_s {
 	/* the name (FONTCHARACTER-encoded) */
 	casio_uint16_t  casio_storage_file_name[12];
 } casio_storage_file_t;
-/* ************************************************************************* */
-/*  File fragments                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * File fragments.
+ * --- */
+
 /* After each file entry comes the corresponding fragments entries.
  * Fragments are in fact links to the sectors, with some more information.
  *

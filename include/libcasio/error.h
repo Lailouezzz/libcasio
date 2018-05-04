@@ -21,9 +21,10 @@
 # include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  Error codes                                                              */
-/* ************************************************************************* */
+/* ---
+ * Error codes.
+ * --- */
+
 /* Warning: whenever you add/remove errors, think about updating
  * core/strerror! */
 
@@ -91,7 +92,12 @@ typedef int casio_error_t;
 # define casio_error_seq      0x73 /* sequence error. */
 # define casio_error_noeq     0x74 /* character does not translate */
 
+/* ---
+ * Utilities.
+ * --- */
+
 /* Get a string describing the error. */
+
 CASIO_EXTERN const char* CASIO_EXPORT casio_error_strings[];
 
 CASIO_EXTERN const char* CASIO_EXPORT casio_strerror

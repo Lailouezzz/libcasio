@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_FXI_H
 # include "../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* FXI is obfuscated with a symetrical obfuscation algorithm:
@@ -88,5 +89,6 @@ typedef struct casio_fxi_entry_s {
 } casio_fxi_entry_t;
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif

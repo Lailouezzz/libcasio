@@ -20,11 +20,13 @@
 # define LIBCASIO_FORMAT_CAS_PICTURE_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
-/* ************************************************************************* */
-/*  CAS40 specific header bytes                                              */
-/* ************************************************************************* */
+/* ---
+ * CAS40 specific header bytes.
+ * --- */
+
 /* In old CAS headers, the five specific bytes are the following: */
 
 typedef struct casio_cas_spe_screenshot_s {
@@ -35,13 +37,16 @@ typedef struct casio_cas_spe_screenshot_s {
 
 /* The specific bytes for a number start with either "RA" or "CA", 'R' or 'C'
  * meaning the number is complex or not. */
-/* ************************************************************************* */
-/*  Content                                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Content.
+ * --- */
+
 /* The width and height are given in the CAS50 header/CAS40 specific bytes.
  * The picture format is either `casio_pictureformat_4bit_mono` or
  * `casio_pictureformat_4bit_color` -- see `libcasio/picture.h`. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_CAS_PICTURE_H */

@@ -20,6 +20,7 @@
 # define LIBCASIO_FORMAT_CAS_GMEM_H
 # include "../../cdefs.h"
 # pragma pack(1)
+
 CASIO_BEGIN_NAMESPACE
 
 /* You can save some graph function's expression inside a graph memory (G-MEM).
@@ -29,10 +30,12 @@ CASIO_BEGIN_NAMESPACE
  * It starts with 20 graph entries, which have this format: */
 
 typedef struct casio_cas_gmem_entry_s {
-	/* function type code */
+	/* Function type code. */
+
 	casio_uint8_t casio_cas_gmem_entry_type;
 
-	/* flags */
+	/* Flags. */
+
 	casio_uint8_t casio_cas_gmem_entry_flags;
 } casio_cas_gmem_entry_t;
 
@@ -69,5 +72,6 @@ typedef struct casio_cas_gmem_entry_s {
  * TODO: find out what these are. */
 
 CASIO_END_NAMESPACE
+
 # pragma pack()
 #endif /* LIBCASIO_FORMAT_CAS_GMEM_H */

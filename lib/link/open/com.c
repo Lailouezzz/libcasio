@@ -44,8 +44,10 @@ int CASIO_EXPORT casio_open_com(casio_link_t **handle, unsigned long flags,
 		}
 
 		err = casio_open_com_stream(&stream, path);
-		if (err == casio_error_op) return (casio_error_nocalc);
-		if (!err) break;
+		if (err == casio_error_op)
+			return (casio_error_nocalc);
+		if (!err)
+			break;
 		if (err != casio_error_nocalc)
 			return (err);
 
@@ -56,6 +58,8 @@ int CASIO_EXPORT casio_open_com(casio_link_t **handle, unsigned long flags,
 	}
 
 	err = casio_open_link(handle, flags, stream, attrs);
-	if (err) return (err);
+	if (err)
+		return (err);
+
 	return (0);
 }

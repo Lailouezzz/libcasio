@@ -22,14 +22,17 @@
 # include "mcsfile.h"
 CASIO_BEGIN_NAMESPACE
 
-/* forward structure declarations (don't mind) */
+/* Forward structure declarations (don't mind). */
+
 struct         casio_mcs_s;
 typedef struct casio_mcs_s      casio_mcs_t;
 struct         casio_mcsfuncs_s;
 typedef struct casio_mcsfuncs_s casio_mcsfuncs_t;
-/* ************************************************************************* */
-/*  Main Filesystem description                                              */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory filesystem description.
+ * --- */
+
 /* The Main Memory, also called MCS (for Main Control Structure),
  * is a filesystem that represents all the RAM filesystems CASIO has had
  * over the years in its calculators.
@@ -41,24 +44,24 @@ typedef struct casio_mcsfuncs_s casio_mcsfuncs_t;
  *
  * Here are the callbacks you should set: */
 
-typedef int  casio_mcs_get_t
+typedef int CASIO_EXPORT casio_mcs_get_t
 	OF((void *casio__cookie, casio_mcsfile_t **casio__mcsfile,
 		casio_mcshead_t *casio__mcshead));
 
-typedef int  casio_mcs_put_t
+typedef int CASIO_EXPORT casio_mcs_put_t
 	OF((void *casio__cookie, casio_mcsfile_t *casio__mcsfile));
 
-typedef int  casio_mcs_delete_t
+typedef int CASIO_EXPORT casio_mcs_delete_t
 	OF((void *casio__cookie, casio_mcshead_t *casio__mcshead));
 
-typedef void casio_mcslist_t
+typedef void CASIO_EXPORT casio_mcslist_t
 	OF((void *casio__cookie, const casio_mcshead_t *casio__mcshead));
 
-typedef int  casio_mcs_list_t
+typedef int CASIO_EXPORT casio_mcs_list_t
 	OF((void *casio__cookie, casio_mcslist_t *casio__mcslist,
 		void *casio__mcslist_cookie));
 
-typedef int  casio_mcs_close_t
+typedef int CASIO_EXPORT casio_mcs_close_t
 	OF((void *casio__cookie));
 
 struct casio_mcsfuncs_s {
@@ -68,9 +71,11 @@ struct casio_mcsfuncs_s {
 	casio_mcs_list_t   *casio_mcsfuncs_list;
 	casio_mcs_close_t  *casio_mcsfuncs_close;
 };
-/* ************************************************************************* */
-/*  Main Filesystem public functions                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Main Memory filesystem public functions.
+ * --- */
+
 CASIO_BEGIN_DECLS
 
 /* Open and close. */

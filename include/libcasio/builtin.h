@@ -27,10 +27,12 @@
 CASIO_BEGIN_NAMESPACE
 CASIO_BEGIN_DECLS
 
-/* ************************************************************************* */
-/*  Built-in streams                                                         */
-/* ************************************************************************* */
+/* ---
+ * Built-in streams.
+ * --- */
+
 /* Make a stream using the standard FILE interface. */
+
 # ifndef LIBCASIO_DISABLED_FILE
 CASIO_EXTERN int CASIO_EXPORT casio_open_stream_file
 	OF((casio_stream_t **casio__stream,
@@ -39,6 +41,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_stream_file
 # endif
 
 /* Make a stream using the POSIX STREAMS interface. */
+
 # if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
 CASIO_EXTERN int CASIO_EXPORT casio_opencom_streams
 	OF((casio_stream_t **casio__stream, const char *casio__path));
@@ -55,12 +58,14 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_stream_fd
 # endif
 
 /* Make a stream using libusb. */
+
 # ifndef LIBCASIO_DISABLED_LIBUSB
 CASIO_EXTERN int CASIO_EXPORT casio_openusb_libusb
 	OF((casio_stream_t **casio__stream));
 # endif
 
 /* Make a stream using the Microsoft Windows API. */
+
 # if defined(_WIN16) || defined(_WIN32) || defined(_WIN64) \
 	|| defined(__WINDOWS__)
 CASIO_EXTERN int CASIO_EXPORT casio_openusb_windows
@@ -70,10 +75,13 @@ CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 # else
 #  define LIBCASIO_DISABLED_WINDOWS
 # endif
-/* ************************************************************************* */
-/*  Built-in filesystems                                                     */
-/* ************************************************************************* */
+
+/* ---
+ * Built-in filesystems.
+ * --- */
+
 /* Make a POSIX filesystem interface. */
+
 # if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
 CASIO_EXTERN int CASIO_EXPORT casio_open_posix_fs
 	OF((casio_fs_t **casio__filesystem));
@@ -82,33 +90,41 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_posix_fs
 # endif
 
 /* Make a Windows API filesystem interface. */
+
 # ifndef LIBCASIO_DISABLED_WINDOWS
 CASIO_EXTERN int CASIO_EXPORT casio_open_windows_fs
 	OF((casio_fs_t **casio__filesystem));
 # endif
-/* ************************************************************************* */
-/*  Built-in serial devices listing                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Built-in serial devices listing.
+ * --- */
+
 /* List serial devices on Linux. */
+
 # ifdef __linux__
 CASIO_EXTERN int CASIO_EXPORT casio_comlist_linux
 	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 # endif
 
 /* List serial devices on MacOS/OS X. */
+
 # if defined(__APPLE__) && defined(__MACH__)
 CASIO_EXTERN int CASIO_EXPORT casio_comlist_macos
 	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 # endif
 
 /* List serial devices on Microsoft Windows. */
+
 # ifndef LIBCASIO_DISABLED_WINDOWS
 CASIO_EXTERN int CASIO_EXPORT casio_comlist_windows
 	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 # endif
-/* ************************************************************************* */
-/*  Built-in functions                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Built-in functions.
+ * --- */
+
 /* As there is no portable sleep function, libcasio implements one.
  * It takes a callback, of the following form: */
 

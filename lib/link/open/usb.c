@@ -29,7 +29,10 @@
 
 int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
 {
-	int err, failed = 0, tries = 3; casio_stream_t *stream;
+	int err, failed = 0, tries = 3;
+	casio_stream_t *stream, *ns;
+
+	/* Open the base USB stream. */
 
 	*handle = NULL;
 	msg((ll_info, "Looking for USB-connected calculators."));
@@ -40,17 +43,39 @@ int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
 		}
 
 		err = casio_open_usb_stream(&stream);
-		if (err == casio_error_op) return (casio_error_nocalc);
-		if (!err) break;
+		if (err == casio_error_op)
+			return (casio_error_nocalc);
+		if (!err)
+			break;
 		if (err != casio_error_nocalc)
 			return (err);
 
 		msg((ll_error, "No device found!"));
-		if (!tries--) return (casio_error_nocalc);
+		if (!tries--)
+			return (casio_error_nocalc);
 		failed = 1;
 	}
 
+	/* Open the SCSI device stream if required. */
+
+	switch ((err = casio_open_seven_scsi(&ns, stream))) {
+	case 0:
+		stream = ns;
+		break;
+
+	case casio_error_op:
+		/* Use the good ol' basic stream. */
+		break;
+
+	default:
+		return (err);
+	}
+
+	/* Open the link based on the stream. */
+
 	err = casio_open_link(handle, flags, stream, NULL);
-	if (err) return (err);
+	if (err)
+		return (err);
+
 	return (0);
 }

@@ -111,19 +111,23 @@ typedef int casio_stream_scsi_t
 /* Here is the callbacks structure: */
 
 struct casio_streamfuncs_s {
-	/* main callbacks */
+	/* Main callbacks. */
+
 	casio_stream_close_t    *casio_streamfuncs_close;
 	casio_stream_settm_t    *casio_streamfuncs_settm;
 
-	/* read & write callbacks */
+	/* Read & Write callbacks. */
+
 	casio_stream_read_t     *casio_streamfuncs_read;
 	casio_stream_write_t    *casio_streamfuncs_write;
 	casio_stream_seek_t     *casio_streamfuncs_seek;
 
-	/* serial callbacks */
+	/* Serial callbacks. */
+
 	casio_stream_setattrs_t *casio_streamfuncs_setattrs;
 
-	/* SCSI callbacks */
+	/* SCSI callbacks. */
+
 	casio_stream_scsi_t     *casio_streamfuncs_scsi;
 };
 
@@ -252,41 +256,45 @@ struct casio_timeouts_s {
  * to implement an SCSI interface into libcasio streams.
  *
  * This is libcasio's SCSI request structure, inspired from Linux's
- * `sg_io_hdr_t` structure, except this structure is cross-platform.
- * Here is the different values for the data direction: */
+ * `sg_io_hdr_t` structure, except this structure tries to be cross-platform
+ * and is just there to fulfill the library's needs.
+ *
+ * Here is the different values for the data direction:
+ *
+ * `NONE`: no content.
+ * `TO_DEV`: outgoing data.
+ * `FROM_DEV`: incoming data. */
 
-# define CASIO_SCSI_DXFER_NONE     -1 /* no content */
-# define CASIO_SCSI_DXFER_TO_DEV   -2 /* outgoing */
-# define CASIO_SCSI_DXFER_FROM_DEV -3 /* incoming */
+# define CASIO_SCSI_DIREC_NONE         (-1)
+# define CASIO_SCSI_DIREC_TO_DEV       (-2)
+# define CASIO_SCSI_DIREC_FROM_DEV     (-3)
 
-/* And here is the request structure: */
+/* And here is the request structure:
+ *
+ * `cmd` is the raw command buffer (of 6, 10, 12 or 16 bytes).
+ * `cmd_len` is the command length (6, 10, 12 or 16).
+ * `direction` is the data transfer direction.
+ * `data` is the data to transfer (send or receive buffer).
+ * `data_len` is the data length.
+ * `status` is the status byte returned by the device. */
 
 struct casio_scsi_s {
-	/* command description */
-	int           casio_scsi_type;
-	int           casio_scsi_direction;
-	unsigned int  casio_scsi_byte_transfer_length;
-	unsigned long casio_scsi_logical_block;
-	unsigned long casio_scsi_allocation_length;
-	unsigned char casio_scsi_cbp[4];
-	unsigned char casio_scsi_misc;
-
-	/* raw data */
+	void          *casio_scsi_cmd;
 	unsigned int   casio_scsi_cmd_len;
-	unsigned int   casio_scsi_data_len;
-	unsigned int   casio_scsi_sense_len;
-	unsigned char  casio_scsi_cmd[16];
-	unsigned char *casio_scsi_data;
-	unsigned char *casio_scsi_sense;
-
-	/* TODO: output thingies? */
+	int            casio_scsi_direction;
+	void          *casio_scsi_data;
+	int            casio_scsi_data_len;
+	int            casio_scsi_status;
 };
 
-/* It will be sent to your `scsi_request` callback. */
-/* ************************************************************************* */
-/*  Public stream functions                                                  */
-/* ************************************************************************* */
+/* It will be sent to the `scsi` callback of the stream. */
+
+/* ---
+ * Public stream functions.
+ * --- */
+
 CASIO_BEGIN_DECLS
+
 /* Default stream serial settings utilities. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_make_attrs
@@ -294,8 +302,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_make_attrs
 
 /* List serial devices (platform agnostic). */
 
-typedef void casio_list_com_t OF((void *casio__cookie,
-	const char *casio__str));
+typedef void CASIO_EXPORT casio_list_com_t
+	OF((void *casio__cookie, const char *casio__str));
 
 CASIO_EXTERN int CASIO_EXPORT casio_comlist
 	OF((casio_list_com_t *casio__callback, void *casio__cookie));
@@ -392,6 +400,11 @@ CASIO_EXTERN casio_off_t CASIO_EXPORT casio_tell
 CASIO_EXTERN int CASIO_EXPORT casio_getsize
 	OF((casio_stream_t *casio__stream, casio_off_t *casio__size));
 
+/* Make a SCSI request. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_scsi_request
+	OF((casio_stream_t *casio__stream, casio_scsi_t *casio__request));
+
 /* Make a stream out of memory. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_memory
@@ -411,24 +424,26 @@ CASIO_EXTERN int CASIO_EXPORT casio_empty_limited
 CASIO_EXTERN int CASIO_EXPORT casio_open_csum32
 	OF((casio_stream_t **casio__stream, casio_stream_t *casio__original,
 		casio_uint32_t *casio__csum));
-/* ************************************************************************* */
-/*  USB or serial stream opening management                                  */
-/* ************************************************************************* */
+
+/* ---
+ * USB and serial stream utilities.
+ * --- */
+
 /* For platforms whose the utilities aren't built-in, here is a way to add
  * your defaults, that will be used with the default functions!
  *
  * Communication port listing. */
 
-typedef int casio_comlist_t OF((casio_list_com_t *casio__callback,
-	void *casio__cookie));
+typedef int CASIO_EXPORT casio_comlist_t
+	OF((casio_list_com_t *casio__callback, void *casio__cookie));
 
 CASIO_EXTERN int CASIO_EXPORT casio_add_default_comlist
 	OF((casio_comlist_t *casio__function));
 
 /* Serial communication stream opening. */
 
-typedef int casio_opencomstream_t OF((casio_stream_t **casio__stream,
-	const char *casio__path));
+typedef int casio_opencomstream_t
+	OF((casio_stream_t **casio__stream, const char *casio__path));
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_com_stream
 	OF((casio_stream_t **casio__stream,
@@ -438,7 +453,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_add_default_com_stream
 
 /* USB stream opening. */
 
-typedef int casio_openusbstream_t OF((casio_stream_t **casio__stream));
+typedef int CASIO_EXPORT casio_openusbstream_t
+	OF((casio_stream_t **casio__stream));
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_usb_stream
 	OF((casio_stream_t **casio__stream));
@@ -447,5 +463,6 @@ CASIO_EXTERN int CASIO_EXPORT casio_add_default_usb_stream
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
+
 # include "builtin.h"
 #endif /* LIBCASIO_STREAM_H */

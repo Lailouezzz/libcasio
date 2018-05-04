@@ -19,30 +19,39 @@
 #ifndef  LIBCASIO_PROTOCOL_TYPZ_H
 # define LIBCASIO_PROTOCOL_TYPZ_H
 # include "../cdefs.h"
+
 CASIO_BEGIN_NAMESPACE
 
 /* In both Protocol 7.00 and extended SCSI protocols, recent CASIO
  * calculators (Prizm) use a TYPZ subheader to give details about the
  * capture they're sending. It's name is this because the five-letter ID
- * is "TYPZ1" or "TYPZ2". The subheader is the following: */
+ * is "TYPZ1" or "TYPZ2". The two subheaders vary in the size of the
+ * packet size field: for TYPZ1, it occupies 6 characters, and for TYPZ2, it
+ * occupies 8 characters.
+ *
+ * Encoding algorithms are the following:
+ * - RC2: 16-bit mode;
+ * - RC3: 3-bit mode (1 nibble per pixel, red-green-blue-trash);
+ * - RM2: 2-bit mode?
+ *
+ * Once the SIZE field (of 6 or 8 characters depending on the type) is
+ * made of the following: */
 
 typedef struct casio_typz_s {
-	/* ASCII-hex size */
-	unsigned char casio_typz_size[6];
+	/* Dimensions. */
 
-	/* dimensions */
 	unsigned char casio_typz_height[4];
 	unsigned char casio_typz_width[4];
 
-	/* one: we are number one but it is in ascii (always "1") */
+	/* One: we are number one but it is in ascii (always "1") */
+
 	unsigned char casio_typz_one;
 
-	/* encoding algorithm:
-	 * - RC2: 16-bit mode;
-	 * - RC3: 3-bit mode (1 nib./pxl, red-green-blue-trash)
-	 * - RM2: 2-bit mode? */
+	/* Encoding algorithm. */
+
 	unsigned char casio_typz_enc[3];
 } casio_typz_t;
 
 CASIO_END_NAMESPACE
+
 #endif /* LIBCASIO_PROTOCOL_TYPZ_H */
