@@ -62,17 +62,25 @@ int CASIO_EXPORT casio_add_default_usb_stream(casio_openusbstream_t *function)
  *	Open the USB stream.
  *
  *	@arg	stream		the stream to make.
+ *	@arg	bus			the USB bus on which to find the device.
+ *						-1 if any device on any bus (and address is not read).
+ *	@arg	address		the address on the bus of the device.
+ *						-1 if any device on the bus.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_open_usb_stream(casio_stream_t **stream)
+int CASIO_EXPORT casio_open_usb_stream(casio_stream_t **stream,
+	int bus, int address)
 {
 	int err; struct corresp *c = openusbs;
 
+	if (bus < -1 || bus > 255 || address < -1 || address > 255)
+		return (casio_error_op);
 	if (!c->_valid)
 		return (casio_error_op);
+
 	for (; c->_valid; c++) {
-		err = (*c->_openusb)(stream);
+		err = (*c->_openusb)(stream, bus, address);
 
 		if (!err)
 			return (0);

@@ -445,21 +445,27 @@ CASIO_EXTERN int CASIO_EXPORT casio_add_default_comlist
 typedef int casio_opencomstream_t
 	OF((casio_stream_t **casio__stream, const char *casio__path));
 
+CASIO_EXTERN int CASIO_EXPORT casio_add_default_com_stream
+	OF((casio_opencomstream_t *casio__function));
 CASIO_EXTERN int CASIO_EXPORT casio_open_com_stream
 	OF((casio_stream_t **casio__stream,
 		const char *casio__path));
-CASIO_EXTERN int CASIO_EXPORT casio_add_default_com_stream
-	OF((casio_opencomstream_t *casio__function));
 
-/* USB stream opening. */
+/* USB stream opening.
+ * The `bus` argument is set to -1 if we ought to find the first appropriate
+ * argument.
+ * The `address` argument is set to -1 if we ought to find any device on
+ * the given bus. */
 
 typedef int CASIO_EXPORT casio_openusbstream_t
-	OF((casio_stream_t **casio__stream));
+	OF((casio_stream_t **casio__stream,
+		int casio__bus, int casio__address));
 
-CASIO_EXTERN int CASIO_EXPORT casio_open_usb_stream
-	OF((casio_stream_t **casio__stream));
 CASIO_EXTERN int CASIO_EXPORT casio_add_default_usb_stream
 	OF((casio_openusbstream_t *casio__function));
+CASIO_EXTERN int CASIO_EXPORT casio_open_usb_stream
+	OF((casio_stream_t **casio__stream,
+		int casio__bus, int casio__address));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

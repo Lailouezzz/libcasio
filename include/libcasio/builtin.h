@@ -61,7 +61,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_stream_fd
 
 # ifndef LIBCASIO_DISABLED_LIBUSB
 CASIO_EXTERN int CASIO_EXPORT casio_openusb_libusb
-	OF((casio_stream_t **casio__stream));
+	OF((casio_stream_t **casio__stream,
+		int casio__bus, int casio__address));
 # endif
 
 /* Make a stream using the Microsoft Windows API. */
@@ -69,7 +70,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_openusb_libusb
 # if defined(_WIN16) || defined(_WIN32) || defined(_WIN64) \
 	|| defined(__WINDOWS__)
 CASIO_EXTERN int CASIO_EXPORT casio_openusb_windows
-	OF((casio_stream_t **casio__stream));
+	OF((casio_stream_t **casio__stream,
+		int casio__bus, int casio__address));
 CASIO_EXTERN int CASIO_EXPORT casio_opencom_windows
 	OF((casio_stream_t **casio__stream, const char *casio__path));
 # else

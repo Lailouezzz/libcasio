@@ -212,7 +212,7 @@ int main(int ac, char **av)
 	if (args.com)
 		err = casio_open_com(&handle, args.initflags, args.com, args.use);
 	else
-		err = casio_open_usb(&handle, args.initflags);
+		err = casio_open_usb(&handle, args.initflags, -1, -1);
 	if (err) {
 		switch (err) {
 		case casio_error_nocalc:

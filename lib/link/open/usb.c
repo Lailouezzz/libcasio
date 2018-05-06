@@ -24,10 +24,13 @@
  *
  *	@arg	handle		the link handle to make.
  *	@arg	flags		the link flags.
+ *	@arg	bus			the bus number.
+ *	@arg	address		the device number.
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
+int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags,
+	int bus, int address)
 {
 	int err, failed = 0, tries = 3;
 	casio_stream_t *stream, *ns;
@@ -42,7 +45,7 @@ int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags)
 			casio_sleep(1000);
 		}
 
-		err = casio_open_usb_stream(&stream);
+		err = casio_open_usb_stream(&stream, bus, address);
 		if (err == casio_error_op)
 			return (casio_error_nocalc);
 		if (!err)

@@ -211,7 +211,7 @@ int main(int ac, char **av)
 
 	/* Make the libcasio link handle. */
 
-	if ((err = casio_open_usb(&handle, 0))) {
+	if ((err = casio_open_usb(&handle, 0, -1, -1))) {
 		switch (err) {
 			case casio_error_nocalc:
 				fprintf(stderr, error_noconnexion);

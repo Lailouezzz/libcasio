@@ -35,11 +35,13 @@ CASIO_LOCAL const casio_streamfuncs_t casio_libusb_callbacks = {
  *	Initialize a stream with USB device using libusb.
  *
  *	@arg	handle		the handle to create.
- *	@arg	flags		the flags.
+ *	@arg	bus			the bus number (-1 if both bus and address aren't set).
+ *	@arg	address		the address on the bus (-1 if any address).
  *	@return				the error code (0 if you're a knoop).
  */
 
-int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
+int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream,
+	int bus, int address)
 {
 	int err = 0, uerr, id, device_count;
 	libusb_context *context = NULL;
@@ -68,6 +70,16 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream)
 
 	for (id = 0; id < device_count; id++) {
 		struct libusb_device_descriptor descriptor;
+
+		/* Check the position on the bus. */
+
+		if (bus >= 0) {
+			if (libusb_get_bus_number(device_list[id]) != bus)
+				continue;
+			if (address >= 0
+			 && libusb_get_device_address(device_list[id]) != address)
+				continue;
+		}
 
 		/* Get the device descriptor. */
 

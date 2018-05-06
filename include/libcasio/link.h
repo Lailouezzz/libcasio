@@ -134,7 +134,8 @@ CASIO_BEGIN_DECLS
 /* Cross-platform initialization. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_usb
-	OF((casio_link_t **casio__h, unsigned long casio__flags));
+	OF((casio_link_t **casio__h, unsigned long casio__flags,
+		int casio__bus, int casio__address));
 CASIO_EXTERN int CASIO_EXPORT casio_open_com
 	OF((casio_link_t **casio__h, unsigned long casio__flags,
 		const char *casio__path,
