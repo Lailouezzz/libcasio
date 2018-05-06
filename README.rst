@@ -51,7 +51,7 @@ agree with that, just add the ``--udev`` option to the configuration command
 line; otherwise, make your own, or make nothing, I don't really care.
 
 Building for the MS-Windows platform is supported, just use a ``-mingw32``
-BFD target.
+BFD target for GCC and Binutils.
 
 Also, building a static library, for both PC and embedded systems, is
 supported : just use the ``--static`` option. If you want to build a static
