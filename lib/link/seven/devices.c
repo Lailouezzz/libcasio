@@ -29,9 +29,11 @@ typedef struct {
 	const char        *model;
 	casio_seven_env_t  env;
 } env_corresp_t;
-/* ************************************************************************* */
-/*  Main data                                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Main data.
+ * --- */
+
 /* mask bits */
 #define MASK_ALL 1
 #define MASK_RESET 2
@@ -189,14 +191,14 @@ CASIO_LOCAL env_corresp_t known_environments[] = {
 		MASK_ALL | MASK_RESET | MASK_MCS}},
 	{"Gy49000F", {"Graph 25+E (modified fx-7400GII-2)",
 		MASK_ALL | MASK_RESET | MASK_MCS}},
-	{"Gy363004", {"fx-9860G (Graph 85)",
-		MASK_ALL | MASK_RESET | MASK_MCS | MASK_FLS}},
 	{"Gy362006", {"fx-9750GII (Graph 25+Pro)",
 		MASK_ALL | MASK_RESET | MASK_MCS}},
 	{"Gy362007", {"fx-9750GII-2 (Graph 35+ SH4)",
 		MASK_ALL | MASK_RESET | MASK_MCS}},
 	{"Gy36200F", {"Graph 35+E (modified fx-9750GII-2)",
 		MASK_ALL | MASK_RESET | MASK_MCS}},
+	{"Gy363004", {"fx-9860G (Graph 85)",
+		MASK_ALL | MASK_RESET | MASK_MCS | MASK_FLS}},
 	{"Gy363006", {"fx-9860GII (Graph 75 SH3)",
 		MASK_ALL | MASK_RESET | MASK_MCS | MASK_FLS
 			| MASK_OSUPDATE_1}},
@@ -211,9 +213,11 @@ CASIO_LOCAL env_corresp_t known_environments[] = {
 
 	{NULL, {"Default environment", MASK_ALL | MASK_MCS | MASK_FLS}}
 };
-/* ************************************************************************* */
-/*  Internal functions                                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Internal functions.
+ * --- */
+
 /**
  *	casio_seven_getenv:
  *	Get the environment type.

@@ -34,18 +34,25 @@ int CASIO_EXPORT casio_decode_mcs_string(casio_mcsfile_t **h,
 	int err; unsigned char *str = NULL;
 	unsigned long length = head->casio_mcshead_size;
 
-	/* print content */
+	/* Print the content. */
+
 	msg((ll_info, "String MCS file is not managed yet. Content:"));
 	str = casio_alloc(length, 1);
-	if (!str) { err = casio_error_alloc; goto fail; }
+	if (!str) {
+		err = casio_error_alloc;
+		goto fail;
+	}
+
 	GREAD(str, length)
 	mem((ll_info, str, length));
 
-	/* make the file */
+	/* XXX: store it some day? */
+
+	/* Make the file. */
+
 	err = casio_make_mcsfile(h, head);
 	if (err) goto fail;
 
-	/* end */
 	err = 0;
 fail:
 	casio_free(str);

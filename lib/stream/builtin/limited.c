@@ -26,9 +26,10 @@ typedef struct {
 	size_t          _left;
 } limited_cookie_t;
 
-/* ************************************************************************* */
-/*  Callbacks                                                                */
-/* ************************************************************************* */
+/* ---
+ * Callbacks.
+ * --- */
+
 /**
  *	casio_limited_read:
  *	Read from a limited stream.
@@ -87,9 +88,10 @@ CASIO_LOCAL const casio_streamfuncs_t casio_limited_callbacks =
 casio_stream_callbacks_for_virtual(casio_limited_close,
 	casio_limited_read, NULL, NULL);
 
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	casio_open_limited:
  *	Open a limited stream.

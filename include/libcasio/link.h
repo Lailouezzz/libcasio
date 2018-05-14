@@ -168,19 +168,6 @@ CASIO_EXTERN const casio_link_info_t* CASIO_EXPORT casio_get_link_info
 	OF((casio_link_t *casio__handle));
 
 /* ---
- * Run servers.
- * --- */
-
-/* Run a Protocol 7.00 server. */
-
-typedef int CASIO_EXPORT casio_seven_server_func_t
-	OF((void *casio__cookie, casio_link_t *casio__handle));
-
-CASIO_EXTERN int CASIO_EXPORT casio_seven_serve
-	OF((casio_link_t *casio__handle,
-		casio_seven_server_func_t **casio__callbacks, void *casio__cookie));
-
-/* ---
  * General-purpose link operations.
  * --- */
 

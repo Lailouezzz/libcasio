@@ -63,6 +63,7 @@ int CASIO_EXPORT casio_open_usb(casio_link_t **handle, unsigned long flags,
 
 	switch ((err = casio_open_seven_scsi(&ns, stream))) {
 	case 0:
+		msg((ll_info, "Using stream over SCSI commands."));
 		stream = ns;
 		break;
 

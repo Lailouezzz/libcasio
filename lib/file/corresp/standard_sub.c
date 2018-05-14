@@ -19,15 +19,17 @@
 #include "standard.h"
 
 /* Platforms and types */
+
 #define p_cp    0x00
 #define p_cg    0x01
 #define t_addin 0x01
 #define t_fkey  0x02
 #define t_lang  0x04
 
-/* ************************************************************************* */
-/*  Helpers                                                                  */
-/* ************************************************************************* */
+/* ---
+ * Helpers.
+ * --- */
+
 /* Type correspondance type */
 struct type_info {
 	/* identification */
@@ -38,9 +40,11 @@ struct type_info {
 	casio_filefor_t platform;
 	casio_filetype_t type;
 };
-/* ************************************************************************* */
-/*  Correspondances                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Correspondances.
+ * --- */
+
 /* Main types */
 CASIO_LOCAL struct type_info types[] = {
 	/* fx-CP types */

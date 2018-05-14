@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "stream.h"
 
-/* ************************************************************************* */
-/*  Manage attributes                                                        */
-/* ************************************************************************* */
+/* ---
+ * Manage attributes.
+ * --- */
+
 /**
  *	casio_make_attrs:
  *	Make attributes from a string.
@@ -77,9 +78,11 @@ int CASIO_EXPORT casio_make_attrs(casio_streamattrs_t *attrs, const char *raw)
 		: CASIO_PARENB | CASIO_PARODD;
 	return (0);
 }
-/* ************************************************************************* */
-/*  Set the attributes of a stream                                           */
-/* ************************************************************************* */
+
+/* ---
+ * Set the attributes of a stream.
+ * --- */
+
 /**
  *	casio_init_attrs:
  *	Initialize the attributes.

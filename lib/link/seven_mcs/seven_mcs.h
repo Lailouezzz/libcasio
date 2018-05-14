@@ -34,9 +34,8 @@ CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_put
 CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_delete
 	OF((sevenmcs_t *casio__cookie, casio_mcshead_t  *casio__mcshead));
 
-CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_list
-	OF((sevenmcs_t *casio__cookie, casio_mcslist_t  *casio__mcslist,
-		void *casio__mcslist_cookie));
+CASIO_EXTERN int CASIO_EXPORT casio_sevenmcs_iter
+	OF((sevenmcs_t *casio__cookie, casio_iter_t **casio__iterp));
 
 /* Other globals. */
 

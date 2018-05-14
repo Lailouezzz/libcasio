@@ -19,9 +19,10 @@
 #include "../internals.h"
 #include <ctype.h>
 
-/* ************************************************************************* */
-/*  ASCII-HEX utilities                                                      */
-/* ************************************************************************* */
+/* ---
+ * ASCII-HEX (base16) utilities.
+ * --- */
+
 /**
  *	casio_putascii:
  *	Put a number in ASCII-hex, in a n-dimensionned field.
@@ -61,9 +62,11 @@ unsigned long CASIO_EXPORT casio_getascii(const unsigned char *p, int n)
 	}
 	return (i);
 }
-/* ************************************************************************* */
-/*  BIN-HEX to BIN-DEC (BCD) utilities                                       */
-/* ************************************************************************* */
+
+/* ---
+ * BIN-HEX to BIN-DEC (BCD) utilities.
+ * --- */
+
 /**
  *	casio_getdec:
  *	Get decimal of hex.

@@ -19,9 +19,10 @@
 #include "../main.h"
 #include <string.h>
 
-/* ************************************************************************* */
-/*  Main function                                                            */
-/* ************************************************************************* */
+/* ---
+ * Main function.
+ * --- */
+
 /**
  *	osdisp:
  *	Nice little loading bar.
@@ -73,9 +74,11 @@ void osdisp(void *vcookie, unsigned int id, unsigned int total)
 	fputs("\x1B""8", stdout);
 	fflush(stdout);
 }
-/* ************************************************************************* */
-/*  Initialization, miscallaneous actions                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Initialization, miscallaneous actions.
+ * --- */
+
 /**
  *	osdisp_init:
  *	Initialize a display cookie.

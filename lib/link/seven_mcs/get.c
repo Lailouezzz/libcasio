@@ -20,9 +20,10 @@
  * ************************************************************************* */
 #include "seven_mcs.h"
 
-/* ************************************************************************* */
-/*  Protocol 7.00 MCS file gathering                                         */
-/* ************************************************************************* */
+/* ---
+ * Protocol 7.00 MCS file gathering.
+ * --- */
+
 struct thecookie {
 	int                    _called;
 	int                    _err;
@@ -91,9 +92,11 @@ CASIO_LOCAL int get_setup_entry(casio_setup_t *setup, casio_link_t *handle)
 	/* Once the setup has been fed, send the ACK. */
 	return (casio_seven_send_ack(handle, 1));
 }
-/* ************************************************************************* */
-/*  File request function                                                    */
-/* ************************************************************************* */
+
+/* ---
+ * File request function.
+ * --- */
+
 /**
  *	request_file:
  *	Request a file.
@@ -141,9 +144,11 @@ CASIO_LOCAL int request_file(sevenmcs_t *cookie,
 	/* Check if the function was called. */
 	return (thecookie._called ? thecookie._err : casio_error_unknown);
 }
-/* ************************************************************************* */
-/*  Special types                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Special types.
+ * --- */
+
 /**
  *	request_alphamem:
  *	Get the alpha memory.
@@ -241,9 +246,11 @@ fail:
 	*mcsfile = NULL;
 	return (err);
 }
-/* ************************************************************************* */
-/*  Main function                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Main function.
+ * --- */
+
 /**
  *	casio_sevenmcs_get:
  *	Get a file from a Protocol 7.00 main memory interface.

@@ -24,9 +24,10 @@ typedef struct {
 	casio_off_t _size, _offset;
 } memory_cookie_t;
 
-/* ************************************************************************* */
-/*  Callbacks                                                                */
-/* ************************************************************************* */
+/* ---
+ * Callbacks.
+ * --- */
+
 /**
  *	casio_memory_read:
  *	Read from a memory area.
@@ -145,9 +146,10 @@ CASIO_LOCAL const casio_streamfuncs_t casio_memory_callbacks =
 casio_stream_callbacks_for_virtual(casio_memory_close,
 	casio_memory_read, casio_memory_write, casio_memory_seek);
 
-/* ************************************************************************* */
-/*  Opening functions                                                        */
-/* ************************************************************************* */
+/* ---
+ * Opening functions.
+ * --- */
+
 /**
  *	casio_open_memory:
  *	Open a FILE stream.

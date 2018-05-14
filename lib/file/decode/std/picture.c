@@ -19,9 +19,10 @@
 #include "../decode.h"
 #include <zlib.h>
 
-/* ************************************************************************* */
-/*  Obfuscation-related functions                                            */
-/* ************************************************************************* */
+/* ---
+ * Obfuscation-related functions.
+ * --- */
+
 /**
  *	g3p_deobfuscate:
  *	De-obfuscate the image data.
@@ -37,9 +38,11 @@ CASIO_LOCAL void g3p_deobfuscate(unsigned char *buf, size_t n)
 		*buf++ = (byte << 5) | (byte >> 3);
 	}
 }
-/* ************************************************************************* */
-/*  Prizm Picture decoding function                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Prizm Picture decoding function.
+ * --- */
+
 /**
  *	casio_decode_std_g3p:
  *	Decode a G3P file.
@@ -64,8 +67,11 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 	casio_uint8_t *defbuf = NULL, *infbuf = NULL;
 	casio_file_t *handle;
 
-	*h = NULL; (void)pic;
-	/* read the image header */
+	*h = NULL;
+	(void)pic;
+
+	/* Read the image header. */
+
 	DREAD(ihd)
 	width = be16toh(ihd.casio_prizm_picture_subheader_width);
 	height = be16toh(ihd.casio_prizm_picture_subheader_height);
@@ -81,37 +87,42 @@ int CASIO_EXPORT casio_decode_std_g3p(casio_file_t **h, casio_stream_t *buffer,
 				rawcol));
 			err = casio_error_magic; goto fail;
 	}
+
 	msg((ll_info, "Picture format: %s", coldesc));
 	gen = be16toh(ihd.casio_prizm_picture_subheader_generator_id);
 	msg((ll_info, "Generator ID: 0x%04X", gen));
 	msg((ll_info, "-"));
 
-	/* read deflated image */
+	/* Read the deflated image. */
+
 	deflated_size = be32toh(ihd.casio_prizm_picture_subheader_data_size)
 		- 6; /* FIXME: dangerous */
 	msg((ll_info, "Reading %" CASIO_PRIuSIZE "B of deflated data",
 		deflated_size));
 	err = casio_error_alloc;
-	if (!(defbuf = casio_alloc(deflated_size, 1))) goto fail;
+	if (!(defbuf = casio_alloc(deflated_size, 1)))
+		goto fail;
 	READ(defbuf, deflated_size)
 
-	/* unobfuscate if required */
+	/* Unobfuscate if required. */
+
 	if (std->casio_standard_header_obfuscated0) {
 		msg((ll_info, "Is obfuscated, let's deobfuscate!"));
 		g3p_deobfuscate(defbuf, deflated_size);
 	}
 
-	/* make the destination buffer */
+	/* Make the destination buffer. */
+
 	rawsize = casio_get_picture_size(NULL, picfmt, width, height);
 	err = casio_error_alloc;
-	if (!(infbuf = casio_alloc(rawsize, 1))) goto fail;
+	if (!(infbuf = casio_alloc(rawsize, 1)))
+		goto fail;
 
 	/* uncompress */
 	inflated_size = (uLong)rawsize;
-	z_err = uncompress(infbuf, &inflated_size,
-		defbuf, (uLong)deflated_size);
+	z_err = uncompress(infbuf, &inflated_size, defbuf, (uLong)deflated_size);
 	if (z_err) {
-		msg((ll_fatal, "Zlib error: error #%d", z_err));
+		msg((ll_fatal, "Zlib error %d: %s", z_err, zError(err)));
 		err = casio_error_magic;
 		goto fail;
 	}
@@ -151,9 +162,11 @@ fail:
 	casio_free(infbuf); casio_free(defbuf);
 	return (err);
 }
-/* ************************************************************************* */
-/*  Classpad Picture decoding function                                       */
-/* ************************************************************************* */
+
+/* ---
+ * Classpad Picture decoding function.
+ * --- */
+
 /**
  *	casio_decode_std_c2p:
  *	Decode Classpad images.

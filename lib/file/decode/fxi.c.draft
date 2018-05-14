@@ -28,9 +28,10 @@
 	DREAD(NAM, TYPE) \
 	obf(&NAM, sizeof(struct TYPE)); }
 
-/* ************************************************************************* */
-/*  Obfuscation-related functions                                            */
-/* ************************************************************************* */
+/* ---
+ * Obfuscation-related functions.
+ * --- */
+
 /**
  *	obf:
  *	Obfuscate AND de-obfuscate a string.
@@ -51,9 +52,11 @@ CASIO_LOCAL void obf(unsigned char *s, size_t n)
 	while (n--)
 		*s++ ^= ~24;
 }
-/* ************************************************************************* */
-/*  File header                                                              */
-/* ************************************************************************* */
+
+/* ---
+ * File header.
+ * --- */
+
 static unsigned char header[] =
 	"\xD5\xD7\x1F" "f" "FX-INTERFACE - YELLOW COMPUTING" /* 35 */
 

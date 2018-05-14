@@ -40,23 +40,25 @@ int CASIO_EXPORT casio_decode_mcs_spreadsheet(casio_mcsfile_t **h,
 	unsigned long rows = 0, cols = 0;
 	unsigned long x, y;
 
-	/* read header */
+	/* Read the header. */
+
 	GDREAD(hd)
 	if (hd.casio_mcs_spreadsheet_header_has_subheader != 0x01)
 		return (0);
 
-	/* read subheader */
+	/* Read the subheader. */
+
 	GDREAD(shd)
 	colcount = hd.casio_mcs_spreadsheet_header_column_count;
 	colcount = be32toh(colcount << 8);
 	shd.casio_mcs_spreadsheet_subheader_defs_size =
 		be32toh(shd.casio_mcs_spreadsheet_subheader_defs_size);
 
-	/* prepare */
+	/* Prepare. */
+
 	cells = casio_alloc(1000 * colcount, sizeof(casio_mcscell_t));
 	memset(cells, 0, sizeof(casio_mcscell_t) * 1000 * colcount);
 
-	/* log some info */
 	msg((ll_info, "%lu columns to read!", colcount));
 
 	if (colcount) {
@@ -107,10 +109,13 @@ int CASIO_EXPORT casio_decode_mcs_spreadsheet(casio_mcsfile_t **h,
 		}
 	}
 
-	/* we have max rows and columns, increment to have sizes */
-	rows++, cols++;
+	/* We have max rows and columns, increment to have sizes. */
 
-	/* create final tab */
+	rows++;
+	cols++;
+
+	/* Create final tab. */
+
 	head->casio_mcshead_width = 0; head->casio_mcshead_height = 0;
 	if (cells_count) {
 		head->casio_mcshead_width = cols;
@@ -120,13 +125,13 @@ int CASIO_EXPORT casio_decode_mcs_spreadsheet(casio_mcsfile_t **h,
 	if (err) return (err);
 	handle = *h;
 
-	/* main copying loop */
+	/* Main copying loop. */
+
 	tab = handle->casio_mcsfile_cells;
 	for (y = 0; y < head->casio_mcshead_height; y++)
 	  for (x = 0; x < head->casio_mcshead_width; x++)
 		tab[y][x] = cells[x * 1000 + y];
 
-	/* end */
 	err = 0;
 fail:
 	casio_free(cells);

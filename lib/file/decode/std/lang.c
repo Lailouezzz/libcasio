@@ -53,9 +53,11 @@ CASIO_LOCAL int decode_lang_entry(casio_file_t *handle,
 	msg((ll_info, "[#%d] '%s'", id, str));
 	return (0);
 }
-/* ************************************************************************* */
-/*  fx language files parsing                                                */
-/* ************************************************************************* */
+
+/* ---
+ * fx language files parsing.
+ * --- */
+
 /**
  *	casio_decode_std_lang:
  *	Decode fx language files.

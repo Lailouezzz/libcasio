@@ -32,6 +32,7 @@ typedef int casio_error_t;
 
 # define casio_error_none     0x00
 # define casio_error_success  0x00
+# define casio_error_ok       0x00
 # define casio_noerror        0x00
 
 /* Miscallaneous errors. */
@@ -42,6 +43,8 @@ typedef int casio_error_t;
 # define casio_error_arg      0x04 /* an argument was invalid. */
 # define casio_error_invalid  0x04 /* (alias) */
 # define casio_error_lock     0x05 /* mutex is locked */
+# define casio_error_iter     0x06 /* iteration has ended */
+# define casio_error_end      0x06 /* (alias) */
 
 /* Stream errors. */
 

@@ -19,20 +19,24 @@
 #include "decode.h"
 #define FUNC(NAME) casio_decode_mcs_##NAME
 
-/* ************************************************************************* */
-/*  Type correspondance list                                                 */
-/* ************************************************************************* */
-/* MCS file parsing function type */
+/* ---
+ * Type correspondance list.
+ * --- */
+
+/* MCS file parsing function type. */
+
 typedef int mcs_decode_func_t OF((casio_mcsfile_t**, casio_stream_t*,
 	casio_mcshead_t*));
 
 /* Correspondance type */
+
 struct mcs_corresp {
 	casio_mcstype_t    type;
 	mcs_decode_func_t *decode;
 };
 
 /* All correspondances */
+
 #define TTERM {0, NULL}
 CASIO_LOCAL struct mcs_corresp mcs_types[] = {
 	{casio_mcstype_program,     FUNC(program)},
@@ -67,9 +71,11 @@ CASIO_LOCAL mcs_decode_func_t *lookup_mcsfile_decode(casio_mcstype_t type)
 	/* return the function */
 	return (c->decode);
 }
-/* ************************************************************************* */
-/*  Head decoding function                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Head decoding function.
+ * --- */
+
 /**
  *	casio_decode_mcsfile_head:
  *	Decode MCS file head.
@@ -114,9 +120,11 @@ int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
 	/* everything went well! */
 	return (0);
 }
-/* ************************************************************************* */
-/*  File decoding functions                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * File decoding functions.
+ * --- */
+
 /**
  *	casio_decode_mcsfile:
  *	Decode MCS file content.

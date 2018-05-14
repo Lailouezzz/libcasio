@@ -61,22 +61,3 @@ casio_loglevel_t CASIO_EXPORT casio_loglevel_fromstring(const char *string)
 	return (casio_loglevel_none);
 }
 #endif
-
-/**
- *	casio_listlog:
- *	List log levels.
- *
- *	@arg	callback	the callback.
- *	@arg	cookie		the callback cookie.
- */
-
-void CASIO_EXPORT casio_listlog(casio_log_list_t *callback, void *cookie)
-{
-	(*callback)(cookie, "none");
-#if !defined(LIBCASIO_DISABLED_LOG)
-	(*callback)(cookie, "info");
-	(*callback)(cookie, "warn");
-	(*callback)(cookie, "error");
-	(*callback)(cookie, "fatal");
-#endif
-}

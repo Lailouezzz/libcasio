@@ -115,16 +115,27 @@
 # endif
 
 /* ---
- * Warn if the result is unused.
+ * Various function attributes.
  * --- */
 
-/* To do that, we'll use the `casio_attr_wur` attribute. */
+/* Warn if the result is unused.
+ * To do that, we'll use the `CASIO_WUR` attribute. */
 
 # if CASIO_GNUC_PREREQ(4, 0)
-#  define casio_attr_wur __attribute__((warn_unused_result))
+#  define CASIO_WUR __attribute__((warn_unused_result))
 # elif CASIO_MSC_PREREQ(17, 0)
 #  include <sal.h>
-#  define casio_attr_wur _Check_return_
+#  define CASIO_WUR _Check_return_
+# else
+#  define CASIO_WUR
+# endif
+
+/* Warn if the function is deprecated. */
+
+# if CASIO_GNUC_PREREQ(3, 0)
+#  define CASIO_DEPRECATED __attribute__((deprecated))
+# else
+#  define CASIO_DEPRECATED
 # endif
 
 # include "cdefs/integers.h"

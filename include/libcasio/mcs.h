@@ -20,6 +20,7 @@
 # define LIBCASIO_MCS_H
 # include "cdefs.h"
 # include "mcsfile.h"
+# include "iter.h"
 CASIO_BEGIN_NAMESPACE
 
 /* Forward structure declarations (don't mind). */
@@ -54,12 +55,8 @@ typedef int CASIO_EXPORT casio_mcs_put_t
 typedef int CASIO_EXPORT casio_mcs_delete_t
 	OF((void *casio__cookie, casio_mcshead_t *casio__mcshead));
 
-typedef void CASIO_EXPORT casio_mcslist_t
-	OF((void *casio__cookie, const casio_mcshead_t *casio__mcshead));
-
-typedef int CASIO_EXPORT casio_mcs_list_t
-	OF((void *casio__cookie, casio_mcslist_t *casio__mcslist,
-		void *casio__mcslist_cookie));
+typedef int CASIO_EXPORT casio_mcs_iter_t
+	OF((void *casio__cookie, casio_iter_t **casio__iter));
 
 typedef int CASIO_EXPORT casio_mcs_close_t
 	OF((void *casio__cookie));
@@ -68,7 +65,7 @@ struct casio_mcsfuncs_s {
 	casio_mcs_get_t    *casio_mcsfuncs_get;
 	casio_mcs_put_t    *casio_mcsfuncs_put;
 	casio_mcs_delete_t *casio_mcsfuncs_delete;
-	casio_mcs_list_t   *casio_mcsfuncs_list;
+	casio_mcs_iter_t   *casio_mcsfuncs_iter;
 	casio_mcs_close_t  *casio_mcsfuncs_close;
 };
 
@@ -108,11 +105,22 @@ CASIO_EXTERN int CASIO_EXPORT casio_transfer_mcsfile
 CASIO_EXTERN int CASIO_EXPORT casio_delete_mcsfile
 	OF((casio_mcs_t *casio__mcs, casio_mcshead_t *casio__mcshead));
 
-/* List MCS files. */
+/* List MCS files (the deprecated way). */
 
-CASIO_EXTERN int CASIO_EXPORT casio_list_mcsfiles
+typedef void CASIO_EXPORT casio_mcslist_t
+	OF((void *casio__cookie, const casio_mcshead_t *casio__mcshead));
+
+CASIO_EXTERN CASIO_DEPRECATED int CASIO_EXPORT casio_list_mcsfiles
 	OF((casio_mcs_t *casio__mcs, casio_mcslist_t *casio__mcslist,
 		void *casio__mcookie));
+
+/* Iterate on MCS entries. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_iter_mcsfiles
+	OF((casio_mcs_t *casio__mcs, casio_iter_t **casio__iter));
+
+# define casio_next_mcshead(ITER, MCSFILEP) \
+	(casio_next((ITER), (void **)(casio_mcshead_t **)(MCSFILEP)))
 
 /* Make a temporary main memory. */
 

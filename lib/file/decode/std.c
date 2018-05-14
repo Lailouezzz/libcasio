@@ -20,9 +20,10 @@
 #include "../corresp/standard.h"
 #define FUNC(NAME) casio_decode_std_##NAME
 
-/* ************************************************************************* */
-/*  Getting the decoding function                                            */
-/* ************************************************************************* */
+/* ---
+ * Getting the decoding function.
+ * --- */
+
 /* Correspondance type */
 typedef int decode_func ();
 struct decode_corresp {
@@ -90,9 +91,11 @@ CASIO_LOCAL int find_decode_function(casio_filefor_t platform,
 	*rd = c->decode;
 	return (0);
 }
-/* ************************************************************************* */
-/*  Main standard header decoding function                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Main standard header decoding function.
+ * --- */
+
 /**
  *	casio_decode_std:
  *	Decode a file with standard header.

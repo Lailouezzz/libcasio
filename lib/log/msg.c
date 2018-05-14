@@ -32,10 +32,11 @@ void CASIO_EXPORT casio_log_prefix(casio_loglevel_t loglevel, const char *func)
 {
 	if (func && !strncmp(func, "casio_", 6))
 		func = &func[6];
-	if (func) fprintf(stderr, "[libcasio %5s] %s: ",
-		casio_loglevel_tostring(loglevel), func);
-	else fprintf(stderr, "[libcasio %5s] ",
-		casio_loglevel_tostring(loglevel));
+	if (func)
+		fprintf(stderr, "\r[libcasio %5s] %s: ",
+			casio_loglevel_tostring(loglevel), func);
+	else
+		fprintf(stderr, "\r[libcasio %5s] ", casio_loglevel_tostring(loglevel));
 }
 
 /**

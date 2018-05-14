@@ -24,6 +24,7 @@
 #define BUFSIZE CASIO_SEVEN_MAX_RAWDATA_SIZE
 
 /* Cookie structure. */
+
 typedef struct {
 	int _faulty, _read;
 
@@ -38,9 +39,11 @@ typedef struct {
 	unsigned char _reserved[8];
 	unsigned char _current[BUFSIZE];
 } seven_data_cookie_t;
-/* ************************************************************************* */
-/*  Callbacks                                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Callbacks.
+ * --- */
+
 /**
  *	casio_seven_data_read:
  *	Read data from the calculator, using Protocol 7.00 data flow.
@@ -288,9 +291,11 @@ fail:
 	casio_free(cookie);
 	return (err);
 }
-/* ************************************************************************* */
-/*  Opening functions                                                        */
-/* ************************************************************************* */
+
+/* ---
+ * Opening functions.
+ * --- */
+
 CASIO_LOCAL const casio_streamfuncs_t seven_data_callbacks =
 casio_stream_callbacks_for_virtual(casio_seven_data_close,
 	casio_seven_data_read, casio_seven_data_write, NULL);

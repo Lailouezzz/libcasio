@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "local.h"
 
-/* ************************************************************************* */
-/*  Close callback, not Close Kombat                                         */
-/* ************************************************************************* */
+/* ---
+ * Close callback, not Close Kombat
+ * --- */
+
 /**
  *	casio_localmcs_close:
  *	Close a local main memory.
@@ -45,15 +46,18 @@ CASIO_LOCAL int casio_localmcs_close(localmcs_t *cookie)
 }
 
 /* Callbacks */
+
 CASIO_LOCAL casio_mcsfuncs_t funcs = {
 	(casio_mcs_get_t*)&casio_localmcs_get,
 	(casio_mcs_put_t*)&casio_localmcs_put,
 	(casio_mcs_delete_t*)&casio_localmcs_delete,
-	(casio_mcs_list_t*)&casio_localmcs_list,
+	(casio_mcs_iter_t*)&casio_localmcs_iter,
 	(casio_mcs_close_t*)&casio_localmcs_close};
-/* ************************************************************************* */
-/*  Main opening function                                                    */
-/* ************************************************************************* */
+
+/* ---
+ * Main opening function.
+ * --- */
+
 /**
  *	casio_open_local_mcs:
  *	Open a local main memory.

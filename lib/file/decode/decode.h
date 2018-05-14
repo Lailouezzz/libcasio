@@ -21,9 +21,10 @@
 # include "../file.h"
 # include <libcasio/format.h>
 
-/* ************************************************************************* */
-/*  Main decoding utilities                                                  */
-/* ************************************************************************* */
+/* ---
+ * Main decoding utilities.
+ * --- */
+
 /* Main decoding functions with expected types. */
 CASIO_EXTERN int CASIO_EXPORT casio_decode_std
 	OF((casio_file_t **casio__handle,
@@ -41,9 +42,11 @@ CASIO_EXTERN int CASIO_EXPORT casio_decode_cas
 	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer));
 CASIO_EXTERN int CASIO_EXPORT casio_decode_grc
 	OF((casio_file_t **casio__handle, casio_stream_t *casio__buffer));
-/* ************************************************************************* */
-/*  "Standard"-specific decoding functions                                   */
-/* ************************************************************************* */
+
+/* ---
+ * "Standard"-specific decoding functions.
+ * --- */
+
 /* Schemes */
 # define CASIO_STDFUNC(CASIO__NAME) \
 CASIO_EXTERN int CASIO_EXPORT casio_decode_std_##CASIO__NAME \

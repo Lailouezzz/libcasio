@@ -18,10 +18,12 @@
  * ************************************************************************* */
 #include "../decode.h"
 
-/* ************************************************************************* */
-/*  Content parsing                                                          */
-/* ************************************************************************* */
-/* line content parsing function prototype */
+/* ---
+ * Content parsing.
+ * --- */
+
+/* Line content parsing function prototype. */
+
 static int eact_decode_line(casio_line_t *handle, uint8_t *buf, size_t size,
 	uint_fast8_t type);
 
@@ -133,25 +135,29 @@ fail:
 	return (err);
 }
 
-/* ************************************************************************* */
-/*  Content Type correspondance list                                         */
-/* ************************************************************************* */
-/* Correspondance type */
+/* ---
+ * Content Type correspondance list.
+ * --- */
+
+/* Correspondance type. */
+
 struct eact_content_type_corresp {
 	const char *type;
 
 	int (*decode)(casio_line_t*, uint8_t*, size_t);
 };
 
-/* Correspondance list */
+/* Correspondance list. */
+
 static struct eact_content_type_corresp eact_content_types[] = {
 	{"@EACT\0\0", eact_decode_content_eact},
 	{}
 };
 
-/* ************************************************************************* */
-/*  Line parsing                                                             */
-/* ************************************************************************* */
+/* ---
+ * Line parsing.
+ * --- */
+
 /**
  *	eact_decode_line_content:
  *	Decodes an E-Activity content.
@@ -371,10 +377,13 @@ static int eact_decode_line_code(casio_line_t *handle, uint8_t *buf,
 	mem((ll_info, buf, size));
 	return (0);
 }
-/* ************************************************************************* */
-/*  Line Type correspondance list                                            */
-/* ************************************************************************* */
-/* Correspondance type */
+
+/* ---
+ * Line Type correspondance list.
+ * --- */
+
+/* Correspondance type. */
+
 struct eact_line_type_corresp {
 	int rawtype;
 
@@ -382,7 +391,8 @@ struct eact_line_type_corresp {
 	const char *info;
 };
 
-/* All correspondances */
+/* All correspondances. */
+
 static struct eact_line_type_corresp eact_line_types[] = {
 	{casio_eact_ltype_calc, eact_decode_line_calculation,
 		"calculation"},
@@ -434,9 +444,11 @@ static int eact_decode_line(casio_line_t *handle, uint8_t *buf, size_t size,
 	msg((ll_info, "line type is '%s' (0x%02x)", linetype->info, type));
 	return ((*linetype->decode)(handle, buf, size));
 }
-/* ************************************************************************* */
-/*  Main parsing functions                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Main parsing functions.
+ * --- */
+
 /**
  *	casio_decode_std_eact:
  *	Decodes an EACT.

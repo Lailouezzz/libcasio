@@ -24,23 +24,27 @@
 #define FUNC(NAME)   &casio_decode_caspart_##NAME
 #define HFUNC(NAME) &casio_decode_cashpart_##NAME
 
-/* ************************************************************************* */
-/*  Type correspondance list                                                 */
-/* ************************************************************************* */
-/* Part parsing function type */
+/* ---
+ * Type correspondance list.
+ * --- */
+
+/* Part parsing function type. */
+
 typedef int decode_func ();
 typedef int cas_decode_function OF((casio_mcsfile_t*, casio_stream_t*));
 typedef int cas_heads_decode_function OF((casio_mcshead_t *head,
 	casio_mcshead_t *heads, casio_stream_t *buffer));
 
-/* Correspondance type */
+/* Correspondance type. */
+
 struct cas_corresp {
 	unsigned int type;
 	cas_decode_function *decode;
 	cas_heads_decode_function *hdecode;
 };
 
-/* All correspondances */
+/* All correspondances. */
+
 #define TTERM {0, NULL, NULL}
 CASIO_LOCAL struct cas_corresp cas_types[] = {
 	{casio_mcstype_var,     FUNC(var),     NULL},
@@ -72,9 +76,11 @@ CASIO_LOCAL decode_func *lookup_cas_decode(casio_mcstype_t type, int heads)
 	/* return the function */
 	return (heads ? (decode_func*)c->hdecode : (decode_func*)c->decode);
 }
-/* ************************************************************************* */
-/*  Head decoding functions                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Head decoding functions.
+ * --- */
+
 /**
  *	decode_cas50:
  *	Decode a CASIOLINK Protocol header.
@@ -216,9 +222,11 @@ int CASIO_EXPORT casio_decode_casfile_head(casio_mcshead_t *head,
 	/* no error! */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Part decoding functions                                                  */
-/* ************************************************************************* */
+
+/* ---
+ * Part decoding functions.
+ * --- */
+
 /**
  *	casio_decode_casfile_part:
  *	Decode a CASIOLINK Protocol content part.

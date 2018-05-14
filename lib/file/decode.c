@@ -18,13 +18,16 @@
  * ************************************************************************* */
 #include "file.h"
 
-/* ************************************************************************* */
-/*  Check using extensions                                                   */
-/* ************************************************************************* */
-/* Decode function */
+/* ---
+ * Check using extensions.
+ * --- */
+
+/* Decode function. */
+
 typedef int decode_func OF((casio_file_t**, casio_stream_t*));
 
-/* Correspondance type */
+/* Correspondance type. */
+
 struct corresp {
 	/* extension */
 	const char *ext;
@@ -38,9 +41,7 @@ struct corresp {
 
 /* Correspondances */
 CASIO_LOCAL struct corresp correspondances[] = {
-#if 0
-	{"g1s", casio_type_storage, casio_decode_storage},
-#endif
+	{"g1s", casio_filetype_storage, casio_decode_storage},
 
 	/* terminating entry */
 	{NULL,  0,                NULL}
@@ -74,9 +75,11 @@ CASIO_LOCAL int lookup_extension(const char *path, casio_filetype_t types,
 	*func = c->decode;
 	return (0);
 }
-/* ************************************************************************* */
-/*  Main decoding function                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Main decoding function.
+ * --- */
+
 /**
  *	casio_decode:
  *	Decode a file.

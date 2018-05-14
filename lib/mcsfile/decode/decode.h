@@ -20,10 +20,12 @@
 # define LOCAL_MCSFILE_DECODE_H 1
 # include "../mcsfile.h"
 
-/* ************************************************************************* */
-/*  MCS files specific decoding functions                                    */
-/* ************************************************************************* */
+/* ---
+ * MCS files specific decoding functions.
+ * --- */
+
 /* Schemes. */
+
 # define CASIO_MCSFUNC(CASIO__NAME) \
 extern int casio_decode_mcs_##CASIO__NAME \
 OF((casio_mcsfile_t **casio__handle, casio_stream_t *casio__buffer, \
@@ -37,10 +39,13 @@ CASIO_MCSFUNC(program)
 CASIO_MCSFUNC(setup)
 CASIO_MCSFUNC(spreadsheet)
 CASIO_MCSFUNC(string)
-/* ************************************************************************* */
-/*  CAS-specific decoding functions                                          */
-/* ************************************************************************* */
+
+/* ---
+ * CAS-specific decoding functions.
+ * --- */
+
 /* Schemes. */
+
 # define CASIO_CASFUNC(CASIO__NAME) \
 extern int casio_decode_caspart_##CASIO__NAME \
 OF((casio_mcsfile_t *casio__handle, casio_stream_t *casio__buffer));

@@ -448,6 +448,36 @@ CASIO_EXTERN int CASIO_EXPORT casio_seven_open_data_stream
 		casio_link_t *casio__link, casio_off_t casio__size,
 		casio_link_progress_t *casio__disp, void *casio__dcookie));
 
+/* Server-related functions.
+ * Put the link in server mode and process a command.
+ *
+ * `casio_seven_start_server()` does the following:
+ * - if active, send a swap and become passive;
+ * - if already passive, wait for the initial check to ACK and become
+ *   ready to process requests.
+ *
+ * `casio_seven_process_request()` returns:
+ * - an error if the link isn't correct (valid, protocol 7, passive);
+ * - 0 if the next command has been fetched successfully,
+ * - `casio_error_iter` if the counterpart has finished sending commands;
+ * - `casio_error_unknown` otherwise. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_seven_start_server
+	OF((casio_link_t *casio__handle));
+CASIO_EXTERN int CASIO_EXPORT casio_seven_get_next_request
+	OF((casio_link_t *casio__handle));
+
+/* Passive function that takes control of the execution thread and makes
+ * a server with callbacks. */
+
+typedef int CASIO_EXPORT casio_seven_server_func_t
+	OF((void *casio__cookie, casio_link_t *casio__handle));
+
+CASIO_EXTERN int CASIO_EXPORT casio_seven_serve
+	OF((casio_link_t *casio__handle,
+		casio_seven_server_func_t * const *casio__callbacks,
+		void *casio__cookie));
+
 /* ---
  * Protocol 7.00 high-level abstractions.
  * --- */

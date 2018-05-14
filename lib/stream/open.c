@@ -17,8 +17,6 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "stream.h"
-#define checknot(CASIO__COND, CASIO__ERR) \
-	{ if (CASIO__COND) {err = CASIO__ERR; goto fail;}}
 
 /**
  *	casio_open_stream:
@@ -40,36 +38,50 @@ int CASIO_EXPORT casio_open_stream(casio_stream_t **pstream,
 	int err; casio_stream_t *stream = NULL;
 	casio_streamfuncs_t *c;
 
-	/* allocate the stream */
-	*pstream = casio_alloc(1, sizeof(casio_stream_t));
-	stream = *pstream;
-	checknot(stream == NULL, casio_error_alloc)
+	/* Allocate the stream. */
 
-	/* initialize the stream callbacks */
+	*pstream = casio_alloc(1, sizeof(casio_stream_t));
+	if (!(stream = *pstream)) {
+		err = casio_error_alloc;
+		goto fail;
+	}
+
+	/* Initialize the stream callbacks. */
+
+	stream->casio_stream_mode = 0;
 	c = &stream->casio_stream_callbacks;
 	memset(c, 0, sizeof(casio_streamfuncs_t));
 	c->casio_streamfuncs_close = callbacks->casio_streamfuncs_close;
 	c->casio_streamfuncs_settm = callbacks->casio_streamfuncs_settm;
-	if (mode & CASIO_OPENMODE_READ)
+	if ((mode & CASIO_OPENMODE_READ) && callbacks->casio_streamfuncs_read) {
+		stream->casio_stream_mode |= CASIO_OPENMODE_READ;
 		c->casio_streamfuncs_read  = callbacks->casio_streamfuncs_read;
-	if (mode & CASIO_OPENMODE_WRITE)
+	}
+	if ((mode & CASIO_OPENMODE_WRITE) && callbacks->casio_streamfuncs_write) {
+		stream->casio_stream_mode |= CASIO_OPENMODE_WRITE;
 		c->casio_streamfuncs_write = callbacks->casio_streamfuncs_write;
+	}
 	if (mode & (CASIO_OPENMODE_READ | CASIO_OPENMODE_WRITE))
 		c->casio_streamfuncs_seek  = callbacks->casio_streamfuncs_seek;
-	if (mode & CASIO_OPENMODE_SERIAL)
-		c->casio_streamfuncs_setattrs = callbacks->casio_streamfuncs_setattrs;
-	if (mode & CASIO_OPENMODE_SCSI)
-		c->casio_streamfuncs_scsi = callbacks->casio_streamfuncs_scsi;
 
-	/* initialize the stream properties */
-	stream->casio_stream_mode = mode;
+	if ((mode & CASIO_OPENMODE_SERIAL)
+	 && callbacks->casio_streamfuncs_setattrs) {
+		stream->casio_stream_mode |= CASIO_OPENMODE_SERIAL;
+		c->casio_streamfuncs_setattrs = callbacks->casio_streamfuncs_setattrs;
+	}
+	if ((mode & CASIO_OPENMODE_SCSI) && callbacks->casio_streamfuncs_scsi) {
+		stream->casio_stream_mode |= CASIO_OPENMODE_SCSI;
+		c->casio_streamfuncs_scsi = callbacks->casio_streamfuncs_scsi;
+	}
+
+	/* Initialize the stream properties. */
+
 	stream->casio_stream_cookie = cookie;
 	stream->casio_stream_offset = ioff;
 	stream->casio_stream_lasterr = 0;
 	casio_init_attrs(stream);
 	casio_init_timeouts(stream);
 
-	/* no error! */
 	err = 0;
 fail:
 	if (err) {

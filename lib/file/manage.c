@@ -23,9 +23,10 @@
 		return (casio_error_alloc); \
 	handle = *h; memset(handle, 0, sizeof(casio_file_t))
 
-/* ************************************************************************* */
-/*  Make a handle                                                            */
-/* ************************************************************************* */
+/* ---
+ * Make a handle.
+ * --- */
+
 /**
  *	casio_make_picture:
  *	Make a picture handle.
@@ -262,9 +263,11 @@ fail:
 	casio_free_file(*h); *h = NULL;
 	return (casio_error_alloc);
 }
-/* ************************************************************************* */
-/*  Free a handle                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Free a handle.
+ * --- */
+
 /**
  *	casio_free_file:
  *	Free a handle and its data.

@@ -28,9 +28,10 @@
 #define htoe32(N) ((big_endian) ? htobe32(N) : htole32(N))
 #define VER htoe32(0x00000100) /* 1.00 */
 
-/* ************************************************************************* */
-/*  MAKELONG                                                                 */
-/* ************************************************************************* */
+/* ---
+ * MAKELONG
+ * --- */
+
 /* This utility comes from Microsoft Windows.
  * It makes a 32-bit integer out of two 16-bit integers. */
 
@@ -66,9 +67,11 @@ CASIO_LOCAL casio_uint32_t makelong_be(casio_uint16_t one, casio_uint16_t two)
 # undef MAKELONG
 #endif
 #define MAKELONG(A, B) ((big_endian) ? makelong_be(A, B) : makelong_le(A, B))
-/* ************************************************************************* */
-/*  Utilities                                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Utilities.
+ * --- */
+
 /**
  *	read_internal:
  *	Read the internal headers, and check them.
@@ -148,9 +151,11 @@ CASIO_LOCAL int read_top(casio_stream_t *buffer, char *name,
 	/* no error! */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Intermediate functions                                                   */
-/* ************************************************************************* */
+
+/* ---
+ * Intermediate functions.
+ * --- */
+
 /**
  *	read_picture:
  *	Read a picture record and content.
@@ -365,9 +370,11 @@ fail:
 	casio_free(tab);
 	return (0);
 }
-/* ************************************************************************* */
-/*  Main function                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Main function.
+ * --- */
+
 /**
  *	casio_decode_casemul:
  *	Decode a CasEmul file.

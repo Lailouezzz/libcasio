@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "../internals.h"
 
-/* ************************************************************************* */
-/*  Microsoft Windows environment                                            */
-/* ************************************************************************* */
+/* ---
+ * Microsoft Windows environment.
+ * --- */
+
 #if defined(__WINDOWS__)
 # define default_callback &casio_winsleep
 # include <windows.h>
@@ -29,9 +30,11 @@ CASIO_LOCAL void casio_winsleep(unsigned long ms)
 {
 	Sleep(ms);
 }
-/* ************************************************************************* */
-/*  UNIX environments                                                        */
-/* ************************************************************************* */
+
+/* ---
+ * UNIX-like environments.
+ * --- */
+
 #elif defined(__unix__) || defined(__unix)
 # define default_callback &casio_unixsleep
 # include <unistd.h>
@@ -42,15 +45,18 @@ CASIO_LOCAL void casio_unixsleep(unsigned long ms)
 	struct timespec requested_timestamp;
 
 	requested_timestamp.tv_sec = ms / 1000;
-	requested_timestamp.tv_nsec = ms * 1000;
+	requested_timestamp.tv_nsec = (ms % 1000) * 1000000;
 	nanosleep(&requested_timestamp, NULL);
 }
-/* ************************************************************************* */
-/*  Default and main function                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Default and main function.
+ * --- */
+
 #else
 # define default_callback NULL
 #endif
+
 CASIO_LOCAL casio_sleep_t *casio_sleep_callback = default_callback;
 
 /**

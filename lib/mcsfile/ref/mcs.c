@@ -18,10 +18,12 @@
  * ************************************************************************* */
 #include "ref.h"
 
-/* ************************************************************************* */
-/*  Local types                                                              */
-/* ************************************************************************* */
-/* Type flags */
+/* ---
+ * Local types.
+ * --- */
+
+/* Type flags. */
+
 #define noarg          0x0000
 #define arg            0x0001
 #define arg_is_num     0x0002
@@ -29,7 +31,8 @@
 #define weight_by_gid  0x0004
 #define groupable      0x0008
 
-/* Correspondance type */
+/* Correspondance type. */
+
 struct type_corresp {
 	/* identification */
 	unsigned int rawtype;
@@ -44,7 +47,8 @@ struct type_corresp {
 	casio_mcstype_t type;
 };
 
-/* Group correspondance type */
+/* Group correspondance type. */
+
 struct group_corresp {
 	/* identification */
 	const char *name; /* NULL = don't check */
@@ -53,9 +57,11 @@ struct group_corresp {
 	/* types */
 	const struct type_corresp *types;
 };
-/* ************************************************************************* */
-/*  Correspondances                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Correspondances.
+ * --- */
+
 /*	All correspondances. Some remarks:
  *	- I think files with "PROGRAM" group are split because it was originally
  *	  planned they would be in groups like 'PROGRAM <name>', like for captures
@@ -263,9 +269,11 @@ CASIO_LOCAL const struct group_corresp mcs_groups[] = {
 	/* terminating entry */
 	{NULL, 0, NULL}
 };
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	get_number:
  *	Get number from string.
@@ -451,9 +459,11 @@ found:
 	/* no error */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Compare function                                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Compare functions.
+ * --- */
+
 /**
  *	find_offset_in_group:
  *	Find offset in a group.
@@ -498,18 +508,25 @@ CASIO_LOCAL int find_offset_in_group(const struct group_corresp *g,
 int CASIO_EXPORT casio_compare_mcsfiles(casio_mcshead_t *first,
 	casio_mcshead_t *second)
 {
-	/* find the group correspondance */
 	int offset1 = -1, offset2 = -1;
-	const struct group_corresp *g; for (g = mcs_groups; g->types; g++) {
+	const struct group_corresp *g;
+
+	for (g = mcs_groups; g->types; g++) {
 		/* get offsets */
-		if (offset1 >= -1) offset1 = find_offset_in_group(g, first);
-		if (offset2 >= -1) offset2 = find_offset_in_group(g, second);
+		if (offset1 >= -1)
+			offset1 = find_offset_in_group(g, first);
+		if (offset2 >= -1)
+			offset2 = find_offset_in_group(g, second);
 
 		/* check if the first one corresponds */
-		if (offset1 < 0 && offset2 < 0) continue;
-		if (offset1 == offset2) break;
-		if (offset1 < offset2) return (-1);
-		if (offset1 > offset2) return (1);
+		if (offset1 < 0 && offset2 < 0)
+			continue;
+		if (offset1 == offset2)
+			break;
+		if (offset1 < offset2)
+			return (-1);
+		if (offset1 > offset2)
+			return (1);
 	}
 
 	/* so they're equal, huh... */

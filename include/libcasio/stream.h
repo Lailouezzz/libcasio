@@ -29,7 +29,8 @@
 # include "cdefs.h"
 CASIO_BEGIN_NAMESPACE
 
-/* forward structure declarations (don't mind) */
+/* Forward structure declarations (don't mind). */
+
 struct         casio_stream_s;
 typedef struct casio_stream_s       casio_stream_t;
 struct         casio_streamfuncs_s;
@@ -41,9 +42,10 @@ typedef struct casio_timeouts_s     casio_timeouts_t;
 struct         casio_scsi_s;
 typedef struct casio_scsi_s         casio_scsi_t;
 
-/* ************************************************************************* */
-/*  Stream                                                                   */
-/* ************************************************************************* */
+/* ---
+ * Stream.
+ * --- */
+
 /* The stream is a private structure that has more or less all of the features
  * that the libc FILE interface has, but has more and is cross-platform.
  * It is basically what libcasio uses to communicate with the calculator.
@@ -149,9 +151,10 @@ struct casio_streamfuncs_s {
  (casio_stream_write_t*)(CASIO__WRITE), \
  (casio_stream_seek_t*)(CASIO__SEEK), NULL, NULL}
 
-/* ************************************************************************* */
-/*  Stream settings values and flags                                         */
-/* ************************************************************************* */
+/* ---
+ * Stream serial settings ad flags.
+ * --- */
+
 /* Here are the different baud speeds you can encounter, in bauds.
  * Note that one speed is not supported by all models. */
 
@@ -213,9 +216,11 @@ struct casio_streamfuncs_s {
 # define CASIO_XOFFMASK          0x0100
 # define CASIO_XOFFCTL_DISABLE   0x0000 /* disable XOFF */
 # define CASIO_XOFFCTL_ENABLE    0x0100 /* enable  XOFF */
-/* ************************************************************************* */
-/*  Stream settings                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Stream settings.
+ * --- */
+
 /* Here is the stream settings structure: */
 
 struct casio_streamattrs_s {
@@ -246,9 +251,11 @@ struct casio_timeouts_s {
 
 /* This structure will be sent to your `settm` callback, usually after a state
  * change in the communication. Also, all timeouts are in milliseconds (ms). */
-/* ************************************************************************* */
-/*  SCSI request                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * SCSI requests.
+ * --- */
+
 /* CASIO's fx-CG devices, also known as Prizms or Graph 90+E, use SCSI along
  * with Protocol 7.00 to communicate with the PC for things like file
  * transferring or screenstreaming (which use vendor-specific command slots).
@@ -279,12 +286,12 @@ struct casio_timeouts_s {
  * `status` is the status byte returned by the device. */
 
 struct casio_scsi_s {
-	void          *casio_scsi_cmd;
-	unsigned int   casio_scsi_cmd_len;
-	int            casio_scsi_direction;
-	void          *casio_scsi_data;
-	int            casio_scsi_data_len;
-	int            casio_scsi_status;
+	void    *casio_scsi_cmd;
+	size_t   casio_scsi_cmd_len;
+	int      casio_scsi_direction;
+	void    *casio_scsi_data;
+	size_t   casio_scsi_data_len;
+	int      casio_scsi_status;
 };
 
 /* It will be sent to the `scsi` callback of the stream. */

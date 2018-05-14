@@ -20,9 +20,10 @@
  * ************************************************************************* */
 #include "data.h"
 
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	casio_seven_send_data_packet:
  *	Send data packet.
@@ -109,9 +110,11 @@ int CASIO_EXPORT casio_seven_unshift(casio_link_t *handle)
 	/* then return */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Decode a data packet data                                                */
-/* ************************************************************************* */
+
+/* ---
+ * Decode data from a data packet.
+ * --- */
+
 /**
  *	casio_seven_decode_data:
  *	Get data from data packet data field.
@@ -135,6 +138,7 @@ int CASIO_EXPORT casio_seven_decode_data(casio_link_t *handle,
 	 * data packet, without any need for an answer from the other part.
 	 * This is a preferable method of identifying these strangly
 	 * formatted data packets. */
+
 	if (packet->casio_seven_packet_code < 0x70
 	 || packet->casio_seven_packet_code > 0x7F) {
 		/* total number */

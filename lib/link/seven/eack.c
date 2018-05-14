@@ -19,20 +19,21 @@
 #include "../link.h"
 #include <string.h>
 
-/* ************************************************************************* */
-/*  Raw layout of an extended ack data                                       */
-/* ************************************************************************* */
+/* ---
+ * Raw layout of an extended ack data.
+ * --- */
+
 typedef struct {
 	/* hardware identifier - ASCII */
 	unsigned char hwid[8];
 	/* processor identifier - ASCII */
 	unsigned char cpuid[16];
 
-	/* preprogrammed ROM capacity - ASCII-hex (Ko) */
+	/* preprogrammed ROM capacity - ASCII-dec (Ko) */
 	unsigned char preprog_rom_capacity[8];
-	/* flash ROM capacity - ASCII-hex (Ko) */
+	/* flash ROM capacity - ASCII-dec (Ko) */
 	unsigned char flash_rom_capacity[8];
-	/* RAM capacity - ASCII-hex (Ko) */
+	/* RAM capacity - ASCII-dec (Ko) */
 	unsigned char ram_capacity[8];
 
 	/* preprogrammed ROM version - "xx.xx.xxxx" + 0xff bytes */
@@ -56,13 +57,14 @@ typedef struct {
 	unsigned char protocol_version[4];
 	/* product ID */
 	unsigned char product_id[16];
-	/* name set by user in SYSTEM */
+	/* name set by user in SYSTEM (if not in exam mode) */
 	unsigned char username[16];
 } packetdata_ackext_t;
 
-/* ************************************************************************* */
-/*  Utilities                                                                */
-/* ************************************************************************* */
+/* ---
+ * Utilities.
+ * --- */
+
 /**
  *	version_of_string:
  *	Get version from 16-bytes char buffer.
@@ -92,9 +94,11 @@ CASIO_LOCAL void string_of_version(unsigned char *data,
 	casio_encode_version((char*)data, ver);
 	memset(&data[10], '\xFF', 6);
 }
-/* ************************************************************************* */
-/*  Send ACK packets                                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Send ACK packets.
+ * --- */
+
 /**
  *	casio_seven_send_eack:
  *	Sends an extended ack.
@@ -157,9 +161,10 @@ int CASIO_EXPORT casio_seven_send_eack(casio_link_t *handle,
 		sizeof(packetdata_ackext_t), 1));
 }
 
-/* ************************************************************************* */
-/*  Decode an ACK packet                                                     */
-/* ************************************************************************* */
+/* ---
+ * Decode an ACK packet.
+ * --- */
+
 /**
  *	cpy_string:
  *	Copy a string terminated with 0xFFs, with a maximum size.

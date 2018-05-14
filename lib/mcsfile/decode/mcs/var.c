@@ -17,6 +17,7 @@
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
 #include "../decode.h"
+#define MAX_VAR_NUMBER 30 /* if more than 30 one day, augment this… */
 
 /**
  *	casio_decode_mcs_var:
@@ -31,32 +32,45 @@
 int CASIO_EXPORT casio_decode_mcs_var(casio_mcsfile_t **handle,
 	casio_stream_t *buffer, casio_mcshead_t *head)
 {
-	int err;
+	int err, num;
 	unsigned long length = head->casio_mcshead_size;
-	unsigned char *buf = alloca(length);
+	unsigned char buf[MAX_VAR_NUMBER * sizeof(casio_mcsbcd_t)];
 	const casio_mcsbcd_t *b;
 	casio_mcsfile_t *h;
 	int i;
 
-	/* read the data */
+	/* Get the number of elements. */
+
+	num = length / (2 * sizeof(casio_mcsbcd_t));
+	if (num > MAX_VAR_NUMBER)
+		num = MAX_VAR_NUMBER;
+	length = num * 2 * sizeof(casio_mcsbcd_t);
+
+	/* Read the data. */
+
 	READ(buf, length)
 
-	/* complete header */
-	head->casio_mcshead_count = length / (2 * sizeof(casio_mcsbcd_t));
+	/* Complete header */
+
+	head->casio_mcshead_count = num;
 	err = casio_make_mcsfile(handle, head);
-	if (err) return (err);
+	if (err)
+		return (err);
 	h = *handle;
 
-	/* check the count */
-	ifmsg(head->casio_mcshead_count, (ll_info, "Is a single variable!"));
+	/* Check the count. */
 
-	/* copy */
+	ifmsg(head->casio_mcshead_count == 1, (ll_info, "Is a single variable!"));
+
+	/* Copy and decode the variables. */
+
 	for (b = (void*)buf, i = 0; i < head->casio_mcshead_count; i++) {
 		casio_bcd_frommcs(&h->casio_mcsfile_vars[i].casio_mcscell_real, b++);
 		casio_bcd_frommcs(&h->casio_mcsfile_vars[i].casio_mcscell_imgn, b++);
 		h->casio_mcsfile_vars[i].casio_mcscell_flags = casio_mcscellflag_used;
 	}
 
-	/* no problem, woop woop */
+	/* No problem, woop woop. */
+
 	return (0);
 }

@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "../decode.h"
 
-/* ************************************************************************* */
-/*  Internal function                                                        */
-/* ************************************************************************* */
+/* ---
+ * Internal function.
+ * --- */
+
 /**
  *	decode_cell:
  *	Read a cell.
@@ -64,9 +65,11 @@ CASIO_LOCAL int decode_cell(casio_stream_t *buffer, casio_mcscell_t *cell,
 	/* no prob'! */
 	return (0);
 }
-/* ************************************************************************* */
-/*  Cell-reading CAS part decoding functions                                 */
-/* ************************************************************************* */
+
+/* ---
+ * Cell-reading CAS part decoding functions.
+ * --- */
+
 /**
  *	casio_decode_caspart_matrix:
  *	Decode a CAS matrix part.

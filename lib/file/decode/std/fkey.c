@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "../decode.h"
 
-/* ************************************************************************* */
-/*  Utilities                                                                */
-/* ************************************************************************* */
+/* ---
+ * Utilities.
+ * --- */
+
 /**
  *	fkeydup:
  *	"Duplicate" function key.
@@ -58,9 +59,11 @@ CASIO_LOCAL casio_pixel_t **fkeydup3(unsigned char *fkey)
 		FKEY3_WIDTH, FKEY3_HEIGHT);
 	return (pixels);
 }
-/* ************************************************************************* */
-/*  Decoding fx function keys file (G1N)                                     */
-/* ************************************************************************* */
+
+/* ---
+ * Decoding fx function keys file (G1N).
+ * --- */
+
 /**
  *	casio_decode_std_fkey:
  *	Decode fx function keys files.
@@ -127,9 +130,11 @@ fail:
 	casio_free_file(*h); *h = NULL;
 	return (err);
 }
-/* ************************************************************************* */
-/*  Decoding fx-CG/Prizm function keys file (G3N)                            */
-/* ************************************************************************* */
+
+/* ---
+ * Decoding fx-CG/Prizm function keys file (G3N).
+ * --- */
+
 /**
  *	casio_decode_std_cg_fkey:
  *	Decode fx-CG key files.

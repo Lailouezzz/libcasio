@@ -54,13 +54,17 @@ cat <<_EOF
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  *
- * This file is GENERATED from the options you pass to the configure script.
+ * This file is *GENERATED* from the options you pass to the configure script.
  * It shall not be modified by the user after its generation, as this could
  * lead to unresolved symbols! If you want another configuration, then you
  * will have to build the library again, with your different configuration.
  * ************************************************************************* */
 #ifndef  LIBCASIO_CONFIG_H
 # define LIBCASIO_CONFIG_H
+
+/* Version and maintainer related macros.
+ * Generated from the variables in \`Makefile.vars\`. */
+
 # define LIBCASIO_VERSION "${version}"
 # define LIBCASIO_VERNUM  ${version_num}
 # define LIBCASIO_MAJOR   ${version_major}
@@ -74,7 +78,8 @@ _EOF
 
 # File part
 if [ "$no_file" ]; then cat <<_EOF
-/* FILE interface is disabled */
+/* Standard FILE interface is disabled. */
+
 # define LIBCASIO_DISABLED_FILE 1
 
 _EOF
@@ -82,7 +87,8 @@ fi
 
 # libusb part
 if [ "$no_libusb" ]; then cat <<_EOF
-/* libusb is disabled */
+/* libusb support is disabled. */
+
 # define LIBCASIO_DISABLED_LIBUSB 1
 
 _EOF
@@ -90,7 +96,8 @@ fi
 
 # disable logging
 if [ "$no_log" ]; then cat <<_EOF
-/* logging is disabled */
+/* Logging is disabled. */
+
 # define LIBCASIO_DISABLED_LOG 1
 
 _EOF

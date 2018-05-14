@@ -21,10 +21,12 @@
 # include "../internals.h"
 # include "decode/decode.h"
 
-/* ************************************************************************* */
-/*  Macros for interacting with the buffer                                   */
-/* ************************************************************************* */
+/* ---
+ * Macros for interacting with the buffer.
+ * --- */
+
 /* Read from a stream. */
+
 # define  READ(CASIO__TO, CASIO__SZ) /* normal read */ { \
 	int READ_err = casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
 	if (READ_err) return (READ_err); }
@@ -35,12 +37,14 @@
 		goto fail;
 
 /* Read using size of the object. */
+
 # define  DREAD(CASIO__TO) \
 	READ(&CASIO__TO, sizeof(CASIO__TO))
 # define GDREAD(CASIO__TO) \
 	GREAD(&CASIO__TO, sizeof(CASIO__TO))
 
 /* Skip. */
+
 # define  SKIP(CASIO__SZ) { \
 	int SKIP_err = casio_skip(buffer, CASIO__SZ); \
 	if (SKIP_err) return (SKIP_err); }
@@ -49,14 +53,17 @@
 	if (err) goto fail; }
 
 /* Write. */
+
 # define  WRITE(CASIO__BUF, CASIO__SZ) { \
 	int WRITE_err = casio_write(buffer, (CASIO__BUF), (CASIO__SZ)); \
 	if (WRITE_err) return (WRITE_err); }
 # define DWRITE(CASIO__OBJECT) \
 	WRITE(&(CASIO__OBJECT), sizeof(CASIO__OBJECT))
-/* ************************************************************************* */
-/*  Picture utilities                                                        */
-/* ************************************************************************* */
+
+/* ---
+ * Picture utilities.
+ * --- */
+
 # define alloc_pixels(W, H) \
 	casio_alloc(sizeof(casio_pixel_t*) * \
 		(H) + sizeof(casio_pixel_t) * (W) * (H), 1)

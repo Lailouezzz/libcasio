@@ -19,8 +19,29 @@
 #include "mcs.h"
 
 /**
+ *	casio_iter_mcsfiles:
+ *	Get an iterator to iterate on MCS file entries (heads).
+ *
+ *	@arg	mcs		the main memory interface.
+ *	@arg	iter	the iterator to make.
+ *	@return			the error code (0 if ok).
+ */
+
+int CASIO_EXPORT casio_iter_mcsfiles(casio_mcs_t *mcs, casio_iter_t **iterp)
+{
+	casio_mcs_iter_t *func;
+
+	if (!mcs)
+		return (casio_error_invalid);
+	func = mcs->casio_mcs_funcs.casio_mcsfuncs_iter;
+	if (!func)
+		return (casio_error_op);
+	return ((*func)(mcs->casio_mcs_cookie, iterp));
+}
+
+/**
  *	casio_list_mcsfiles:
- *	List an MCS file.
+ *	List MCS files on a main memory interface (deprecated function).
  *
  *	@arg	mcs		the main memory interface.
  *	@arg	list	the listing callback.
@@ -31,10 +52,24 @@
 int CASIO_EXPORT casio_list_mcsfiles(casio_mcs_t *mcs,
 	casio_mcslist_t *list, void *cookie)
 {
-	casio_mcs_list_t *func;
+	casio_iter_t *iter;
+	casio_mcshead_t *head;
+	int err;
 
-	if (!mcs) return (casio_error_invalid);
-	func = mcs->casio_mcs_funcs.casio_mcsfuncs_list;
-	if (!func) return (casio_error_op);
-	return ((*func)(mcs->casio_mcs_cookie, list, cookie));
+	if ((err = casio_iter_mcsfiles(mcs, &iter)))
+		return (err);
+
+	while (1) {
+		if ((err = casio_next_mcshead(iter, &head))) {
+			casio_end(iter);
+
+			if (err == casio_error_stopped)
+				break;
+			return (err);
+		}
+
+		(*list)(cookie, head);
+	}
+
+	return (0);
 }

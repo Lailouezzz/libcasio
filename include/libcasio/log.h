@@ -19,6 +19,7 @@
 #ifndef  LIBCASIO_LOG_H
 # define LIBCASIO_LOG_H
 # include "cdefs.h"
+# include "iter.h"
 CASIO_BEGIN_NAMESPACE
 CASIO_BEGIN_DECLS
 
@@ -29,13 +30,20 @@ CASIO_EXTERN void        CASIO_EXPORT casio_setlog
 CASIO_EXTERN const char* CASIO_EXPORT casio_getlog
 	OF((void));
 
-/* List log levels */
+/* List log levels (deprecated interface) */
 
 typedef void casio_log_list_t OF((void *casio__cookie,
 	const char *casio__str));
 
-CASIO_EXTERN void CASIO_EXPORT casio_listlog
+CASIO_EXTERN CASIO_DEPRECATED void CASIO_EXPORT casio_listlog
 	OF((casio_log_list_t *casio__callback, void *casio__cookie));
+
+/* List log levels (new interface).
+ * This iterator yields strings (`const char *`). */
+
+CASIO_EXTERN int CASIO_EXPORT casio_iter_log
+	OF((casio_iter_t **casio__iter));
+# define casio_next_log(ITER, PTRP) (casio_next((ITER), (void **)(PTRP)))
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE

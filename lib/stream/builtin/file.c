@@ -28,15 +28,17 @@
 #  define __fwritable(F) (1)
 # endif
 
-/* cookie structure */
+/* Cookie structure. */
+
 typedef struct {
 	int _rstream_cl, _wstream_cl;
 	FILE *_rstream, *_wstream;
 } file_cookie_t;
 
-/* ************************************************************************* */
-/*  Callbacks                                                                */
-/* ************************************************************************* */
+/* ---
+ * Callbacks.
+ * --- */
+
 /**
  *	casio_file_read:
  *	Read from a FILE.
@@ -214,9 +216,11 @@ CASIO_LOCAL int casio_file_close(file_cookie_t *cookie)
 	casio_free(cookie);
 	return (0);
 }
-/* ************************************************************************* */
-/*  Opening functions                                                        */
-/* ************************************************************************* */
+
+/* ---
+ * Opening functions.
+ * --- */
+
 CASIO_LOCAL const casio_streamfuncs_t casio_file_callbacks =
 casio_stream_callbacks_for_virtual(casio_file_close, casio_file_read,
 	casio_file_write, casio_file_seek);

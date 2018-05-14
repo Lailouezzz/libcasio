@@ -107,7 +107,6 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 	do {
 		casio_uint8_t *to;
 		size_t avail;
-		/* casio_uint16_t activity; */
 
 		/* Polling loop. */
 
@@ -115,6 +114,8 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			casio_uint8_t poll_command[16] = {0xC0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			casio_uint8_t poll_data[16];
+
+			msg((ll_info, "Polling available data using command C0..."));
 
 			/* Send the polling command, extract the data. */
 
@@ -127,13 +128,16 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			if ((err = casio_scsi_request(cookie->stream, &scsi)))
 				return (err);
 
-			avail = (poll_data[7] << 8) | poll_data[8];
-			/* activity = (poll_data[10] << 8) | poll_data[11]; */
+			mem((ll_info, poll_data, 16));
+
+			avail = (poll_data[6] << 8) | poll_data[7];
 
 			/* Check if there are some bytes to get. */
 
 			if (!avail) {
-				/* FIXME: delay and check the timeout!!! */
+				msg((ll_info, "No available data, sleeping for 1 second."));
+				casio_sleep(1000);
+				/* FIXME: check the timeout!!! */
 
 				continue;
 			}
@@ -208,6 +212,8 @@ CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			casio_uint8_t poll_data[16];
 
+			msg((ll_info, "Polling the activity using command C0..."));
+
 			/* Poll to check the activity. */
 
 			scsi.casio_scsi_cmd = poll_command;
@@ -219,14 +225,16 @@ CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
 			if ((err = casio_scsi_request(cookie->stream, &scsi)))
 				return (err);
 
+#if 0
 			activity = (poll_data[10] << 8) | poll_data[11];
 
-			if (activity == 0x100) {
+			if (activity == 0x1000) {
 				/* The calculator is busy.
 				 * FIXME: delay and check the timeout!! */
 
 				continue;
 			}
+#endif
 
 			break;
 		}
@@ -237,6 +245,8 @@ CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
 			casio_uint16_t to_send = (size > 0xFFFF) ? 0xFFFF : size;
 			casio_uint8_t send_command[16] = {0xC2,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+			msg((ll_info, "Sending the data using command C2..."));
 
 			send_command[6] = (to_send >> 8) & 0xFF;
 			send_command[7] = to_send & 0xFF;

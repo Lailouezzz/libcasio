@@ -62,10 +62,13 @@ typedef int casio_loglevel_t;
 # if defined(LIBCASIO_DISABLED_FILE) && !defined(LIBCASIO_DISABLED_LOG)
 #  define LIBCASIO_DISABLED_LOG
 # endif
-/* ************************************************************************* */
-/*  Log utilities                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Log utilities.
+ * --- */
+
 /* Main functions */
+
 # if defined(LIBCASIO_DISABLED_LOG)
 #  define msg(CASIO__ARGS)
 #  define mem(CASIO__ARGS)
@@ -129,6 +132,7 @@ CASIO_EXTERN void CASIO_EXPORT casio_log_prefix
 	OF((casio_loglevel_t casio__loglevel, const char *casio__func));
 
 #  if defined(__STDC__) && __STDC__
+
 CASIO_EXTERN void CASIO_EXPORT casio_log_msg
 	(casio_loglevel_t casio__loglevel, const char *casio__func,
 	const char *casio__format, ...);
@@ -136,8 +140,10 @@ CASIO_EXTERN void CASIO_EXPORT casio_log_mem
 	(casio_loglevel_t casio__loglevel, const char *casio__func,
 	const void *casio__m, size_t casio__n);
 #  else
+
 CASIO_EXTERN void CASIO_EXPORT casio_log_msg();
 CASIO_EXTERN void CASIO_EXPORT casio_log_mem();
+
 #  endif
 # endif
 

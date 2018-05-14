@@ -27,7 +27,8 @@ const char* CASIO_EXPORT casio_error_strings[128] = {
 	"a memory allocation has failed",
 	"this operation is unsupported",
 	"an argument was invalid",
-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+	"no more elements in the iterator",
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 
 /* Stream errors. */
 

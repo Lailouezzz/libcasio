@@ -18,16 +18,19 @@
  * ************************************************************************* */
 #include "ref.h"
 
-/* ************************************************************************* */
-/*  Local types                                                              */
-/* ************************************************************************* */
-/* Flags */
+/* ---
+ * Local types.
+ * --- */
+
+/* Flags. */
+
 #define mult       0x0001
 #define noarg      0x0000
 #define arg        0x0002
 #define arg_is_num 0x0000
 
 /* Correspondance type */
+
 struct type_corresp {
 	/* identification */
 	const char *datatype;
@@ -37,9 +40,11 @@ struct type_corresp {
 	casio_mcstype_t type;
 	casio_pictureformat_t picformat;
 };
-/* ************************************************************************* */
-/*  Correspondances                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Correspondances.
+ * --- */
+
 /* All correspondances found by Tom Wheeley, Tom Lynn (creators of CaS),
  * and Göran Weinholt (creator of Cafix). */
 
@@ -47,6 +52,7 @@ struct type_corresp {
 #define CAPT(S, PT)      {S,    noarg, casio_mcstype_capture, PT}
 #define UNIMPLEMENTED(S) {S,    noarg, 0,                     0}
 #define TTERM            {NULL, noarg, 0,                     0}
+
 CASIO_LOCAL const struct type_corresp cas_groups[] = {
 	/* basic things */
 	BASIC("LT",       casio_mcstype_list),
@@ -101,9 +107,10 @@ CASIO_LOCAL const struct type_corresp cas_groups[] = {
 	TTERM
 };
 
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	get_number:
  *	Get number from string.

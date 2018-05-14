@@ -18,10 +18,12 @@
  * ************************************************************************* */
 #include "ref.h"
 
-/* ************************************************************************* */
-/*  Local types                                                              */
-/* ************************************************************************* */
+/* ---
+ * Local types.
+ * --- */
+
 /* Correspondance type */
+
 struct app_corresp {
 	/* identification */
 	const char *name;
@@ -30,6 +32,7 @@ struct app_corresp {
 };
 
 /* Extension */
+
 struct ext_corresp {
 	/* identification */
 	int value;
@@ -40,9 +43,11 @@ struct ext_corresp {
 	/* app correspondances */
 	const struct app_corresp *apps;
 };
-/* ************************************************************************* */
-/*  Correspondances                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Correspondances.
+ * --- */
+
 /* App correspondances. Remarks:
  * - Correspondances with a NULL data type means the data type isn't to be
  *   read. */
@@ -82,9 +87,11 @@ CASIO_LOCAL const struct ext_corresp apps[] = {
 	/* (sentinel) */
 	{0,                  0,                   NULL}
 };
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	casio_check_cas_app:
  *	Get the CAS application from raw CASDYN identification data.

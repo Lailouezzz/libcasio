@@ -18,16 +18,19 @@
  * ************************************************************************* */
 #include "standard.h"
 
-/* ************************************************************************* */
-/*  Helpers                                                                  */
-/* ************************************************************************* */
+/* ---
+ * Helpers.
+ * --- */
+
 /* Flags */
+
 #define f_c1  casio_stdflag_check1
 #define f_c2  casio_stdflag_check2
 #define f_sub casio_stdflag_sub
 #define f_pic casio_stdflag_pic
 
 /* Subtype correspondance type */
+
 struct type_info {
 	/* identification */
 	const char *type;
@@ -42,6 +45,7 @@ struct type_info {
 };
 
 /* Main type correspondance type */
+
 struct main_info {
 	/* identification */
 	const char *type;
@@ -51,6 +55,7 @@ struct main_info {
 };
 
 /* Extension correspondance type */
+
 struct ext_corresp {
 	/* identification */
 	const char *ext;
@@ -61,9 +66,11 @@ struct ext_corresp {
 	unsigned int libtype;
 	unsigned int flags;
 };
-/* ************************************************************************* */
-/*  Main correspondances                                                     */
-/* ************************************************************************* */
+
+/* ---
+ * Main correspondances.
+ * --- */
+
 #define magic_common "\x00\x10\x00\x10\x00"
 #define cp_magic "\x00\x01\x00\x01\x00"
 #define blank "\xFF\xFF\xFF\xFF\xFF\xFF"
@@ -165,9 +172,11 @@ CASIO_LOCAL struct ext_corresp ext_types[] = {
 	/* sentinel */
 	{NULL, NULL, 0, 0, 0}
 };
-/* ************************************************************************* */
-/*  Get the type information                                                 */
-/* ************************************************************************* */
+
+/* ---
+ * Get the type information.
+ * --- */
+
 /**
  *	casio_maketype_std:
  *	Get the standard header type information.

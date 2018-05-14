@@ -30,28 +30,27 @@ CASIO_LOCAL casio_uint32_t dual2b_colors[] = {
 /* prizm colors. */
 
 CASIO_LOCAL const casio_uint32_t prizm_colors[16] = {
-	/* [casio_color_black]   = */ casio_pixel(0,   0,   0),
-	/* [casio_color_blue]    = */ casio_pixel(0,   0, 255),
-	/* [casio_color_green]   = */ casio_pixel(0, 255,   0),
-	/* [casio_color_cyan]    = */ casio_pixel(0, 255, 255),
-	/* [casio_color_red]     = */ 0xff0000,
-	/* [casio_color_magenta] = */ 0xff00ff,
-	/* [casio_color_yellow]  = */ 0xffff00,
-	/* [casio_color_white]   = */ 0xffffff,
+	/* [casio_color_black]   = */ casio_pixel(  0,   0,   0),
+	/* [casio_color_blue]    = */ casio_pixel(  0,   0, 255),
+	/* [casio_color_green]   = */ casio_pixel(  0, 255,   0),
+	/* [casio_color_cyan]    = */ casio_pixel(  0, 255, 255),
+	/* [casio_color_red]     = */ casio_pixel(255,   0,   0),
+	/* [casio_color_magenta] = */ casio_pixel(255,   0, 255),
+	/* [casio_color_yellow]  = */ casio_pixel(255, 255,   0),
+	/* [casio_color_white]   = */ casio_pixel(255, 255, 255)
 	/* RESERVED */
 };
 
 /* Colors used in Casemul pictures. */
 CASIO_LOCAL const casio_uint32_t casemul_colors[256] = {
-	0xFFFFFF, /* white */
-	0xFF8000, /* orange */
-	0x00FF00, /* green */
-	0x0000FF  /* blue */
-	/* other colours are black, i.e. 0x00000000 */
+	/* white */  casio_pixel(255, 255, 255),
+	/* orange */ casio_pixel(255, 128,   0),
+	/* green */  casio_pixel(  0, 255,   0),
+	/* blue */   casio_pixel(  0,   0, 255)
+
+	/* other colours are black, i.e. casio_pixel(0, 0, 0) == 0x000000 */
 };
-/* ************************************************************************* */
-/*  Picture decoding                                                         */
-/* ************************************************************************* */
+
 /**
  *	casio_decode_picture:
  *	Decode a picture.
@@ -221,11 +220,14 @@ int CASIO_EXPORT casio_decode_picture(casio_pixel_t **pixels,
 		  for (y = height - 1; y != (unsigned int)-1; y--) {
 			msk = 0x80;
 			for (x = bx; x < bx + 8; x++) {
-				/* get pixel */
-				if      (*o & msk) pixels[y][x] = 0xFF8C00; /* orange */
-				else if (*g & msk) pixels[y][x] = 0x00FF00; /* green */
-				else if (*b & msk) pixels[y][x] = 0x0000FF; /* blue */
-				else               pixels[y][x] = 0xFFFFFF; /* white */
+				if (*o & msk) /* Orange! */
+					casio_set_pixel(pixels[y][x], 255, 140, 0);
+				else if (*g & msk) /* Green! */
+					casio_set_pixel(pixels[y][x], 0, 255, 0);
+				else if (*b & msk) /* Blue! */
+					casio_set_pixel(pixels[y][x], 0, 0, 255);
+				else /* White! */
+					casio_set_pixel(pixels[y][x], 255, 255, 255);
 
 				/* go to next */
 				msk >>= 1;

@@ -75,8 +75,7 @@ int CASIO_EXPORT casio_localmcs_find(localmcs_t *cookie,
 			memcpy(newindex, cookie->localmcs_files,
 				cookie->localmcs_size * sizeof(casio_mcsfile_t*));
 
-			/* Initialize the new entries.
-			 * (XXX: this shouldn't be necessary, should we remove it?) */
+			/* Initialize the new entries. */
 			memset(&newindex[cookie->localmcs_size], 0,
 				(newsize - cookie->localmcs_size) * sizeof(casio_mcsfile_t*));
 

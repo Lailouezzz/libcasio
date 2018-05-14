@@ -21,10 +21,12 @@
 #include <ctype.h>
 #include <getopt.h>
 
-/* ************************************************************************* */
-/*  Help and version messages                                                */
-/* ************************************************************************* */
+/* ---
+ * Help and version messages.
+ * --- */
+
 /* Version message */
+
 static const char version_message[] =
 BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
 "Maintained by " MAINTAINER ".\n"
@@ -34,6 +36,7 @@ BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
 "FITNESS FOR A PARTICULAR PURPOSE.";
 
 /* Help message */
+
 static const char help_main0[] =
 "Usage: " BIN " [--help|-h] [--version|-v]\n"
 "\n"
@@ -52,9 +55,11 @@ static const char help_main1[] =
 "                    By default, the zoom will be " DEFAULT_ZOOM ".\n"
 "\n"
 "Report bugs to " MAINTAINER ".\n";
-/* ************************************************************************* */
-/*  Main function                                                            */
-/* ************************************************************************* */
+
+/* ---
+ * Main function.
+ * --- */
+
 /**
  *	put_loglevel:
  *	Put a loglevel (for listing).

@@ -18,9 +18,10 @@
  * ************************************************************************* */
 #include "seven_mcs.h"
 
-/* ************************************************************************* */
-/*  Close callback                                                           */
-/* ************************************************************************* */
+/* ---
+ * Close callback.
+ * --- */
+
 /**
  *	casio_sevenmcs_close:
  *	Close a Protocol 7.00 MCS cookie.
@@ -38,14 +39,16 @@ CASIO_LOCAL int casio_sevenmcs_close(sevenmcs_t *cookie)
 
 /* Callbacks. */
 CASIO_LOCAL casio_mcsfuncs_t seven_mcs_funcs = {
-	(casio_mcs_get_t*)&casio_sevenmcs_get,
-/*	(casio_mcs_put_t*)&casio_sevenmcs_put, */ NULL,
-	(casio_mcs_delete_t*)&casio_sevenmcs_delete,
-	(casio_mcs_list_t*)&casio_sevenmcs_list,
-	(casio_mcs_close_t*)&casio_sevenmcs_close};
-/* ************************************************************************* */
-/*  Main opening function                                                    */
-/* ************************************************************************* */
+	(casio_mcs_get_t *)&casio_sevenmcs_get,
+/*	(casio_mcs_put_t *)&casio_sevenmcs_put, */ NULL,
+	(casio_mcs_delete_t *)&casio_sevenmcs_delete,
+	(casio_mcs_iter_t *)&casio_sevenmcs_iter,
+	(casio_mcs_close_t *)&casio_sevenmcs_close};
+
+/* ---
+ * Main opening function.
+ * --- */
+
 /**
  *	casio_open_seven_mcs:
  *	Open a Protocol 7.00 MCS interface.

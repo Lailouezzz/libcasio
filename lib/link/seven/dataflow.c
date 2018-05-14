@@ -23,9 +23,10 @@
 #define BUFNUM 64
 #define BUFSIZE (ONEBUF * BUFNUM)
 
-/* ************************************************************************* */
-/*  Buffer version                                                           */
-/* ************************************************************************* */
+/* ---
+ * Buffer version.
+ * --- */
+
 /**
  *	casio_seven_send_buffer:
  *	Part of the packet flows where data is sent.
@@ -190,9 +191,11 @@ int CASIO_EXPORT casio_seven_get_buffer(casio_link_t *handle,
 fail:
 	return (err);
 }
-/* ************************************************************************* */
-/*  Data version                                                             */
-/* ************************************************************************* */
+
+/* ---
+ * Data version.
+ * --- */
+
 /**
  *	casio_seven_send_data:
  *	Part of the packet flow where data is sent - buffer version.

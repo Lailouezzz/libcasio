@@ -36,9 +36,11 @@
 		handle->casio_link_flags = \
 			( handle->casio_link_flags & ~casio_linkflag_sendalt) | \
 			(~handle->casio_link_flags &  casio_linkflag_sendalt);
-/* ************************************************************************* */
-/*  Main functions                                                           */
-/* ************************************************************************* */
+
+/* ---
+ * Main functions.
+ * --- */
+
 /**
  *	casio_seven_send_buf:
  *	Send a buffer.
@@ -206,9 +208,11 @@ int CASIO_EXPORT casio_seven_send_again(casio_link_t *handle)
 	/* send it */
 	return (casio_seven_send_buf(handle, NULL, 0, 1));
 }
-/* ************************************************************************* */
-/*  Special packets                                                          */
-/* ************************************************************************* */
+
+/* ---
+ * Special packets.
+ * --- */
+
 /**
  *	casio_seven_send_err_resend:
  *	Resend the resend error.

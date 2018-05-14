@@ -46,8 +46,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_localmcs_put
 CASIO_EXTERN int CASIO_EXPORT casio_localmcs_delete
 	OF((localmcs_t *casio__cookie, casio_mcshead_t  *casio__mcshead));
 
-CASIO_EXTERN int CASIO_EXPORT casio_localmcs_list
-	OF((localmcs_t *casio__cookie, casio_mcslist_t  *casio__mcslist,
-		void *casio__mcslist_cookie));
+CASIO_EXTERN int CASIO_EXPORT casio_localmcs_iter
+	OF((localmcs_t *cookie, casio_iter_t **iterp));
 
 #endif /* LOCAL_MCS_LOCAL_H */

@@ -24,9 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ************************************************************************* */
-/*  Logging                                                                  */
-/* ************************************************************************* */
+/* ---
+ * Logging.
+ * --- */
+
 /**
  *	getowstring:
  *	Get overwrite string (useful for logging).
@@ -46,10 +47,13 @@ CASIO_LOCAL const char* getowstring(casio_seven_ow_t code)
 	if (code > 0x02) return ("<unknown overwriting mode>");
 	return (moo[code]);
 }
-/* ************************************************************************* */
-/*  Macros                                                                   */
-/* ************************************************************************* */
-/* if command is not supported, return */
+
+/* ---
+ * Macros.
+ * --- */
+
+/* if command is not supported, return. */
+
 #define CHECK_IF_COMMAND_IS_SUPPORTED(N) \
 	if (!command_is_supported(N)) \
 		return (casio_error_op);
@@ -147,9 +151,11 @@ int CASIO_EXPORT casio_seven_send_cmd_data(casio_link_t *handle,
 	return (casio_seven_send_ext(handle,
 		casio_seven_type_cmd, subtype, buf, buflen, 1));
 }
-/* ************************************************************************* */
-/*  Typical MCS command                                                      */
-/* ************************************************************************* */
+
+/* ---
+ * Typical MCS command.
+ * --- */
+
 /**
  *	casio_seven_send_typical_mcs_command:
  *	Send a typical MCS command.
@@ -174,9 +180,11 @@ int CASIO_EXPORT casio_seven_send_typical_mcs_command(casio_link_t *handle,
 		head->casio_mcshead_dirname, head->casio_mcshead_name,
 		head->casio_mcshead_group, NULL, NULL, NULL));
 }
-/* ************************************************************************* */
-/*  Special commands                                                         */
-/* ************************************************************************* */
+
+/* ---
+ * Special commands.
+ * --- */
+
 /**
  *	casio_seven_send_cmdsys_setlink:
  *	Set link settings.
@@ -240,10 +248,13 @@ int CASIO_EXPORT casio_seven_send_cmdosu_upandrun(casio_link_t *handle,
 	return (casio_seven_send_ext(handle, casio_seven_type_cmd,
 		casio_seven_cmdosu_upandrun, buf, 24, 1));
 }
-/* ************************************************************************* */
-/*  Decode incoming packet                                                   */
-/* ************************************************************************* */
-/* macro to copy an argument into the packet */
+
+/* ---
+ * Decode incoming packet.
+ * --- */
+
+/* Macro to copy an argument into the packet. */
+
 #define cpy_arg(I) { \
 	size_t ALEN = arglengths[I]; \
 	memcpy(packet->casio_seven_packet__argsdata[I], p, ALEN); \

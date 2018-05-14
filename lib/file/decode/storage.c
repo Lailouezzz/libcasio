@@ -1,6 +1,6 @@
 /* ****************************************************************************
- * mcs/local/list.c -- list files in a local main memory.
- * Copyright (C) 2017 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
+ * file/decode/decode.c -- decode a "standard" CASIO file.
+ * Copyright (C) 2018 Thomas "Cakeisalie5" Touhey <thomas@touhey.fr>
  *
  * This file is part of libcasio.
  * libcasio is free software; you can redistribute it and/or modify it
@@ -16,35 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with libcasio; if not, see <http://www.gnu.org/licenses/>.
  * ************************************************************************* */
-#include "local.h"
+#include "decode.h"
 
 /**
- *	casio_localmcs_list:
- *	List files in a local main memory.
+ *	casio_decode_storage:
+ *	Decode a fx-9860G storage memory.
  *
- *	@arg	cookie		the local main memory cookie.
- *	@arg	mcslist		the listing callback.
- *	@arg	mcookie		the callback cookie.
+ *	@arg	handlep		the handle to create.
+ *	@arg	buffer		the buffer to read from.
  */
 
-int CASIO_EXPORT casio_localmcs_list(localmcs_t *cookie,
-	casio_mcslist_t *mcslist, void *mcookie)
+int CASIO_EXPORT casio_decode_storage(casio_file_t **handlep,
+	casio_stream_t *buffer)
 {
-	int i, count = cookie->localmcs_count;
+	/* TODO: code this function. */
 
-	for (i = 0; count && i < cookie->localmcs_size; i++) {
-		casio_mcsfile_t *file = cookie->localmcs_files[i];
+	(void)handlep;
+	(void)buffer;
 
-		/* Check that the file exists. */
-		if (!file) continue;
-
-		/* Decrement the count, so that we don't have to go to the end. */
-		count--;
-
-		/* Call back the callback. */
-		(*mcslist)(mcookie, &file->casio_mcsfile_head);
-	}
-
-	/* Everything went well :) */
-	return (0);
+	msg((ll_info, "storage memory decoding is not available yet."));
+	return (casio_error_op);
 }
