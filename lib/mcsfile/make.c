@@ -33,15 +33,22 @@ int CASIO_EXPORT casio_make_mcsfile(casio_mcsfile_t **h,
 	int err; casio_mcsfile_t *handle;
 
 	/* Allocate the handle. */
-	*h = casio_alloc(1, sizeof(casio_mcsfile_t)); handle = *h;
-	if (!handle) return (casio_error_alloc);
+
+	*h = casio_alloc(1, sizeof(casio_mcsfile_t));
+	handle = *h;
+	if (!handle)
+		return (casio_error_alloc);
 	handle->casio_mcsfile_head.casio_mcshead_flags = 0; /* & ~mcsflag_valid */
 
 	/* Prepare it. */
-	err = casio_prepare_mcsfile(handle, rawhead);
-	if (err) { casio_free(handle); return (err); }
+
+	if ((err = casio_prepare_mcsfile(handle, rawhead))) {
+		casio_free(handle);
+		return (err);
+	}
 
 	/* Add the flag and return. */
+
 	handle->casio_mcsfile_head.casio_mcshead_flags |= casio_mcsflag_alloc;
 	return (0);
 }

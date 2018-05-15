@@ -27,11 +27,9 @@
  *	@arg	file		the MCS file.
  */
 
-static void print_file(void *cookie, const casio_mcshead_t *head)
+static void print_file(const casio_mcshead_t *head)
 {
 	const char *password;
-
-	(void)cookie;
 
 	if (head->casio_mcshead_dirname[0])
 		printf("%s/", head->casio_mcshead_dirname);
@@ -116,5 +114,14 @@ static void print_file(void *cookie, const casio_mcshead_t *head)
 
 void print_files(casio_mcs_t *handle)
 {
-	casio_list_mcsfiles(handle, &print_file, NULL);
+	casio_iter_t *iter;
+	casio_mcshead_t *head;
+
+	if (casio_iter_mcsfiles(&iter, handle))
+		return ;
+
+	while (!casio_next_mcshead(iter, &head))
+		print_file(head);
+
+	casio_end(iter);
 }

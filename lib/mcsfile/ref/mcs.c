@@ -320,33 +320,39 @@ int CASIO_EXPORT casio_correct_mcshead_from_mcs(casio_mcshead_t *head)
 	const struct group_corresp *g;
 	const struct type_corresp *t;
 
-	/* log what we're looking for */
 	msg((ll_info, "Looking for type with '%.8s' group, '%.8s' name and "
 		"0x%02X raw type", gname, fname, rawtype));
 
-	/* look for group correspondance */
+	/* Look for group correspondance. */
+
 	for (g = mcs_groups; g->types; g++) {
 		size_t pl = strlen(g->name);
 
-		/* check if pattern is there */
+		/* Check if our pattern is there. */
+
 		if (strncmp(g->name, gname, pl))
 			continue;
 		if ((g->flags & arg)
 		 && get_number(&gname[pl], &gid, g->flags & arg_is_num))
 			continue;
+
 		break;
 	}
+
 	if (!g->types)
 		goto notfound;
 
-	/* look for type correspondance */
+	/* Look for the type correspondance. */
+
 	for (t = g->types; t->dirname; t++) {
 		if (t->rawtype != rawtype)
 			continue;
 
-		/* check if pattern */
+		/* Check if we match the pattern. */
+
 		if (t->name) {
 			size_t fl = strlen(t->name);
+
 			if (strncmp(t->name, fname, fl))
 				continue;
 
@@ -359,19 +365,24 @@ int CASIO_EXPORT casio_correct_mcshead_from_mcs(casio_mcshead_t *head)
 		}
 		break;
 	}
+
 	if (!t->dirname)
 		goto notfound;
 
-	/* fill in info and return */
+	/* Fill in the info and return. */
+
 	head->casio_mcshead_type = t->type;
 	head->casio_mcshead_id = fid;
+
 	return (0);
 
 notfound:
 	msg((ll_info, "Type with '%s' group, '%s' name and 0x%02x type "
 		"wasn't recognized.", gname, fname, rawtype));
+
 	head->casio_mcshead_type = 0;
 	head->casio_mcshead_id = 0;
+
 	return (1);
 }
 
@@ -389,30 +400,40 @@ int CASIO_EXPORT casio_correct_mcshead_to_mcs(casio_mcshead_t *head)
 	const struct type_corresp *t;
 	char *gr, *nm;
 
-	/* check if there is a type */
-	if (!head) return (0);
+	/* Check if there is a type */
+
+	if (!head)
+		return (0);
 	if (!head->casio_mcshead_type && (!head->casio_mcshead_group[0]
 	 || !head->casio_mcshead_name[0] || !head->casio_mcshead_dirname[0]))
 		return (casio_error_op);
 
-	/* find the group/type */
+	/* Find the group/type. */
+
 	for (g = mcs_groups; g->types; g++) for (t = g->types; t->dirname; t++) {
-		/* check if the libcasio type corresponds */
-		if (t->type != head->casio_mcshead_type) continue;
+		/* Check if the libcasio type corresponds. */
 
-		/* check if id is weighted by major */
+		if (t->type != head->casio_mcshead_type)
+			continue;
+
+		/* Check if id is weighted by major. */
+
 		if (casio_get_id_major(head->casio_mcshead_id)
-		 && ~t->flags & weight_by_gid) continue;
+		 && ~t->flags & weight_by_gid)
+			continue;
 
-		/* we have found the entry! */
+		/* We have found the entry! */
+
 		goto found;
 	}
 
-	/* not found... */
+	/* Not found… */
+
 	return (casio_error_op);
 
 found:
-	/* put the group name */
+	/* Put the group name. */
+
 	gr = (char*)head->casio_mcshead_group;
 	if (g->flags & arg) {
 		int grid = casio_get_id_major(head->casio_mcshead_id);
@@ -432,10 +453,12 @@ found:
 	} else
 		strcpy(gr, g->name);
 
-	/* put the directory name */
+	/* Put the directory name. */
+
 	strcpy((char*)head->casio_mcshead_dirname, t->dirname);
 
-	/* put the filename */
+	/* Put the filename. */
+
 	nm = (char*)head->casio_mcshead_name;
 	if (t->flags & arg) {
 		int namid = casio_get_id_minor(head->casio_mcshead_id);
@@ -453,10 +476,12 @@ found:
 	} else if (t->name)
 		strcpy(nm, t->name);
 
-	/* put the raw type */
+	/* Put the raw type. */
+
 	head->casio_mcshead_rawtype = t->rawtype;
 
-	/* no error */
+	/* No error. */
+
 	return (0);
 }
 

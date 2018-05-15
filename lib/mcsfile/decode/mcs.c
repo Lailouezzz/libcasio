@@ -94,10 +94,13 @@ int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
 	const unsigned char *dirname, const unsigned char *filename,
 	unsigned long filesize)
 {
-	/* check that we have a head, lol */
-	if (!head) return (-1);
+	/* Check that we have a head, lol. */
 
-	/* prepare the head */
+	if (!head)
+		return (-1);
+
+	/* Prepare the head. */
+
 	head->casio_mcshead_flags = casio_mcsfor_mcs;
 	head->casio_mcshead_size = filesize;
 	head->casio_mcshead_rawtype = raw_type;
@@ -107,8 +110,10 @@ int CASIO_EXPORT casio_decode_mcsfile_head(casio_mcshead_t *head,
 	head->casio_mcshead_group[16] = 0;
 	strncpy(head->casio_mcshead_dirname, (char*)dirname, 8);
 	head->casio_mcshead_dirname[8] = 0;
+	head->casio_mcshead_count = 0;
 
-	/* make the lib abstract types out of this raw information. */
+	/* Make the lib abstract types out of this raw information. */
+
 	casio_correct_mcshead(head, 0);
 	msg((ll_info, "libcasio file type is 0x%08lX", head->casio_mcshead_type));
 
@@ -175,7 +180,8 @@ int CASIO_EXPORT casio_decode_mcsfile(casio_mcsfile_t **handle,
 		msg((ll_info, "Making a limited buffer of "
 			"0x%" CASIO_PRIXSIZE " bytes", head.casio_mcshead_size));
 		err = casio_open_limited(&lbuf, buffer, head.casio_mcshead_size);
-		if (err) goto fail;
+		if (err)
+			goto fail;
 
 		/* Call the decode error. */
 

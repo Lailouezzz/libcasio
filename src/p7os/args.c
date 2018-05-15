@@ -112,49 +112,49 @@ FOOT;
  * --- */
 
 /**
- *	put_loglevel:
- *	Put a loglevel (for listing).
- *
- *	@arg	first	the first log level.
- *	@arg	level	the level string.
- */
-
-static void put_loglevel(char **first, const char *level)
-{
-	if (!*first) {
-		*first = malloc(strlen(level) + 2);
-		if (!*first)
-			return ;
-		strcpy(*first + 1, level);
-		**first = 'F';
-		return ;
-	}
-
-	if (**first == 'F') {
-		printf(help_log, casio_getlog(), *first + 1);
-		**first = 'N';
-	}
-
-	printf(", %s", level);
-}
-
-/**
  *	put_help:
  *	Put the main help message.
  */
 
 static void put_help(void)
 {
-	char *first;
-
 	/* first big part */
 	fputs(help_main0, stdout);
 
-	/* loglevels */
-	first = NULL;
-	casio_listlog((casio_log_list_t*)&put_loglevel, (void*)&first);
-	if (first && *first == 'N') fputc('\n', stdout);
-	free(first);
+	/* Loglevels. */
+
+	{
+		casio_iter_t *iter;
+		char *first = NULL, *current;
+		int pos = 0;
+
+		if (!casio_iter_log(&iter)) {
+			while (!casio_next_log(iter, &current)) {
+				if (!first) {
+					size_t len = strlen(current) + 1;
+
+					first = malloc(len);
+					if (!first)
+						break ;
+					memcpy(first, current, len);
+					pos++;
+					continue ;
+				}
+
+				if (pos == 1)
+					printf(help_log, casio_getlog(), first);
+
+				printf(", %s", current);
+				pos++;
+			}
+
+			if (pos > 1)
+				fputc('\n', stdout);
+
+			free(first);
+			casio_end(iter);
+		}
+	}
 
 	/* second big part */
 	puts(help_main1);

@@ -59,50 +59,50 @@ BIN " - from " NAME " v" VERSION " (licensed under GPLv2)\n"
  * --- */
 
 /**
- *	put_loglevel:
- *	Put a loglevel (for listing).
- *
- *	@arg	initialized	if the list was initialized.
- *	@arg	level		the level string.
- */
-
-static void put_loglevel(char **first, const char *level)
-{
-	if (!*first) {
-		*first = malloc(strlen(level) + 2);
-		if (!*first) return ;
-		strcpy(*first + 1, level);
-		**first = 'F';
-		return ;
-	}
-
-	if (**first == 'F') {
-		printf(help_loglevel_init, casio_getlog(), *first + 1);
-		**first = 'N';
-	}
-
-	printf(", %s", level);
-}
-
-/**
  *	put_help:
  *	Put the help message on standard output.
  */
 
 static void put_help(void)
 {
-	char *first;
-
 	/* First big part. */
 
 	fputs(help_start, stdout);
 
 	/* Loglevels. */
 
-	first = NULL;
-	casio_listlog((casio_log_list_t*)&put_loglevel, (void*)&first);
-	if (first && *first == 'N') fputc('\n', stdout);
-	free(first);
+	{
+		casio_iter_t *iter;
+		char *first = NULL, *current;
+		int pos = 0;
+
+		if (!casio_iter_log(&iter)) {
+			while (!casio_next_log(iter, &current)) {
+				if (!first) {
+					size_t len = strlen(current) + 1;
+
+					first = malloc(len);
+					if (!first)
+						break ;
+					memcpy(first, current, len);
+					pos++;
+					continue ;
+				}
+
+				if (pos == 1)
+					printf(help_loglevel_init, casio_getlog(), first);
+
+				printf(", %s", current);
+				pos++;
+			}
+
+			if (pos > 1)
+				fputc('\n', stdout);
+
+			free(first);
+			casio_end(iter);
+		}
+	}
 
 	/* Second big part. */
 
@@ -137,6 +137,7 @@ int parse_args(int ac, char **av, int *num, const char ***paths)
 	const struct option longopts[] = {
 		{"help", no_argument, NULL, 'h'},
 		{"version", no_argument, NULL, 'v'},
+		{"log", required_argument, NULL, 'L'},
 		{NULL, 0, NULL, 0}
 	};
 
@@ -150,6 +151,9 @@ int parse_args(int ac, char **av, int *num, const char ***paths)
 			break;
 		case 'v':
 			version = 1;
+			break;
+		case 'L':
+			casio_setlog(optarg);
 			break;
 		default: switch (optopt) {
 			default:

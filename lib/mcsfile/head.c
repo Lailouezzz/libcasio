@@ -23,6 +23,10 @@
  *	casio_correct_mcshead:
  *	Correct the information.
  *
+ *	In order to do that, we'll go from the first specific data to the abstract
+ *	data (which is supposed to be able to represent common things), then from
+ *	the abstract data to the second specific data.
+ *
  *	@arg	head	the MCS head to correct.
  *	@arg	mcsfor	the destination platform.
  *	@return			the error code (0 if ok).
@@ -31,55 +35,77 @@
 int CASIO_EXPORT casio_correct_mcshead(casio_mcshead_t *head,
 	unsigned long mcsfor)
 {
-	int err; unsigned long inifor;
+	int err;
+	unsigned long inifor;
 
 	/* Prepare. */
-	inifor = head->casio_mcshead_flags & casio_mcsfor_mask;
-	mcsfor =                    mcsfor & casio_mcsfor_mask;
+
+	inifor = casio_mcsfor_mask & head->casio_mcshead_flags;
+	mcsfor = casio_mcsfor_mask & mcsfor;
+
+	/* Check if has already been converted. */
+
+	if (inifor == mcsfor)
+		return (0);
 	msg((ll_info, "Converting head from info type 0x%02X to 0x%02X",
 		inifor >> 24, mcsfor >> 24));
 
-	/* Check if has already been converted. */
-	if (inifor == mcsfor) return (0);
-
 	/* If we ought to convert from any specific type,
 	 * we have to convert to abstract first. */
+
 	switch (inifor) {
-	case 0: err = 0; break;
+	case 0:
+		err = 0;
+		break;
+
 	case casio_mcsfor_mcs:
-		err = casio_correct_mcshead_from_mcs(head); break;
+		err = casio_correct_mcshead_from_mcs(head);
+		break;
 	case casio_mcsfor_cas40: /* FALLTHRU */
 	case casio_mcsfor_cas50:
-		err = casio_correct_mcshead_from_casdata(head); break;
+		err = casio_correct_mcshead_from_casdata(head);
+		break;
 #if 0 /* TODO */
 	case casio_mcsfor_cas100:
-		err = casio_correct_mcshead_from_cas100(head); break;
+		err = casio_correct_mcshead_from_cas100(head);
+		break;
 #endif
-	default: err = casio_error_op;
+	default:
+		err = casio_error_op;
 	}
 
 	/* If we have encountered an error while doing that,
 	 * we should tell the user about it. */
-	if (err) return (err);
+
+	if (err)
+		return (err);
 	head->casio_mcshead_flags &= ~casio_mcsfor_mask;
 
 	/* Then we can convert from abstract to specific. */
+
 	switch (mcsfor) {
-	case 0: return (0);
+	case 0:
+		return (0);
 
 	case casio_mcsfor_mcs:
-		err = casio_correct_mcshead_to_mcs(head); break;
+		err = casio_correct_mcshead_to_mcs(head);
+		break;
 	case casio_mcsfor_cas40: /* FALLTHRU */
 	case casio_mcsfor_cas50:
-		err = casio_correct_mcshead_to_casdata(head); break;
+		err = casio_correct_mcshead_to_casdata(head);
+		break;
 #if 0 /* TODO */
 	case casio_mcsfor_cas100:
-		err = casio_correct_mcshead_to_cas100(head); break;
+		err = casio_correct_mcshead_to_cas100(head);
+		break;
 #endif
-	default: err = casio_error_op;
+	default:
+		err = casio_error_op;
 	}
 
-	if (err) return (err);
+	if (err)
+		return (err);
+
 	head->casio_mcshead_flags |= mcsfor;
 	return (err);
 }

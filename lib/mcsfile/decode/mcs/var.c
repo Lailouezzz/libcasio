@@ -34,7 +34,7 @@ int CASIO_EXPORT casio_decode_mcs_var(casio_mcsfile_t **handle,
 {
 	int err, num;
 	unsigned long length = head->casio_mcshead_size;
-	unsigned char buf[MAX_VAR_NUMBER * sizeof(casio_mcsbcd_t)];
+	casio_mcsbcd_t buf[MAX_VAR_NUMBER * 2];
 	const casio_mcsbcd_t *b;
 	casio_mcsfile_t *h;
 	int i;
@@ -64,7 +64,8 @@ int CASIO_EXPORT casio_decode_mcs_var(casio_mcsfile_t **handle,
 
 	/* Copy and decode the variables. */
 
-	for (b = (void*)buf, i = 0; i < head->casio_mcshead_count; i++) {
+	b = (casio_mcsbcd_t const *)buf;
+	for (i = 0; i < head->casio_mcshead_count; i++) {
 		casio_bcd_frommcs(&h->casio_mcsfile_vars[i].casio_mcscell_real, b++);
 		casio_bcd_frommcs(&h->casio_mcsfile_vars[i].casio_mcscell_imgn, b++);
 		h->casio_mcsfile_vars[i].casio_mcscell_flags = casio_mcscellflag_used;

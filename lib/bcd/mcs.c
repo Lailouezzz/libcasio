@@ -29,7 +29,7 @@
  *	@return			the special bit, for simplicity.
  */
 
-int CASIO_EXPORT casio_bcd_frommcs(casio_bcd_t *bcd, const casio_mcsbcd_t *raw)
+int CASIO_EXPORT casio_bcd_frommcs(casio_bcd_t *bcd, casio_mcsbcd_t const *raw)
 {
 	const unsigned char *bytes = raw->casio_mcsbcd_BCDval;
 

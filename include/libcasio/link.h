@@ -138,15 +138,15 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_usb
 		int casio__bus, int casio__address));
 CASIO_EXTERN int CASIO_EXPORT casio_open_com
 	OF((casio_link_t **casio__h, unsigned long casio__flags,
-		const char *casio__path,
-		const casio_streamattrs_t *casio__attributes));
+		char const *casio__path,
+		casio_streamattrs_t const *casio__attributes));
 
 /* Initialize a handle using a custom stream. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_open_link
 	OF((casio_link_t **casio__h,
 		unsigned long casio__flags, casio_stream_t *casio__stream,
-		const casio_streamattrs_t *casio__attributes));
+		casio_streamattrs_t const *casio__attributes));
 
 /* De-initialize. */
 

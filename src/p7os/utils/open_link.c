@@ -39,7 +39,7 @@ int open_link(casio_link_t **link, args_t *args,
 	if (args->com)
 		err = casio_open_com(link, flags, args->com, attrs);
 	else
-		err = casio_open_usb(link, flags);
+		err = casio_open_usb(link, flags, -1, -1);
 	if (err)
 		return (err);
 

@@ -31,18 +31,18 @@ CASIO_LOCAL const char *log_levels[] = {
 
 /* `next_log()`: next log level. */
 
-CASIO_LOCAL int CASIO_EXPORT next_log(const char **cookie, const char **level)
+CASIO_LOCAL int CASIO_EXPORT next_log(const char ***cookie, const char **level)
 {
-	if (!*cookie)
+	if (!**cookie)
 		return (casio_error_iter);
 
-	*level = *cookie++;
+	*level = *(*cookie)++;
 	return (0);
 }
 
 /* `end_log_iter()`: end the iteration log. */
 
-CASIO_LOCAL int CASIO_EXPORT end_log_iter(const char **cookie)
+CASIO_LOCAL int CASIO_EXPORT end_log_iter(const char ***cookie)
 {
 	free(cookie);
 	return (0);
@@ -60,14 +60,14 @@ CASIO_LOCAL casio_iter_funcs_t log_funcs = {
 
 int CASIO_EXPORT casio_iter_log(casio_iter_t **iterp)
 {
-	const char **ptr;
+	const char ***ptr;
 
-	ptr = malloc(sizeof(*ptr));
+	ptr = malloc(sizeof(char **));
 	if (!ptr)
 		return (casio_error_alloc);
 
-	*ptr = "none";
-	return (casio_iter(iterp, ptr, &log_funcs));
+	*ptr = log_levels;
+	return (casio_iter(iterp, (void *)ptr, &log_funcs));
 }
 
 /* ---

@@ -117,7 +117,7 @@ CASIO_EXTERN CASIO_DEPRECATED int CASIO_EXPORT casio_list_mcsfiles
 /* Iterate on MCS entries. */
 
 CASIO_EXTERN int CASIO_EXPORT casio_iter_mcsfiles
-	OF((casio_mcs_t *casio__mcs, casio_iter_t **casio__iter));
+	OF((casio_iter_t **casio__iter, casio_mcs_t *casio__mcs));
 
 # define casio_next_mcshead(ITER, MCSFILEP) \
 	(casio_next((ITER), (void **)(casio_mcshead_t **)(MCSFILEP)))

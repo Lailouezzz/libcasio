@@ -27,7 +27,7 @@
  *	@return			the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_iter_mcsfiles(casio_mcs_t *mcs, casio_iter_t **iterp)
+int CASIO_EXPORT casio_iter_mcsfiles(casio_iter_t **iterp, casio_mcs_t *mcs)
 {
 	casio_mcs_iter_t *func;
 
@@ -56,7 +56,7 @@ int CASIO_EXPORT casio_list_mcsfiles(casio_mcs_t *mcs,
 	casio_mcshead_t *head;
 	int err;
 
-	if ((err = casio_iter_mcsfiles(mcs, &iter)))
+	if ((err = casio_iter_mcsfiles(&iter, mcs)))
 		return (err);
 
 	while (1) {
