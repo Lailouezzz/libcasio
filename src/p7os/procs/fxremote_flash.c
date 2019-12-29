@@ -234,7 +234,7 @@ int fxremote_flash(args_t *args)
 	}
 
 	/* Final command. */
-	err = casio_seven_send_basic(handle, casio_seven_type_cmd, 0x79, 0);
+	err = casio_seven_send_basic(handle, casio_seven_type_cmd, 0x78, 0);
 	if (err)
 		goto fail;
 
