@@ -169,7 +169,21 @@ static void print_file_info(void *cookie,
 	(void)cookie;
 	/* initialize buffer */
 	static char buf[45];
-	printf("callback called : %s\n", node->casio_pathnode_name);
+	memset(buf, ' ', sizeof(buf));
+
+	/* File into dir */
+	if (node->casio_pathnode_size >= 2) {
+		char *b = buf;
+		b += sprintf(b, "%s/", node->casio_pathnode_name);
+		b[sprintf(b, "%s", node->casio_pathnode_next->casio_pathnode_name)] = ' '; // replace '\0' by ' '
+	} else if (node->casio_pathnode_size == 1) { /* Juste one file or dir */
+		buf[sprintf(buf, (stat->casio_stat_type == CASIO_STAT_TYPE_DIR) ? "%s/" : "%s", node->casio_pathnode_name)] = ' '; // replace '\0' by ' '
+	}
+	/* Put the size */
+	sprintf(&buf[28], "%10uo", (unsigned) stat->casio_stat_size);
+
+	/* Put the string to stdout */
+	puts(buf);
 }
 
 /* ---
@@ -284,6 +298,7 @@ int main(int ac, char **av)
 		case mn_list:
 			path.casio_path_device = args.storage;
 			casio_make_pathnode(&path.casio_path_nodes, 1);
+			path.casio_path_flags = casio_pathflag_rel;
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_list(fs, &path, print_file_info, NULL)))
 				break;

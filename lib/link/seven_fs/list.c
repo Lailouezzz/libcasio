@@ -64,7 +64,7 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
         /* check answer */
         char *dir, *filename, *cdev; unsigned int fs, ldir, lfilename;
         casio_pathnode_t *fnode = NULL;
-        casio_stat_t fstat;
+        casio_stat_t fstat = { 0 };
         switch (response.casio_seven_packet_type)
         {
         /* - If is roleswap, we have finished our job here - */
@@ -74,7 +74,6 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
 
         /* - If is command, should be another file info - */
         case casio_seven_type_cmd:
-
             /* Check args */
             dir = response.casio_seven_packet_args[0];
             filename = response.casio_seven_packet_args[1];
@@ -87,10 +86,6 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
             /* Create node and stat */
             ldir = dir ? strlen(dir) : 0;
             lfilename = filename ? strlen(filename) : 0;
-            if(dir && filename) {
-            } else {
-                casio_make_pathnode(&fnode, 1);
-            }
 
             if(dir && filename) {
                 /* Create node size 2 */
@@ -120,6 +115,9 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
                 fnode->casio_pathnode_name[ldir] = '\0';
             }
 
+            fstat.casio_stat_size = fs;
+            fstat.casio_stat_type = (dir && !filename) ? CASIO_STAT_TYPE_DIR : CASIO_STAT_TYPE_REG;
+
             /* Call callback and free node */
             (*callback)(cbcookie, fnode, &fstat);
             if(dir && filename) {
@@ -131,7 +129,7 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
             break;
 
         default:
-            // Unknown
+            /* Unknown */
             msg((ll_fatal, "Error packet type unknown"));
             return (casio_error_unknown);
             break;
