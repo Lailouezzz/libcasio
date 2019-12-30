@@ -32,6 +32,7 @@ no_libusb=
 static=
 windows=
 optimize_size=
+optimize=y
 no_log=
 loglevel=none # none, info, warn, error, fatal
 
@@ -83,6 +84,7 @@ Build options:
   --static                  build a static library (by default, dynamic)
   --windows                 build DLLs and .libs instead of ELF and archives
   --optimize-size           optimize size instead of speed
+  --optimize-disable        disable optimization
 
   --no-file                 do not use the libc FILE interface
   --no-libusb               do not use libusb
@@ -158,6 +160,7 @@ for arg ; do case "$arg" in
 --static) static=y ;;
 --windows) windows=y ;;
 --optimize-size) optimize_size=y ;;
+--optimize-disable) optimize= ;;
 --no-file) no_file=y ;;
 --no-libusb) no_libusb=y ;;
 --no-log) no_log=y ;;
@@ -306,6 +309,7 @@ cat <<EOF
  STATIC := $static
  TARGET = $target
  OPTIMIZE_SIZE := $optimize_size
+ OPTIMIZE := $optimize
  LOG_LEVEL = $loglevel
  NO_LIBUSB = $no_libusb
  DEFAULT_ZOOM := $default_zoom

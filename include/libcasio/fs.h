@@ -321,6 +321,12 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_nat
 CASIO_EXTERN int CASIO_EXPORT casio_optimize
 	OF((casio_fs_t *casio__fs, const char *casio__device));
 
+/* List all files/directories */
+
+CASIO_EXTERN int CASIO_EXPORT casio_list
+	OF((casio_fs_t *casio__fs, casio_path_t *casio__path,
+		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
+
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
 #endif /* LIBCASIO_FS_H */

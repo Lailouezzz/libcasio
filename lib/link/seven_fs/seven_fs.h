@@ -51,4 +51,10 @@ CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_delete
 CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_optimize
 	OF((sevenfs_cookie_t *casio__cookie, const char *casio__device));
 
+/* List all files/directories. */
+
+CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_list
+	OF((sevenfs_cookie_t *casio__cookie, sevenfs_path_t *casio__path,
+		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
+
 #endif /* LOCAL_LINK_SEVEN_FS_H */

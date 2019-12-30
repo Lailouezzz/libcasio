@@ -109,6 +109,6 @@ fail:
 	default:
 		fprintf(stderr, error_unplanned, casio_strerror(err));
 	}
-
+	
 	return (1);
 }

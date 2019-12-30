@@ -163,24 +163,13 @@ static void sendfile_display(unsigned int id, unsigned int total)
  *	@arg	size	the filesize
  */
 
-static void print_file_info(void *cookie, const char *dir, const char *name,
-	unsigned long size)
+static void print_file_info(void *cookie,
+	const casio_pathnode_t *node, const casio_stat_t *stat)
 {
 	(void)cookie;
 	/* initialize buffer */
 	static char buf[45];
-
-	/* clean buffer */
-	memset(buf, ' ', 28);
-	/* put path in buffer */
-	char *b = buf;
-	if (dir) b += sprintf(b, "%s/", dir);
-	if (name) b[sprintf(b, "%s", name)] = ' ';
-	/* put size */
-	sprintf(&buf[28], "%10uo", (unsigned)size);
-
-	/* put the string */
-	puts(buf);
+	printf("callback called : %s\n", node->casio_pathnode_name);
 }
 
 /* ---
@@ -247,6 +236,7 @@ int main(int ac, char **av)
 
 	/* Check according to menu */
 
+	casio_path_t path;
 	switch (args.menu) {
 #if 0
 		case mn_send:
@@ -284,23 +274,26 @@ int main(int ac, char **av)
 				args.newdir, args.newname, args.storage);
 			break;
 		case mn_del:
-			err = casio_delete(handle, args.dirname, args.filename,
+			err = casio_delete(fs, args.dirname, args.filename,
 				args.storage);
-			break;
-		case mn_list:
-			err = casio_list(handle, args.storage, &print_file_info, NULL);
 			break;
 		case mn_reset:
 			err = casio_reset(handle, args.storage);
 			break;
 #endif
+		case mn_list:
+			path.casio_path_device = args.storage;
+			casio_make_pathnode(&path.casio_path_nodes, 1);
+			if ((err = casio_open_seven_fs(&fs, handle))
+			 || (err = casio_list(fs, &path, print_file_info, NULL)))
+				break;
+			
+			break;
 		case mn_optimize:
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_optimize(fs, args.storage)))
 				break;
 
-			casio_close_fs(fs);
-			fs = NULL;
 			break;
 
 		case mn_info:
@@ -330,6 +323,7 @@ int main(int ac, char **av)
 	/* Terminate communication and de-initialize link handle. */
 
 	casio_close_fs(fs);
+	fs = NULL;
 	casio_close_link(handle);
 	handle = NULL;
 
@@ -365,6 +359,7 @@ fail:
 
 	/* that doesn't mean you shouldn't exit, heh. */
 	casio_close_fs(fs);
+	fs = NULL;
 	casio_close_link(handle);
 	handle = NULL;
 

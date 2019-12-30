@@ -41,8 +41,8 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 
 	/* Check the device. */
 
-	if (!memcmp(array->casio_path_device, "fls0", 4)
-	 || !memcmp(array->casio_path_device, "crd0", 4))
+	if (memcmp(array->casio_path_device, "fls0", 4) != 0
+	 && memcmp(array->casio_path_device, "crd0", 4) != 0)
 		return (casio_error_invalid);
 
 	/* Get directory name and file name. */
@@ -89,8 +89,8 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	data[filesz - 1] = 0;
 	path->sevenfs_path_file = off;
 	data += filesz; off += filesz;
-	memcpy(data, array->casio_path_device, 3);
-	data[3] = 0;
+	memcpy(data, array->casio_path_device, 4);
+	data[4] = 0;
 	path->sevenfs_path_dev = off;
 
 	/* No error! */
