@@ -8,6 +8,7 @@
 
 /docs/_build
 build
+.vscode/
 
 .*.swp
 vgcore*
