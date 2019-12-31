@@ -54,10 +54,13 @@ library so that a cross-compiler that uses Microsoft Windows static library
 formats, add the ``--windows`` option (notice that for a ``-mingw32`` target
 and a dynamic library generation, this option is automatically added).
 
+`./configure --help` for more information.
+
 ## Building and installing
 
 Once configuring is done (necessary step), just ``make``.  
 To install, use ``make install``.
+TODO : make uninstall ?
 
 To build and install only the lib, use ``all-lib`` then ``install-lib``.
 To build and install only the docs, use ``all-doc`` and ``install-doc``.
