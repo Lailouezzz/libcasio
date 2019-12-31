@@ -30,7 +30,7 @@ using C89.
 - `zlib <http://zlib.net/>`_ (>= 1.2.8).
 - `SDL <https://www.libsdl.org/>`_ (>= 2.0).
 
-# Configuring
+## Configuring
 
 First of all, the configure script has a help message where all of the
 options are listed. The defaults should be appropriate for a native build,
