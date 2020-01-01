@@ -64,7 +64,7 @@ int CASIO_EXPORT casio_seek(casio_stream_t *stream, casio_off_t offset,
 
 				/* Read that much from the stream. */
 
-				if ((err = casio_read(stream, buf, rd)))
+				if ((err = casio_read(stream, buf, &rd)))
 					goto fail;
 
 				to_skip -= rd;

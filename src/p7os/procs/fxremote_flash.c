@@ -83,7 +83,7 @@ static int send_sector(casio_link_t *handle, casio_stream_t *buffer,
 			/* Prepare the block. */
 			block.destination = casio_be32toh(buf);
 			block.length      = casio_be32toh(len);
-			if ((buf_err = casio_read(buffer, block.data, len))) {
+			if ((buf_err = casio_read(buffer, block.data, &len))) {
 				osdisp_interrupt(&osdisp_cookie);
 				return (casio_error_read);
 			}

@@ -101,7 +101,7 @@ typedef int casio_stream_settm_t
 	OF((void *, const casio_timeouts_t *));
 
 typedef int casio_stream_read_t
-	OF((void *, unsigned char *, size_t));
+	OF((void *, unsigned char *, size_t *));
 typedef int casio_stream_write_t
 	OF((void *, const unsigned char *, size_t));
 typedef int casio_stream_seek_t
@@ -361,7 +361,7 @@ CASIO_EXTERN int   CASIO_EXPORT casio_get_lasterr
 
 CASIO_EXTERN int CASIO_EXPORT casio_read
 	OF((casio_stream_t *casio__stream,
-		void *casio__dest, size_t casio__size));
+		void *casio__dest, size_t *casio__psize));
 CASIO_EXTERN int CASIO_EXPORT casio_write
 	OF((casio_stream_t *casio__stream,
 		const void *casio__data, size_t casio__size));

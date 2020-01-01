@@ -38,9 +38,10 @@ typedef struct {
  *	@return				the error code (0 if ok).
  */
 
-CASIO_LOCAL int casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL int casio_memory_read(void *vcookie, unsigned char *dest, size_t *psize)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
+	size_t size = *psize;
 
 	if (((size_t)-1 - cookie->_offset) < size) /* overflow */
 		return (casio_error_read);

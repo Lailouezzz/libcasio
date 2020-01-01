@@ -46,7 +46,7 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
     } else if (response.casio_seven_packet_type == casio_seven_type_nak
      && response.casio_seven_packet_code == casio_seven_err_other) {
         msg((ll_fatal, "Invalid filesystem"));
-        return (casio_error_device); // FIXME : unsupported device error
+        return (casio_error_device);
     } else if (response.casio_seven_packet_type != casio_seven_type_ack) {
         msg((ll_fatal, "Didn't receive ack or known error..."));
         return (casio_error_unknown);

@@ -250,7 +250,8 @@ int main(int ac, char **av)
 
 	/* Check according to menu */
 
-	casio_path_t path;
+	casio_path_t path = { 0 };
+	casio_stream_t *fileStream = NULL;
 	switch (args.menu) {
 #if 0
 		case mn_send:
@@ -277,12 +278,6 @@ int main(int ac, char **av)
 				args.storage, 1, args.force ? NULL : &sendfile_confirm,
 				args.nicedisp ? &sendfile_display : NULL);
 			break;
-		case mn_get:
-			err = casio_reqfile(handle, args.local,
-				args.dirname, args.filename,
-				args.storage, args.nicedisp && args.local != stdout
-				? &sendfile_display : NULL);
-			break;
 		case mn_copy:
 			err = casio_copy(handle, args.dirname, args.filename,
 				args.newdir, args.newname, args.storage);
@@ -295,15 +290,59 @@ int main(int ac, char **av)
 			err = casio_reset(handle, args.storage);
 			break;
 #endif
+		case mn_get:
+			// Initialize the path
+			path.casio_path_device = args.storage;
+
+			// Make the node
+			casio_make_pathnode(&path.casio_path_nodes, strlen(args.filename));
+			memcpy(path.casio_path_nodes->casio_pathnode_name, args.filename, strlen(args.filename));
+			// Set flags
+			path.casio_path_flags = casio_pathflag_rel;
+
+			// Open 7.00 fs and open file in read only
+			if ((err = casio_open_seven_fs(&fs, handle))
+			 || (err = casio_open(fs, &fileStream, &path, 0, CASIO_OPENMODE_READ)))
+				break;
+			
+			char buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
+			FILE *file = fopen(args.filename, "wb");
+			
+			if(!file) {
+				fprintf(stderr, "Couldn't open in write mode %s", args.filename);
+				err = casio_error_unknown;
+				break;
+			}
+			size_t size;
+			do
+			{
+				size = sizeof(buffer);
+				err = casio_read(fileStream, buffer, &size);
+				fwrite(buffer, 1, size, file);
+				if(err == casio_error_ieof)
+					break;
+			} while (err == 0);
+			
+			/* All good so close streams and clear error */
+			err = 0;
+			fclose(file);
+			casio_close(fileStream);
+
+			break;
+
 		case mn_list:
+			// Initialize the path
 			path.casio_path_device = args.storage;
 			casio_make_pathnode(&path.casio_path_nodes, 1);
 			path.casio_path_flags = casio_pathflag_rel;
+
+			// Open 7.00 fs and list
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_list(fs, &path, print_file_info, NULL)))
 				break;
 			
 			break;
+
 		case mn_optimize:
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_optimize(fs, args.storage)))

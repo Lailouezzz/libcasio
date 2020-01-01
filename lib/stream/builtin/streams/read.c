@@ -30,9 +30,10 @@
  */
 
 int CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
-	unsigned char *dest, size_t size)
+	unsigned char *dest, size_t *psize)
 {
 	int fd = cookie->_readfd;
+	size_t size = *psize;
 
 	/* Transmit what's already in the buffer. */
 

@@ -41,10 +41,10 @@ typedef struct {
  */
 
 CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest,
-	size_t size)
+	size_t *psize)
 {
 	int err; limited_cookie_t *cookie = (void*)vcookie;
-	size_t left;
+	size_t left; size_t size = *psize;
 
 	if (size > cookie->_left) {
 		/* First, skip the required bytes. */
@@ -60,7 +60,7 @@ CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest,
 		return (casio_error_eof);
 	}
 
-	if ((err = casio_read(cookie->_stream, dest, size))) {
+	if ((err = casio_read(cookie->_stream, dest, &size))) {
 		cookie->_left = 0; /* XXX: depends on the error? */
 		return (err);
 	}

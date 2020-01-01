@@ -42,13 +42,14 @@ struct thecookie {
  */
 
 CASIO_LOCAL int csum32_read(struct thecookie *cookie,
-	unsigned char *dest, size_t size)
+	unsigned char *dest, size_t *psize)
 {
 	int err;
+	size_t size = *psize;
 
 	/* Make the call. */
 
-	err = casio_read(cookie->_stream, dest, size);
+	err = casio_read(cookie->_stream, dest, &size);
 	if (err) return (err);
 
 	/* Make the checksum. */

@@ -30,10 +30,11 @@
  */
 
 int CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
-	unsigned char *dest, size_t size)
+	unsigned char *dest, size_t *psize)
 {
 	int libusberr;
 	size_t tocopy;
+	size_t size = *psize;
 
 	/* Transmit what's already in the buffer. */
 

@@ -84,23 +84,23 @@ typedef struct {
  * --- */
 
 CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
-	unsigned char *buffer, size_t size)
+	unsigned char *buffer, size_t *size)
 {
 	casio_scsi_t scsi; int err;
 
 	/* Empty what's already in the buffer. */
 
 	if (cookie->left) {
-		if (cookie->left >= size) {
-			memcpy(buffer, cookie->ptr, size);
-			cookie->ptr += size;
-			cookie->left -= size;
+		if (cookie->left >= *size) {
+			memcpy(buffer, cookie->ptr, *size);
+			cookie->ptr += *size;
+			cookie->left -= *size;
 			return (0);
 		}
 
 		memcpy(buffer, cookie->ptr, cookie->left);
 		buffer += cookie->left;
-		size -= cookie->left;
+		*size -= cookie->left;
 		reset_cookie(cookie);
 	}
 
@@ -151,14 +151,14 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 		 * We could also check that `avail < 0x10000` because we need to
 		 * express it later, but it is imposed by the source format. */
 
-		if (avail > size && size <= cookie->size) {
+		if (avail > *size && *size <= cookie->size) {
 			to = cookie->ptr;
 			if (avail > cookie->size)
 				avail = cookie->size;
 		} else {
 			to = buffer;
-			if (avail > size)
-				avail = size;
+			if (avail > *size)
+				avail = *size;
 		}
 
 		/* Actually get the data. */
@@ -182,16 +182,16 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 
 		if (to == buffer) {
 			buffer += avail;
-			size -= avail;
+			*size -= avail;
 		} else {
 			cookie->left = avail;
 
-			memcpy(buffer, cookie->ptr, size);
-			cookie->ptr += size;
-			cookie->left -= size;
-			size = 0;
+			memcpy(buffer, cookie->ptr, *size);
+			cookie->ptr += *size;
+			cookie->left -= *size;
+			*size = 0;
 		}
-	} while (size);
+	} while (*size);
 
 	return (0);
 }

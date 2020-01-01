@@ -28,7 +28,7 @@
  *	@return				the error code (0 if ok).
  */
 
-int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
+int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t *psize)
 {
 	int err;
 
@@ -36,16 +36,20 @@ int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
 	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
 
 	/* read */
-	if (!size) return (0);
-	err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
-	if (err) {
+	if (!(*psize)) return (0);
+	if (!psize) {
+		size_t size = -1;
+		err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, &size);
+	} else {
+		err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, psize);
+	}
+	if (err && err != casio_error_ieof) {
 		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
 		goto fail;
 	}
 
 	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
+	stream->casio_stream_offset += *psize;
 fail:
 	stream->casio_stream_lasterr = err;
 	return (err);

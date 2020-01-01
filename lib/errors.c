@@ -39,7 +39,8 @@ const char* CASIO_EXPORT casio_error_strings[128] = {
 	"a timeout has occurred",
 	"could not get access to the device",
 	"an end of file event has occured",
-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+	"an end of file event has occured but was manage",
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL,
 

@@ -60,7 +60,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_libusb_settm
 
 CASIO_EXTERN int CASIO_EXPORT casio_libusb_read
 	OF((cookie_libusb_t *casio__cookie,
-		unsigned char *casio__dest, size_t casio__size));
+		unsigned char *casio__dest, size_t *casio__psize));
 CASIO_EXTERN int CASIO_EXPORT casio_libusb_write
 	OF((cookie_libusb_t *casio__cookie,
 		const unsigned char *casio__data, size_t casio__size));

@@ -50,9 +50,10 @@ typedef struct {
  */
 
 CASIO_LOCAL int casio_file_read(file_cookie_t *cookie,
-	unsigned char *dest, size_t size)
+	unsigned char *dest, size_t *psize)
 {
 	size_t recv;
+	size_t size = *psize;
 
 	/* Main receiving loop. */
 

@@ -64,7 +64,7 @@ int CASIO_EXPORT casio_seven_send_buffer(casio_link_t *handle,
 
 		/* Read the big block. */
 		toread = min(BUFSIZE, size);
-		err = casio_read(buffer, buf + 8, toread);
+		err = casio_read(buffer, buf + 8, &toread);
 		if (err) return (casio_error_noread);
 		size -= toread;
 
