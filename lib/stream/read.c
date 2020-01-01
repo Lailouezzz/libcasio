@@ -36,8 +36,10 @@ size_t CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
 	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
 
 	/* read */
-	if (size == 0) return (0);
-
+	if (size == 0) {
+		errno = err;
+		return (0);
+	}
 	size = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
 	
 	if (size == (size_t)-1) {
