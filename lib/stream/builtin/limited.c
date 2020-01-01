@@ -37,35 +37,39 @@ typedef struct {
  *	@arg	vcookie		the cookie (uncasted).
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-CASIO_LOCAL int casio_limited_read(void *vcookie, unsigned char *dest,
-	size_t *psize)
+CASIO_LOCAL size_t casio_limited_read(void *vcookie, unsigned char *dest,
+	size_t size)
 {
 	int err; limited_cookie_t *cookie = (void*)vcookie;
-	size_t left; size_t size = *psize;
+	size_t left; size_t copiedsize;
 
 	if (size > cookie->_left) {
 		/* First, skip the required bytes. */
 
 		left = cookie->_left;
 		cookie->_left = 0;
-		if ((err = casio_skip(cookie->_stream, left)))
-			return (err);
+		if ((err = casio_skip(cookie->_stream, left))) {
+			errno = err;
+			return (-1);
+		}
 
 		/* Once the skip is done successfully, we return that we
 		 * have an EOF. */
-
-		return (casio_error_eof);
+		errno = casio_error_eof;
+		return (-1);
 	}
 
-	if ((err = casio_read(cookie->_stream, dest, &size))) {
+	size = casio_read(cookie->_stream, dest, size);
+	if (size == (size_t)-1) {
 		cookie->_left = 0; /* XXX: depends on the error? */
-		return (err);
+		errno = errno;
+		return (-1);
 	}
 	cookie->_left -= size;
-	return (0);
+	return size;
 }
 
 /**

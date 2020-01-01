@@ -64,8 +64,10 @@ int CASIO_EXPORT casio_seven_send_buffer(casio_link_t *handle,
 
 		/* Read the big block. */
 		toread = min(BUFSIZE, size);
-		err = casio_read(buffer, buf + 8, &toread);
-		if (err) return (casio_error_noread);
+		toread = casio_read(buffer, buf + 8, toread);
+		if (toread == (size_t)-1) {
+			return (casio_error_noread);
+		}
 		size -= toread;
 
 		/* Send each block. */
@@ -95,7 +97,7 @@ int CASIO_EXPORT casio_seven_send_buffer(casio_link_t *handle,
 	/* Unshift. */
 	if (handle->casio_link_flags & casio_linkflag_shifted)
 		err = casio_seven_unshift(handle);
-
+	return (0);
 fail:
 	return (err);
 }

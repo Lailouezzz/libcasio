@@ -55,7 +55,7 @@ int prepare(args_t *args)
 	/* Sleep while the software on the calculator sets up the
 	 * communication interface. */
 	printf("Waiting for the Update.Exe to set up the communication...\n");
-	casio_sleep(1000);
+	casio_sleep(3000);
 
 	err = 0;
 fail:

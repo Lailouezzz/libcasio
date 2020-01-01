@@ -60,7 +60,7 @@ struct data_copy_block {
 static int send_sector(casio_link_t *handle, casio_stream_t *buffer,
 	unsigned long addr, unsigned long size)
 {
-	int err, buf_err;
+	int err;
 	osdisp_t osdisp_cookie;
 
 	/* Sending the data to the Update.Exe's. */
@@ -83,7 +83,8 @@ static int send_sector(casio_link_t *handle, casio_stream_t *buffer,
 			/* Prepare the block. */
 			block.destination = casio_be32toh(buf);
 			block.length      = casio_be32toh(len);
-			if ((buf_err = casio_read(buffer, block.data, &len))) {
+			len = casio_read(buffer, block.data, len);
+			if (len == (size_t)-1) {
 				osdisp_interrupt(&osdisp_cookie);
 				return (casio_error_read);
 			}

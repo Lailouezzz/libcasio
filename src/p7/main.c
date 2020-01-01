@@ -316,11 +316,11 @@ int main(int ac, char **av)
 			size_t size;
 			do
 			{
-				size = sizeof(buffer);
-				err = casio_read(fileStream, buffer, &size);
+				size = casio_read(fileStream, buffer, sizeof(buffer));
+				if(size == (size_t)-1)
+					err = errno;
+				if(err == casio_error_eof)
 				fwrite(buffer, 1, size, file);
-				if(err == casio_error_ieof)
-					break;
 			} while (err == 0);
 			
 			/* All good so close streams and clear error */

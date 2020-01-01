@@ -20,6 +20,7 @@
 # define MAIN_H
 # include <stdio.h>
 # include <libcasio.h>
+# include <errno.h>
 
 /* Menus */
 typedef enum {

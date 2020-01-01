@@ -32,7 +32,6 @@ typedef struct {
 	casio_link_progress_t *_disp;
 	void *_disp_cookie;
 	unsigned int _id, _total;
-	unsigned int _totalsize; /*  */
 	unsigned int _lastsize; /* last packet size */
 
 	/* buffer management */
@@ -52,15 +51,16 @@ typedef struct {
  *	@arg	cookie		the cookie.
  *	@arg	data		the data to read.
  *	@arg	size		the size of the data to read.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
-	unsigned char *data, size_t *psize)
+CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
+	unsigned char *data, size_t size)
 {
-	int err; size_t tocopy; size_t size = *psize;
+	int err; size_t tocopy;
 	casio_link_t *handle = cookie->_link;
 	unsigned int lastsize = 0;
+	size_t copiedsize = 0;
 
 	/* Check if the stream is faulty. */
 	if (cookie->_faulty)
@@ -72,14 +72,16 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 	if (tocopy) {
 		memcpy(data, &cookie->_current[cookie->_pos], tocopy);
 		cookie->_pos += tocopy;
-		data += tocopy; size -= tocopy;
+		data += tocopy; size -= tocopy; copiedsize += tocopy;
 
-		if (!size) return (0);
+		if (size == 0) return (size);
 	}
 
 	/* Check if we have already finished. */
-	if (cookie->_total && cookie->_id == cookie->_total)
-		return (casio_error_ieof);
+	if (cookie->_total && cookie->_id == cookie->_total) {
+		errno = casio_error_eof;
+		return (-1);
+	}
 
 	/* Receive packets. */
 	while (size) {
@@ -88,8 +90,7 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 		if (err) goto fail;
 		/* If swap roles there is the end of file */
 		if (response.casio_seven_packet_type == casio_seven_type_swp) {
-			*psize = lastsize;
-			return (casio_error_ieof);
+			return copiedsize;
 		}
 		if (response.casio_seven_packet_type != casio_seven_type_data) {
 			msg((ll_error, "Packet wasn't a data packet, wtf?"));
@@ -117,9 +118,10 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 
 		/* Increment and copy. */
 		lastsize = response.casio_seven_packet_data_size;
+		copiedsize += lastsize;
 		if (size >= lastsize) {
 			memcpy(data, response.casio_seven_packet_data, lastsize);
-			data += lastsize; size -= lastsize; cookie->_totalsize += lastsize;
+			data += lastsize; size -= lastsize;
 			continue;
 		}
 
@@ -128,15 +130,15 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 		memcpy(data, response.casio_seven_packet_data, size);
 		memcpy(&cookie->_current[size],
 			&response.casio_seven_packet_data[size], lastsize - size);
-		cookie->_totalsize += lastsize;
-		return (0);
+		return copiedsize;
 	}
 
-	return (0);
+	return copiedsize;
 fail:
 	/* XXX: tell the distant device we have a problem? */
 	cookie->_faulty = 1;
-	return (err);
+	errno = err;
+	return (-1);
 }
 
 /**
@@ -348,7 +350,6 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 		cookie->_id = 1;
 		cookie->_total = (unsigned int)(size / BUFSIZE) + !!cookie->_lastsize;
 		cookie->_lastsize = (unsigned int)(size % BUFSIZE);
-		cookie->_totalsize = size;
 		if (!cookie->_lastsize) cookie->_lastsize = BUFSIZE;
 	} else {
 		msg((ll_info, "The data stream is a read one."));
@@ -358,7 +359,6 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 		cookie->_id = 0;
 		cookie->_total = 0;
 		cookie->_lastsize = 0;
-		cookie->_totalsize = size;
 	}
 
 	/* initialize the stream */

@@ -25,32 +25,37 @@
  *	@arg	stream		the stream to read from.
  *	@arg	dest		the destination buffer.
  *	@arg	size		the amount of bytes to read.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-int CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t *psize)
+size_t CASIO_EXPORT casio_read(casio_stream_t *stream, void *dest, size_t size)
 {
-	int err;
+	int err = casio_error_ok;
 
 	/* check if we can read */
 	failure(~stream->casio_stream_mode & CASIO_OPENMODE_READ, casio_error_read)
 
 	/* read */
-	if (!(*psize)) return (0);
-	if (!psize) {
-		size_t size = -1;
-		err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, &size);
-	} else {
-		err = (*getcb(stream, read))(stream->casio_stream_cookie, dest, psize);
-	}
-	if (err && err != casio_error_ieof) {
+	if (size == 0) return (0);
+
+	size = (*getcb(stream, read))(stream->casio_stream_cookie, dest, size);
+	
+	if (size == (size_t)-1) {
+		err = errno;
+		if (err == casio_error_eof) {
+			msg((ll_info, "Stream reading get to the end (EOF)"));
+			goto fail;
+		}
 		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
 		goto fail;
 	}
 
 	/* move the cursor and return */
-	stream->casio_stream_offset += *psize;
+	if(size != 1) {
+		stream->casio_stream_offset += size;
+	}
 fail:
 	stream->casio_stream_lasterr = err;
-	return (err);
+	errno = err;
+	return size;
 }

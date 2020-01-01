@@ -28,16 +28,15 @@
 /* Read from a stream. */
 
 # define  READ(CASIO__TO, CASIO__SZ) /* normal read */ { \
-	size_t size = CASIO__SZ; \
-	int READ_err = casio_read(buffer, (CASIO__TO), &size); \
-	if (READ_err) return (READ_err); }
-# define FREAD(CASIO__TO, CASIO__SZ) /* fail-less read */ \
-	size_t size = CASIO__SZ; \
-	err = casio_read(buffer, (CASIO__TO), &size);
-# define GREAD(CASIO__TO, CASIO__SZ) /* read with goto fail */ \
-	size_t size = CASIO__SZ; \
-	if ((err = casio_read(buffer, (CASIO__TO), &size))) \
-		goto fail;
+	int READ_err = casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
+	if (READ_err == -1) return (errno); }
+# define FREAD(CASIO__TO, CASIO__SZ) /* fail-less read */ { \
+	casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
+	err = errno; }
+# define GREAD(CASIO__TO, CASIO__SZ) /* read with goto fail */ { \
+	casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
+	if ((err = errno)) \
+		goto fail; }
 
 /* Read using size of the object. */
 

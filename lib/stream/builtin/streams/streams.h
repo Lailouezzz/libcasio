@@ -51,9 +51,9 @@ CASIO_EXTERN int CASIO_EXPORT casio_streams_settm
 
 /* Character device callbacks. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_streams_read
+CASIO_EXTERN size_t CASIO_EXPORT casio_streams_read
 	OF((streams_cookie_t *casio__cookie,
-		unsigned char *casio__dest, size_t *casio__psize));
+		unsigned char *casio__dest, size_t casio__size));
 CASIO_EXTERN int CASIO_EXPORT casio_streams_write
 	OF((streams_cookie_t *casio__cookie,
 		const unsigned char *casio__data, size_t casio__size));
