@@ -26,6 +26,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <ctype.h>
+# include <errno.h>
 # include "utils/endian.h"
 # include "log/log.h"
 

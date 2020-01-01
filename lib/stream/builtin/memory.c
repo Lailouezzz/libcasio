@@ -35,24 +35,27 @@ typedef struct {
  *	@arg	vcookie		the cookie (uncasted)
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-CASIO_LOCAL int casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
+CASIO_LOCAL size_t casio_memory_read(void *vcookie, unsigned char *dest, size_t size)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
 
-	if (((size_t)-1 - cookie->_offset) < size) /* overflow */
-		return (casio_error_read);
+	if (((size_t)-1 - cookie->_offset) < size) { /* overflow */
+		errno = casio_error_read;
+		return (-1);
+	}
 	if (cookie->_offset + (casio_off_t)size > cookie->_size) {
 		cookie->_offset = cookie->_size - 1;
-		return (casio_error_eof);
+		errno = casio_error_eof;
+		return (-1);
 	}
 
 	memcpy(dest, &cookie->_memory[cookie->_offset], size);
 	cookie->_offset += size;
 
-	return (0);
+	return size;
 }
 
 /**

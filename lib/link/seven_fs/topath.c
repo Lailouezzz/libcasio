@@ -53,7 +53,7 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 	if (!node) return (casio_error_invalid);
 	if (node->casio_pathnode_next) {
 		dirsz = node->casio_pathnode_size + 1;
-		if (dirsz == 1 || dirsz > 9) return (casio_error_invalid);
+		if (dirsz == 1 || dirsz > 13) return (casio_error_invalid);
 		dirname = (const char*)node->casio_pathnode_name;
 		node = node->casio_pathnode_next;
 	} else {
@@ -66,7 +66,7 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 		return (casio_error_invalid);
 	}
 	filesz = node->casio_pathnode_size + 1;
-	if (filesz == 1 || filesz > 9) return (casio_error_invalid);
+	if (filesz == 1 || filesz > 13) return (casio_error_invalid);
 	filename = (const char*)node->casio_pathnode_name;
 
 	/* Make the node. */

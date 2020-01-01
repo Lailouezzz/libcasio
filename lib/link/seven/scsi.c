@@ -83,10 +83,11 @@ typedef struct {
  * Read and write from the stream.
  * --- */
 
-CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
+CASIO_LOCAL size_t seven_scsi_read(seven_scsi_cookie_t *cookie,
 	unsigned char *buffer, size_t size)
 {
 	casio_scsi_t scsi; int err;
+	size_t copiedsize = 0;
 
 	/* Empty what's already in the buffer. */
 
@@ -95,12 +96,14 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			memcpy(buffer, cookie->ptr, size);
 			cookie->ptr += size;
 			cookie->left -= size;
-			return (0);
+			copiedsize += cookie->left;
+			return copiedsize;
 		}
 
 		memcpy(buffer, cookie->ptr, cookie->left);
 		buffer += cookie->left;
 		size -= cookie->left;
+		copiedsize += cookie->left;
 		reset_cookie(cookie);
 	}
 
@@ -125,8 +128,10 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data = poll_data;
 			scsi.casio_scsi_data_len = 16;
 
-			if ((err = casio_scsi_request(cookie->stream, &scsi)))
-				return (err);
+			if ((err = casio_scsi_request(cookie->stream, &scsi))) {
+				errno = err;
+				return (-1);
+			}
 
 			mem((ll_info, poll_data, 16));
 
@@ -176,8 +181,10 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data = cookie->ptr;
 			scsi.casio_scsi_data_len = avail;
 
-			if ((err = casio_scsi_request(cookie->stream, &scsi)))
-				return (err);
+			if ((err = casio_scsi_request(cookie->stream, &scsi))) {
+				errno = err;
+				return (-1);
+			}
 		}
 
 		if (to == buffer) {
@@ -189,11 +196,12 @@ CASIO_LOCAL int seven_scsi_read(seven_scsi_cookie_t *cookie,
 			memcpy(buffer, cookie->ptr, size);
 			cookie->ptr += size;
 			cookie->left -= size;
+			copiedsize += size;
 			size = 0;
 		}
 	} while (size);
 
-	return (0);
+	return copiedsize;
 }
 
 CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,

@@ -57,4 +57,10 @@ CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_list
 	OF((sevenfs_cookie_t *casio__cookie, sevenfs_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
 
+/* Open a stream with a casio fs file */
+
+CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_open
+	OF((sevenfs_cookie_t *casio__cookie, sevenfs_path_t *casio__path,
+		casio_off_t casio__size, casio_openmode_t casio__mode, casio_stream_t **casio__stream));
+
 #endif /* LOCAL_LINK_SEVEN_FS_H */

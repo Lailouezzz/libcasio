@@ -26,13 +26,14 @@
  *	@arg	cookie		the cookie.
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-int CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
+size_t CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 	unsigned char *dest, size_t size)
 {
 	int fd = cookie->_readfd;
+	size_t copiedsize = 0;
 
 	/* Transmit what's already in the buffer. */
 
@@ -44,6 +45,7 @@ int CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 		cookie->_start += tocopy;
 		dest += tocopy;
 		size -= tocopy;
+		copiedsize += tocopy;
 	}
 
 	/* Main receiving loop. */
@@ -67,7 +69,8 @@ int CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 			default:
 				msg((ll_fatal, "error was %d: %s",
 					errno, strerror(errno)));
-				return (casio_error_unknown);
+				errno = casio_error_unknown;
+				return (-1);
 		}
 
 		/* Get the current size to copy. */
@@ -81,13 +84,17 @@ int CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 		dest += tocopy;
 		size -= tocopy;
 
+		/* Increment total size copied */
+
+		copiedsize += tocopy;
+
 		/* Correct start and end points. */
 
 		cookie->_start = tocopy;
 		cookie->_end = (size_t)recv - 1;
 	}
 
-	return (0);
+	return copiedsize;
 }
 
 #endif

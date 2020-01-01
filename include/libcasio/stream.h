@@ -100,7 +100,7 @@ typedef int casio_stream_setattrs_t
 typedef int casio_stream_settm_t
 	OF((void *, const casio_timeouts_t *));
 
-typedef int casio_stream_read_t
+typedef size_t casio_stream_read_t
 	OF((void *, unsigned char *, size_t));
 typedef int casio_stream_write_t
 	OF((void *, const unsigned char *, size_t));
@@ -359,7 +359,7 @@ CASIO_EXTERN int   CASIO_EXPORT casio_get_lasterr
 
 /* Read and write data from and to a stream. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_read
+CASIO_EXTERN size_t CASIO_EXPORT casio_read
 	OF((casio_stream_t *casio__stream,
 		void *casio__dest, size_t casio__size));
 CASIO_EXTERN int CASIO_EXPORT casio_write

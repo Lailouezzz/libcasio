@@ -51,15 +51,16 @@ typedef struct {
  *	@arg	cookie		the cookie.
  *	@arg	data		the data to read.
  *	@arg	size		the size of the data to read.
- *	@return				the error code (0 if ok).
+ *	@return				the size written and -1 if error (error code is in errno).
  */
 
-CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
+CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
 	unsigned char *data, size_t size)
 {
 	int err; size_t tocopy;
 	casio_link_t *handle = cookie->_link;
-	unsigned int lastsize;
+	unsigned int lastsize = 0;
+	size_t copiedsize = 0;
 
 	/* Check if the stream is faulty. */
 	if (cookie->_faulty)
@@ -71,20 +72,26 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 	if (tocopy) {
 		memcpy(data, &cookie->_current[cookie->_pos], tocopy);
 		cookie->_pos += tocopy;
-		data += tocopy; size -= tocopy;
+		data += tocopy; size -= tocopy; copiedsize += tocopy;
 
-		if (!size) return (0);
+		if (size == 0) return (size);
 	}
 
 	/* Check if we have already finished. */
-	if (cookie->_total && cookie->_id == cookie->_total)
-		return (casio_error_eof);
+	if (cookie->_total && cookie->_id == cookie->_total) {
+		errno = casio_error_eof;
+		return (-1);
+	}
 
 	/* Receive packets. */
 	while (size) {
 		/* Send the ack and get the answer. */
 		err = casio_seven_send_ack(handle, 1);
 		if (err) goto fail;
+		/* If swap roles there is the end of file */
+		if (response.casio_seven_packet_type == casio_seven_type_swp) {
+			return copiedsize;
+		}
 		if (response.casio_seven_packet_type != casio_seven_type_data) {
 			msg((ll_error, "Packet wasn't a data packet, wtf?"));
 			err = casio_error_unknown;
@@ -111,6 +118,7 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 
 		/* Increment and copy. */
 		lastsize = response.casio_seven_packet_data_size;
+		copiedsize += lastsize;
 		if (size >= lastsize) {
 			memcpy(data, response.casio_seven_packet_data, lastsize);
 			data += lastsize; size -= lastsize;
@@ -122,14 +130,15 @@ CASIO_LOCAL int casio_seven_data_read(seven_data_cookie_t *cookie,
 		memcpy(data, response.casio_seven_packet_data, size);
 		memcpy(&cookie->_current[size],
 			&response.casio_seven_packet_data[size], lastsize - size);
-		return (0);
+		return copiedsize;
 	}
 
-	return (0);
+	return copiedsize;
 fail:
 	/* XXX: tell the distant device we have a problem? */
 	cookie->_faulty = 1;
-	return (err);
+	errno = err;
+	return (-1);
 }
 
 /**

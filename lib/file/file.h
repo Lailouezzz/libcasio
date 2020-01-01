@@ -29,12 +29,14 @@
 
 # define  READ(CASIO__TO, CASIO__SZ) /* normal read */ { \
 	int READ_err = casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
-	if (READ_err) return (READ_err); }
-# define FREAD(CASIO__TO, CASIO__SZ) /* fail-less read */ \
-	err = casio_read(buffer, (CASIO__TO), (CASIO__SZ));
-# define GREAD(CASIO__TO, CASIO__SZ) /* read with goto fail */ \
-	if ((err = casio_read(buffer, (CASIO__TO), (CASIO__SZ)))) \
-		goto fail;
+	if (READ_err == -1) return (errno); }
+# define FREAD(CASIO__TO, CASIO__SZ) /* fail-less read */ { \
+	casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
+	err = errno; }
+# define GREAD(CASIO__TO, CASIO__SZ) /* read with goto fail */ { \
+	casio_read(buffer, (CASIO__TO), (CASIO__SZ)); \
+	if ((err = errno)) \
+		goto fail; }
 
 /* Read using size of the object. */
 
