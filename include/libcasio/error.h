@@ -63,8 +63,7 @@ typedef int casio_error_t;
 # define casio_error_timeout  0x14 /* a timeout has occured. */
 # define casio_error_access   0x15 /* could not access the device (perms) */
 # define casio_error_noaccess 0x15 /* (alias) */
-# define casio_error_eof      0x16 /* end of file error */
-# define casio_error_ieof     0x17 /* info end of file error */
+# define casio_error_eof      0x16 /* end of file */
 
 /* Link errors. */
 
