@@ -172,15 +172,38 @@ static void print_file_info(void *cookie,
 	memset(buf, ' ', sizeof(buf));
 
 	/* File into dir */
-	if (node->casio_pathnode_size >= 2) {
+	if (node->casio_pathnode_next) {
 		char *b = buf;
-		b += sprintf(b, "%s/", node->casio_pathnode_name);
-		b[sprintf(b, "%s", node->casio_pathnode_next->casio_pathnode_name)] = ' '; // replace '\0' by ' '
-	} else if (node->casio_pathnode_size == 1) { /* Juste one file or dir */
-		buf[sprintf(buf, (stat->casio_stat_type == CASIO_STAT_TYPE_DIR) ? "%s/" : "%s", node->casio_pathnode_name)] = ' '; // replace '\0' by ' '
+
+		/* Write dir */
+		memcpy(b, node->casio_pathnode_name, node->casio_pathnode_size);
+		b += node->casio_pathnode_size;
+		*b = '/';
+		b += 1;
+
+		node = node->casio_pathnode_next;
+
+		/* Write file  */
+		memcpy(b, node->casio_pathnode_name, node->casio_pathnode_size);
+		b += node->casio_pathnode_size;
+		*b = ' '; // replace '\0' by ' '
+		b += 1;
+
+	/* Juste one file or dir */
+	} else if (node) { 
+		char *b = buf;
+
+		/* Write */
+		memcpy(b, node->casio_pathnode_name, node->casio_pathnode_size);
+		b += node->casio_pathnode_size;
+		*b = stat->casio_stat_type == CASIO_STAT_TYPE_REG ? ' ' : '/' ; // replace '\0' by ' ' or '/' if it's a dir
+		b += 1;
 	}
-	/* Put the size */
-	sprintf(&buf[28], "%10uo", (unsigned) stat->casio_stat_size);
+
+	/* Put the size if it's a regular file */
+	if (stat->casio_stat_type == CASIO_STAT_TYPE_REG) {
+		sprintf(&buf[28], "%10uo", (unsigned) stat->casio_stat_size);	
+	}
 
 	/* Put the string to stdout */
 	puts(buf);
@@ -333,14 +356,14 @@ int main(int ac, char **av)
 		case mn_list:
 			// Initialize the path
 			path.casio_path_device = args.storage;
-			casio_make_pathnode(&path.casio_path_nodes, 1);
+			path.casio_path_nodes = NULL;
 			path.casio_path_flags = casio_pathflag_rel;
 
 			// Open 7.00 fs and list
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_list(fs, &path, print_file_info, NULL)))
 				break;
-			
+
 			break;
 
 		case mn_optimize:

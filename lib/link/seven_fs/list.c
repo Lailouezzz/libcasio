@@ -41,7 +41,7 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
     /* send command packet */
     msg((ll_info, "Sending the list command"));
     if((err = casio_seven_send_cmdfls_reqallinfo(handle, dev))) {
-        msg((ll_fatal, "Couldn't send file transfer request/didn't receive answer"));
+        msg((ll_fatal, "Couldn't send file all info request/didn't receive answer"));
         return (err);
     } else if (response.casio_seven_packet_type == casio_seven_type_nak
      && response.casio_seven_packet_code == casio_seven_err_other) {
@@ -88,31 +88,31 @@ int CASIO_EXPORT casio_sevenfs_list(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
             lfilename = filename ? strlen(filename) : 0;
 
             if(dir && filename) {
-                /* Create node size 2 */
-                casio_make_pathnode(&fnode, 2);
-                casio_make_pathnode(&fnode->casio_pathnode_next, 1);
+                /* Create node */
+                casio_make_pathnode(&fnode, ldir);
+                casio_make_pathnode(&fnode->casio_pathnode_next, lfilename);
 
                 /* Dir node */
                 memcpy(&fnode->casio_pathnode_name, dir, ldir);
-                fnode->casio_pathnode_name[ldir] = '\0';
                 
                 /* File node */
                 memcpy(&fnode->casio_pathnode_next->casio_pathnode_name, filename, lfilename);
-                fnode->casio_pathnode_next->casio_pathnode_name[lfilename] = '\0';
+            
+
             } else if(filename && !dir) {
-                /* Create node size 1 */
-                casio_make_pathnode(&fnode, 1);
+                /* Create node */
+                casio_make_pathnode(&fnode, lfilename);
 
                 /* File node */
                 memcpy(&fnode->casio_pathnode_name, filename, lfilename);
-                fnode->casio_pathnode_name[lfilename] = '\0';
+
+            
             } else if(dir && !filename) {
-                /* Create node size 1 */
-                casio_make_pathnode(&fnode, 1);
+                /* Create node */
+                casio_make_pathnode(&fnode, ldir);
 
                 /* Dir node */
                 memcpy(&fnode->casio_pathnode_name, dir, ldir);
-                fnode->casio_pathnode_name[ldir] = '\0';
             }
 
             fstat.casio_stat_size = fs;

@@ -47,11 +47,8 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 
 	/* Get directory name and file name. */
 
-	if (!array->casio_path_nodes)
-		return (casio_error_invalid);
 	node = array->casio_path_nodes;
-	if (!node) return (casio_error_invalid);
-	if (node->casio_pathnode_next) {
+	if (node && node->casio_pathnode_next) {
 		dirsz = node->casio_pathnode_size + 1;
 		if (dirsz == 1 || dirsz > 13) return (casio_error_invalid);
 		dirname = (const char*)node->casio_pathnode_name;
@@ -60,14 +57,19 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 		dirname = NULL;
 		dirsz = 0;
 	}
-	if (node->casio_pathnode_next) {
+	if (node && node->casio_pathnode_next) {
 		/* too deep! */
 
 		return (casio_error_invalid);
 	}
-	filesz = node->casio_pathnode_size + 1;
-	if (filesz == 1 || filesz > 13) return (casio_error_invalid);
-	filename = (const char*)node->casio_pathnode_name;
+	if(node) {
+		filesz = node->casio_pathnode_size + 1;
+		if (filesz == 1 || filesz > 13) return (casio_error_invalid);
+		filename = (const char*)node->casio_pathnode_name;
+	} else {
+		filesz = 0;
+		filename = NULL;
+	}
 
 	/* Make the node. */
 
@@ -83,12 +85,18 @@ int  CASIO_EXPORT casio_make_sevenfs_path(sevenfs_cookie_t *cookie,
 		data[dirsz - 1] = 0;
 		path->sevenfs_path_dir = off;
 		data += dirsz; off += dirsz;
-	} else
+	} else {
 		path->sevenfs_path_dir = 0xFF;
-	memcpy(data, filename, filesz - 1);
-	data[filesz - 1] = 0;
-	path->sevenfs_path_file = off;
-	data += filesz; off += filesz;
+	}
+	if(filename) {
+		memcpy(data, filename, filesz - 1);
+		data[filesz - 1] = 0;
+		path->sevenfs_path_file = off;
+		data += filesz; off += filesz;
+	} else {
+		path->sevenfs_path_file = 0xFF;
+	}
+	
 	memcpy(data, array->casio_path_device, 4);
 	data[4] = 0;
 	path->sevenfs_path_dev = off;
