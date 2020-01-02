@@ -313,7 +313,7 @@ int main(int ac, char **av)
 			err = casio_reset(handle, args.storage);
 			break;
 #endif
-		case mn_get:
+		case mn_get: // TODO : implement get file into a dir
 			// Initialize the path
 			path.casio_path_device = args.storage;
 
