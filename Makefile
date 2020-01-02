@@ -130,8 +130,8 @@ endif
 
  ./build/$(L_SONAME): $(L_SRC:%=$(L_OBJDIR)/%.o)
 	$(call bcmd,ld,$(L_SONAME),$(LD) -o $@ $^ $(L_LDFLAGS))
- ./build/lib$(L_ANAME).a: $(L_SRC:%=$(L_OBJDIR)/%.o)
-	$(call bcmd,ar rc,lib$(L_ANAME).a,$(AR) rcs $@ $^)
+ ./build/$(L_ANAME): $(L_SRC:%=$(L_OBJDIR)/%.o)
+	$(call bcmd,ar rc,$(L_ANAME),$(AR) rcs $@ $^)
 
 # Make an object out of a source file.
 
@@ -176,7 +176,7 @@ $(eval $(call make-obj-rule,$(src))))
 	$(call imsg,Installing the library.)
 	$(call qcmd,$(INST) -m 755 -d "$(ILIBDIR)")
 	$(call qcmd,$(INST) -m 755 -t "$(ILIBDIR)" $(if $(STATIC),\
-		./build/$(if $(FOR_WINDOWS),lib$(LIB).lib,lib$(LIB).a),\
+		./build/$(if $(FOR_WINDOWS),lib$(LIB).lib,$(L_ANAME)),\
 		./build/$(if $(FOR_WINDOWS),lib$(LIB).dll.a,$(L_SONAME))))
 
  install-lib-dll:

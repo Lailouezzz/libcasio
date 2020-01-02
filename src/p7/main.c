@@ -209,6 +209,69 @@ static void print_file_info(void *cookie,
 	puts(buf);
 }
 
+/**
+ *	parse_path:
+ *	Parse a path str. 
+ *	Make sure ppath point to a casio_path_t structure initialized to 0.
+ *
+ *	@arg	pathstr		the C str to parse
+ *	@arg	flags		the path flags
+ *	@arg	ppath		the pointer to the path structure (modified)
+ *	@return				return 0 if okey
+ */
+
+static int parse_path(const char *pathstr, unsigned int flags, casio_path_t *ppath)
+{
+	int err = 0;
+	const char *strfnode = pathstr; int lstrfnode = 0;
+	const char *strsnode = NULL; int lstrsnode = 0;
+
+	/* error operands if pointer NULL */
+	if (ppath == NULL) {
+		err = casio_error_op;
+		goto fail;
+	}
+
+	/* check strfnode size */
+	for (lstrfnode = 0; strfnode[lstrfnode] != '/' && strfnode[lstrfnode] != '\0'; lstrfnode++)
+	{ }
+
+	/* if there is a file into a dir check that */
+	if (strfnode[lstrfnode] == '/' && strfnode[lstrfnode+1] != '\0') {
+		strsnode = strfnode + lstrfnode + 1;
+		/* check lstrsnode size */
+		for (lstrsnode = 0; strsnode[lstrsnode] != '\0'; lstrsnode++)
+		{ }
+	}
+
+	/* check the sizes */
+
+	if (lstrfnode > 12 || lstrsnode > 12) {
+		err = casio_error_op;
+		goto fail;
+	}
+
+	ppath->casio_path_nodes = NULL;
+	/* make first node */
+	if(lstrfnode != 0) {
+		casio_make_pathnode(&ppath->casio_path_nodes, lstrfnode);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_name, strfnode, lstrfnode);
+	}
+	/* make second node if we have dir */
+	if (strsnode && lstrsnode != 0) {
+		casio_make_pathnode(&ppath->casio_path_nodes->casio_pathnode_next, lstrsnode);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_next->casio_pathnode_name, strsnode, lstrsnode);
+	}
+
+	/* finaly write the flags */
+
+	ppath->casio_path_flags = flags;
+
+fail:
+
+	return (err);
+}
+
 /* ---
  * Main function.
  * --- */
@@ -313,17 +376,12 @@ int main(int ac, char **av)
 			err = casio_reset(handle, args.storage);
 			break;
 #endif
-		case mn_get: // TODO : implement get file into a dir
-			// Initialize the path
+		case mn_get:
+			/* Initialize the path */
 			path.casio_path_device = args.storage;
+			parse_path(args.filename, casio_pathflag_rel, &path);
 
-			// Make the node
-			casio_make_pathnode(&path.casio_path_nodes, strlen(args.filename));
-			memcpy(path.casio_path_nodes->casio_pathnode_name, args.filename, strlen(args.filename));
-			// Set flags
-			path.casio_path_flags = casio_pathflag_rel;
-
-			// Open 7.00 fs and open file in read only
+			/* Open 7.00 fs and open file in read only */
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_open(fs, &fileStream, &path, 0, CASIO_OPENMODE_READ)))
 				break;
@@ -354,12 +412,11 @@ int main(int ac, char **av)
 			break;
 
 		case mn_list:
-			// Initialize the path
+			/* Initialize the path */
 			path.casio_path_device = args.storage;
-			path.casio_path_nodes = NULL;
-			path.casio_path_flags = casio_pathflag_rel;
+			parse_path("", casio_pathflag_rel, &path);
 
-			// Open 7.00 fs and list
+			/* Open 7.00 fs and list */
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_list(fs, &path, print_file_info, NULL)))
 				break;
