@@ -59,6 +59,7 @@ int CASIO_EXPORT casio_openusb_libusb(casio_stream_t **stream,
 
 	/* Get device list. */
 
+	msg((ll_info, "Getting the device list"));
 	device_count = libusb_get_device_list(context, &device_list);
 	if (device_count < 0) {
 		msg((ll_fatal, "couldn't get device list."));
