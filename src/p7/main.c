@@ -220,47 +220,32 @@ static void print_file_info(void *cookie,
  *	@return				return 0 if okey
  */
 
-static int parse_path(const char *pathstr, unsigned int flags, casio_path_t *ppath)
+static int create_path(const char *filenamestr, const char *dirnamestr, unsigned int flags, casio_path_t *ppath)
 {
 	int err = 0;
-	const char *strfnode = pathstr; int lstrfnode = 0;
-	const char *strsnode = NULL; int lstrsnode = 0;
+	int lfilenamestr = filenamestr ? strlen(filenamestr) : 0;
+	int ldirnamestr = dirnamestr ? strlen(dirnamestr) : 0;
+	casio_pathnode_t **pnode = &ppath->casio_path_nodes;
 
-	/* error operands if pointer NULL */
-	if (ppath == NULL) {
-		err = casio_error_op;
-		goto fail;
+	/* make the nodes */
+	if (filenamestr && dirnamestr) {
+		casio_make_pathnode(&ppath->casio_path_nodes, ldirnamestr);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_name, dirnamestr, ldirnamestr);
+
+		casio_make_pathnode(&ppath->casio_path_nodes->casio_pathnode_next, lfilenamestr);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_next->casio_pathnode_name, filenamestr, lfilenamestr);
+
+	} else if (filenamestr && !dirnamestr) {
+		casio_make_pathnode(&ppath->casio_path_nodes, lfilenamestr);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_name, filenamestr, lfilenamestr);
+
+	} else if (dirnamestr && !filenamestr) {
+		casio_make_pathnode(&ppath->casio_path_nodes, ldirnamestr);
+		memcpy(ppath->casio_path_nodes->casio_pathnode_name, dirnamestr, ldirnamestr);
 	}
-
-	/* check strfnode size */
-	for (lstrfnode = 0; strfnode[lstrfnode] != '/' && strfnode[lstrfnode] != '\0'; lstrfnode++)
-	{ }
-
-	/* if there is a file into a dir check that */
-	if (strfnode[lstrfnode] == '/' && strfnode[lstrfnode+1] != '\0') {
-		strsnode = strfnode + lstrfnode + 1;
-		/* check lstrsnode size */
-		for (lstrsnode = 0; strsnode[lstrsnode] != '\0'; lstrsnode++)
-		{ }
-	}
-
-	/* check the sizes */
-
-	if (lstrfnode > 12 || lstrsnode > 12) {
-		err = casio_error_op;
-		goto fail;
-	}
-
-	ppath->casio_path_nodes = NULL;
-	/* make first node */
-	if(lstrfnode != 0) {
-		casio_make_pathnode(&ppath->casio_path_nodes, lstrfnode);
-		memcpy(ppath->casio_path_nodes->casio_pathnode_name, strfnode, lstrfnode);
-	}
-	/* make second node if we have dir */
-	if (strsnode && lstrsnode != 0) {
-		casio_make_pathnode(&ppath->casio_path_nodes->casio_pathnode_next, lstrsnode);
-		memcpy(ppath->casio_path_nodes->casio_pathnode_next->casio_pathnode_name, strsnode, lstrsnode);
+	/* if operand are NULL make an empty path */
+	if (!filenamestr && !dirnamestr) {
+		ppath->casio_path_nodes = NULL;
 	}
 
 	/* finaly write the flags */
@@ -337,6 +322,7 @@ int main(int ac, char **av)
 	/* Check according to menu */
 
 	casio_path_t path = { 0 };
+	char data_buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
 	casio_stream_t *fileStream = NULL;
 	switch (args.menu) {
 #if 0
@@ -379,25 +365,26 @@ int main(int ac, char **av)
 		case mn_get:
 			/* Initialize the path */
 			path.casio_path_device = args.storage;
-			parse_path(args.filename, casio_pathflag_rel, &path);
+			create_path(args.filename, args.dirname, casio_pathflag_rel, &path);
 
 			/* Open 7.00 fs and open file in read only */
 			if ((err = casio_open_seven_fs(&fs, handle))
 			 || (err = casio_open(fs, &fileStream, &path, 0, CASIO_OPENMODE_READ)))
 				break;
-			
-			char buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
+
+			/* Open local file in write mode */
 			FILE *file = fopen(args.filename, "wb");
 			
+			/* If we can't open error */
 			if(!file) {
 				fprintf(stderr, "Couldn't open in write mode %s", args.filename);
-				err = casio_error_unknown;
+				err = casio_error_noaccess;
 				break;
 			}
 			ssize_t size;
 			do
 			{
-				size = casio_read(fileStream, buffer, sizeof(buffer));
+				size = casio_read(fileStream, data_buffer, sizeof(data_buffer));
 				if(size < 0) {
 					err = -size;
 					if(err == casio_error_eof)
@@ -405,7 +392,7 @@ int main(int ac, char **av)
 					else 
 						goto fail;
 				}
-				fwrite(buffer, 1, size, file);
+				fwrite(data_buffer, 1, size, file);
 			} while (err == 0);
 			
 			/* All good so close streams and clear error */
@@ -418,7 +405,7 @@ int main(int ac, char **av)
 		case mn_list:
 			/* Initialize the path */
 			path.casio_path_device = args.storage;
-			parse_path("", casio_pathflag_rel, &path);
+			create_path("", "", casio_pathflag_rel, &path);
 
 			/* Open 7.00 fs and list */
 			if ((err = casio_open_seven_fs(&fs, handle))
