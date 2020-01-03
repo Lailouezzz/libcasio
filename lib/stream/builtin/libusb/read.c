@@ -26,10 +26,10 @@
  *	@arg	vcookie		the cookie (voided)
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the size written and -1 if error (error code is in errno).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-size_t CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
+ssize_t CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
 	unsigned char *dest, size_t size)
 {
 	int libusberr;
@@ -66,18 +66,15 @@ size_t CASIO_EXPORT casio_libusb_read(cookie_libusb_t *cookie,
 		case LIBUSB_ERROR_NO_DEVICE:
 		case LIBUSB_ERROR_IO:
 			msg((ll_error, "The calculator is not here anymore :("));
-			errno = casio_error_nocalc;
-			return (-1);
+			return -(casio_error_nocalc);
 
 		case LIBUSB_ERROR_TIMEOUT:
-			errno = casio_error_timeout;
-			return (-1);
+			return -(casio_error_timeout);
 
 		default:
 			msg((ll_fatal, "libusb error was %d: %s", libusberr,
 				libusb_strerror(libusberr)));
-			errno = casio_error_unknown;
-			return (-1);
+			return -(casio_error_unknown);
 		}
 
 		/* Get the current size to copy. */

@@ -51,10 +51,10 @@ typedef struct {
  *	@arg	cookie		the cookie.
  *	@arg	data		the data to read.
  *	@arg	size		the size of the data to read.
- *	@return				the size written and -1 if error (error code is in errno).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
+CASIO_LOCAL ssize_t casio_seven_data_read(seven_data_cookie_t *cookie,
 	unsigned char *data, size_t size)
 {
 	int err; size_t tocopy;
@@ -64,7 +64,7 @@ CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
 
 	/* Check if the stream is faulty. */
 	if (cookie->_faulty)
-		return (casio_error_noread);
+		return -(casio_error_noread);
 
 	/* Empty the current buffer. */
 	tocopy = cookie->_lastsize;
@@ -79,8 +79,7 @@ CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
 
 	/* Check if we have already finished. */
 	if (cookie->_total && cookie->_id == cookie->_total) {
-		errno = casio_error_eof;
-		return (-1);
+		return -(casio_error_eof);
 	}
 
 	/* Receive packets. */
@@ -137,8 +136,7 @@ CASIO_LOCAL size_t casio_seven_data_read(seven_data_cookie_t *cookie,
 fail:
 	/* XXX: tell the distant device we have a problem? */
 	cookie->_faulty = 1;
-	errno = err;
-	return (-1);
+	return -(err);
 }
 
 /**

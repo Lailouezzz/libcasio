@@ -20,14 +20,14 @@
 #ifndef LIBCASIO_DISABLED_WINDOWS
 
 /**
- *	casio_windows_read:
+ *	casio_windows_read: TODO
  *	Read from an MS-Windows stream.
  *
  *	@arg	cookie		the cookie.
- *	@return				the error code (0 if ok).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-int CASIO_EXPORT casio_windows_read(win_cookie_t *cookie,
+ssize_t CASIO_EXPORT casio_windows_read(win_cookie_t *cookie,
 	unsigned char *dest, size_t size)
 {
 	DWORD werr, wsuccess, recv; size_t tocopy;

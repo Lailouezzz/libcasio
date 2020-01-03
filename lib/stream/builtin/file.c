@@ -46,10 +46,10 @@ typedef struct {
  *	@arg	cookie		the cookie.
  *	@arg	data		the data pointer
  *	@arg	size		the data size.
- *	@return				the size written and -1 if error (error code is in errno).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-CASIO_LOCAL size_t casio_file_read(file_cookie_t *cookie,
+CASIO_LOCAL ssize_t casio_file_read(file_cookie_t *cookie,
 	unsigned char *dest, size_t size)
 {
 	size_t recv;
@@ -92,8 +92,7 @@ CASIO_LOCAL size_t casio_file_read(file_cookie_t *cookie,
 			/* End of file. */
 
 			msg((ll_error, "encountered an end of file"));
-			errno = casio_error_eof;
-			return (-1);
+			return -(casio_error_eof);
 
 		case EINTR: /* alarm */
 		case ETIMEDOUT:
@@ -103,21 +102,18 @@ CASIO_LOCAL size_t casio_file_read(file_cookie_t *cookie,
 			/* A timeout has occurred. */
 
 			msg((ll_error, "timeout received"));
-			errno = casio_error_timeout;
-			return (-1);
+			return -(casio_error_timeout);
 
 		case ENODEV:
 		case EPIPE: case ESPIPE:
 			/* A device error has occured. */
 
 			msg((ll_error, "calculator was disconnected"));
-			errno = casio_error_nocalc;
-			return (-1);
+			return -(casio_error_nocalc);
 
 		default:
 			msg((ll_fatal, "errno was %d: %s", errno, strerror(errno)));
-			errno = casio_error_unknown;
-			return (-1);
+			return -(casio_error_unknown);
 	}
 
 	return copiedsize;

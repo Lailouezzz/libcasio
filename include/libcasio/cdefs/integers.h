@@ -23,6 +23,13 @@
 CASIO_BEGIN_NAMESPACE
 
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#  if defined(__WINDOWS__)
+#   include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#  else
+#   include <sys/types.h>
+#  endif
+
 #  include <stdint.h>
 #  include <inttypes.h>
 

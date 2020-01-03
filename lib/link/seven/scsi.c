@@ -83,7 +83,7 @@ typedef struct {
  * Read and write from the stream.
  * --- */
 
-CASIO_LOCAL size_t seven_scsi_read(seven_scsi_cookie_t *cookie,
+CASIO_LOCAL ssize_t seven_scsi_read(seven_scsi_cookie_t *cookie,
 	unsigned char *buffer, size_t size)
 {
 	casio_scsi_t scsi; int err;
@@ -129,8 +129,7 @@ CASIO_LOCAL size_t seven_scsi_read(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data_len = 16;
 
 			if ((err = casio_scsi_request(cookie->stream, &scsi))) {
-				errno = err;
-				return (-1);
+				return -(err);
 			}
 
 			mem((ll_info, poll_data, 16));
@@ -182,8 +181,7 @@ CASIO_LOCAL size_t seven_scsi_read(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data_len = avail;
 
 			if ((err = casio_scsi_request(cookie->stream, &scsi))) {
-				errno = err;
-				return (-1);
+				return -(err);
 			}
 		}
 

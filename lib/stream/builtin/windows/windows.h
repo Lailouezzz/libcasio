@@ -51,7 +51,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_windows_settm
 
 /* Character device callbacks. */
 
-CASIO_EXTERN int CASIO_EXPORT casio_windows_read
+CASIO_EXTERN ssize_t CASIO_EXPORT casio_windows_read
 	OF((win_cookie_t *cookie, unsigned char *dest, size_t size));
 CASIO_EXTERN int CASIO_EXPORT casio_windows_write
 	OF((win_cookie_t *cookie, const unsigned char *data, size_t size));

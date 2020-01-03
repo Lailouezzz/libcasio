@@ -394,13 +394,17 @@ int main(int ac, char **av)
 				err = casio_error_unknown;
 				break;
 			}
-			size_t size;
+			ssize_t size;
 			do
 			{
 				size = casio_read(fileStream, buffer, sizeof(buffer));
-				if(size == (size_t)-1)
-					err = errno;
-				if(err == casio_error_eof)
+				if(size < 0) {
+					err = -size;
+					if(err == casio_error_eof)
+						break;
+					else 
+						goto fail;
+				}
 				fwrite(buffer, 1, size, file);
 			} while (err == 0);
 			

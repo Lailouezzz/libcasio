@@ -26,10 +26,10 @@
  *	@arg	cookie		the cookie.
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the size written and -1 if error (error code is in errno).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-size_t CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
+ssize_t CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 	unsigned char *dest, size_t size)
 {
 	int fd = cookie->_readfd;
@@ -65,12 +65,11 @@ size_t CASIO_EXPORT casio_streams_read(streams_cookie_t *cookie,
 		if (recv < 0) switch (errno) {
 			case 0: continue;
 			case ENODEV: case EIO:
-				return (casio_error_nocalc);
+				return -(casio_error_nocalc);
 			default:
 				msg((ll_fatal, "error was %d: %s",
 					errno, strerror(errno)));
-				errno = casio_error_unknown;
-				return (-1);
+				return -(casio_error_unknown);
 		}
 
 		/* Get the current size to copy. */

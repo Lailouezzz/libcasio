@@ -175,9 +175,9 @@ CASIO_LOCAL const char *gettermstring(casio_seven_term_t code)
 
 #define buffer handle->casio_link_recv_buffer
 #define COMPLETE_PACKET(N) { \
-	int COMP_PACKET_err = casio_read(handle->casio_link_stream, \
+	ssize_t COMP_PACKET_err = casio_read(handle->casio_link_stream, \
 		&buffer[received], (size_t)N); \
-	received += COMP_PACKET_err; if (COMP_PACKET_err == -1) return (errno); }
+	received += COMP_PACKET_err >= 0 ? COMP_PACKET_err : 0; if (COMP_PACKET_err < 0) return -(COMP_PACKET_err); }
 
 CASIO_LOCAL int casio_seven_decode(casio_link_t *handle, int scralign)
 {

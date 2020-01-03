@@ -63,9 +63,9 @@ int CASIO_EXPORT casio_seek(casio_stream_t *stream, casio_off_t offset,
 				size_t rd = min(to_skip, 128);
 
 				/* Read that much from the stream. */
-				size_t readed = casio_read(stream, buf, rd);
-				if (readed == (size_t)-1) {
-					err = errno;
+				ssize_t readed = casio_read(stream, buf, rd);
+				if (readed < 0) {
+					err = -readed;
 					goto fail;
 				}
 

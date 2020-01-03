@@ -38,20 +38,20 @@ struct thecookie {
  *	@arg	cookie		the cookie.
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the size written and -1 if error (error code is in errno).
+ *	@return				the size if > 0, or if < 0 the error code is -[returned value].
  */
 
-CASIO_LOCAL size_t csum32_read(struct thecookie *cookie,
+CASIO_LOCAL ssize_t csum32_read(struct thecookie *cookie,
 	unsigned char *dest, size_t size)
 {
 	int err;
 
 	/* Make the call. */
 
-	size = casio_read(cookie->_stream, dest, size);
-	if (size == (size_t)-1) {
-		errno = errno;
-		return (-1);
+	ssize_t ssize = casio_read(cookie->_stream, dest, size);
+	if (ssize < 0) {
+		err = -ssize;
+		return -(err);
 	}
 
 	/* Make the checksum. */
