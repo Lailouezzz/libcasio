@@ -3,4 +3,4 @@
 libs_static:
 	@echo sdl libusb libcasio
 libs:
-	@echo libcasio
+	@echo sdl libcasio
