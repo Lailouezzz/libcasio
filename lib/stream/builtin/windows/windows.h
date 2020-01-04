@@ -53,7 +53,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_windows_settm
 
 CASIO_EXTERN ssize_t CASIO_EXPORT casio_windows_read
 	OF((win_cookie_t *cookie, unsigned char *dest, size_t size));
-CASIO_EXTERN int CASIO_EXPORT casio_windows_write
+CASIO_EXTERN ssize_t CASIO_EXPORT casio_windows_write
 	OF((win_cookie_t *cookie, const unsigned char *data, size_t size));
 
 /* Seek callback. */

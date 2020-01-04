@@ -149,17 +149,18 @@ fail:
  *	@return				the error code (0 if ok).
  */
 
-CASIO_LOCAL int casio_seven_data_write(seven_data_cookie_t *cookie,
+CASIO_LOCAL ssize_t casio_seven_data_write(seven_data_cookie_t *cookie,
 	const unsigned char *data, size_t size)
 {
 	int err; size_t tocopy, lastlimit;
 	casio_link_t *handle = cookie->_link;
+	size_t writtensize = 0;
 
 	/* Check if the stream is faulty, or if we have already finished. */
 	if (cookie->_faulty)
-		return (casio_error_nowrite);
+		return -(casio_error_nowrite);
 	if (cookie->_id > cookie->_total)
-		return (casio_error_eof);
+		return -(casio_error_eof);
 
 	/* Current packet management. */
 	if (cookie->_pos || size < BUFSIZE) {
@@ -171,13 +172,14 @@ CASIO_LOCAL int casio_seven_data_write(seven_data_cookie_t *cookie,
 		memcpy(cookie->_current, data, tocopy);
 		data += tocopy; size -= tocopy;
 		cookie->_pos += tocopy;
+		writtensize += tocopy;
 
 		/* Check if the current packet is full. */
 		if (cookie->_id == cookie->_total) {
 			if (cookie->_pos < cookie->_lastsize)
-				return (0);
+				return (writtensize);
 		} else if (cookie->_pos < BUFSIZE - 1)
-			return (0);
+			return (writtensize);
 
 		/* Send the packet. */
 		if (cookie->_id == 1 && cookie->_disp)
@@ -198,14 +200,14 @@ CASIO_LOCAL int casio_seven_data_write(seven_data_cookie_t *cookie,
 		if (err) goto fail;
 		if (cookie->_disp) (*cookie->_disp)(cookie->_disp_cookie,
 			cookie->_id, cookie->_total);
-		data += BUFSIZE; size -= BUFSIZE; cookie->_id++;
+		data += BUFSIZE; size -= BUFSIZE; cookie->_id++; writtensize += BUFSIZE;
 	}
 
 	/* Copy the last bytes of the call. */
 	lastlimit = cookie->_id == cookie->_total ? cookie->_lastsize : BUFSIZE;
 	tocopy = lastlimit; if (tocopy > size) tocopy = size;
 	memcpy(cookie->_current, data, tocopy);
-	cookie->_pos = tocopy; size -= tocopy;
+	cookie->_pos = tocopy; size -= tocopy; writtensize += tocopy;
 
 	/* Send the last packet if required. */
 	if (tocopy == lastlimit) {
@@ -220,14 +222,14 @@ CASIO_LOCAL int casio_seven_data_write(seven_data_cookie_t *cookie,
 	/* Check if there are still some bytes left
 	 * (bytes after the last packet, means the announced size
 	 *  was too small). */
-	if (size) return (casio_error_nowrite);
+	if (size) return -(casio_error_nowrite);
 
 	/* Everything went well! :) */
-	return (0);
+	return (writtensize);
 fail:
 	/* XXX: tell the distant device we have a problem? */
 	cookie->_faulty = 1;
-	return (err);
+	return -(err);
 }
 
 /**
@@ -286,11 +288,13 @@ CASIO_LOCAL int casio_seven_data_close(seven_data_cookie_t *cookie)
 		 * go directly to the end. */
 		memset(zeroes, 0, BUFSIZE);
 		for (; left >= BUFSIZE; left -= BUFSIZE) {
-			if ((err = casio_seven_data_write(cookie, zeroes, BUFSIZE)))
+			ssize_t ssize = casio_seven_data_write(cookie, zeroes, BUFSIZE);
+			if ((err = ssize < 0 ? -ssize : 0))
 				goto fail;
 		}
 
-		err = casio_seven_data_write(cookie, zeroes, left);
+		ssize_t ssize = casio_seven_data_write(cookie, zeroes, left);
+		err = ssize < 0 ? -ssize : 0;
 	}
 
 	err = 0;

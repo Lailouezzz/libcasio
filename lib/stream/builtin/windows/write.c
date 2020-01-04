@@ -26,13 +26,14 @@
  *	@arg	cookie		the cookie.
  *	@arg	data		the source
  *	@arg	size		the source size
- *	@return				the error code (0 if ok).
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-int CASIO_EXPORT casio_windows_write(win_cookie_t *cookie,
+ssize_t CASIO_EXPORT casio_windows_write(win_cookie_t *cookie,
 	const unsigned char *data, size_t size)
 {
 	BOOL wsuccess, werr;
+	size_t writtensize = 0;
 
 	/* Make the I/O request. */
 
@@ -49,6 +50,7 @@ int CASIO_EXPORT casio_windows_write(win_cookie_t *cookie,
 
 		data += wrt;
 		size -= wrt;
+		writtensize += wrt;
 	} while (size);
 
 	/* Check the error. */
@@ -56,14 +58,14 @@ int CASIO_EXPORT casio_windows_write(win_cookie_t *cookie,
 	if (!wsuccess) switch ((werr = GetLastError())) {
 		case ERROR_DEV_NOT_EXIST:
 			msg((ll_error, "Device has been disconnected!"));
-			return (casio_error_nocalc);
+			return -(casio_error_nocalc);
 
 		default:
 			msg((ll_fatal, "Encountered error 0x%08lx", werr));
-			return (casio_error_unknown);
+			return -(casio_error_unknown);
 	}
 
-	return (0);
+	return (writtensize);
 }
 
 #endif

@@ -63,25 +63,25 @@ CASIO_LOCAL ssize_t casio_memory_read(void *vcookie, unsigned char *dest, size_t
  *	@arg	vcookie		the cookie (uncasted).
  *	@arg	data		the data pointer.
  *	@arg	size		the data size.
- *	@return				the error code (0 if ok).
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-CASIO_LOCAL int casio_memory_write(void *vcookie, const unsigned char *data,
+CASIO_LOCAL ssize_t casio_memory_write(void *vcookie, const unsigned char *data,
 	size_t size)
 {
 	memory_cookie_t *cookie = (void*)vcookie;
 
 	if (((size_t)-1 - cookie->_offset) < size) /* overflow */
-		return (casio_error_write);
+		return -(casio_error_write);
 	if (cookie->_offset + (casio_off_t)size > cookie->_size) {
 		cookie->_offset = cookie->_size - 1;
-		return (casio_error_eof);
+		return -(casio_error_eof);
 	}
 
 	memcpy(&cookie->_memory[cookie->_offset], data, size);
 	cookie->_offset += size;
 
-	return (0);
+	return (size);
 }
 
 /**

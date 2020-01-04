@@ -54,7 +54,7 @@ CASIO_EXTERN int CASIO_EXPORT casio_streams_settm
 CASIO_EXTERN ssize_t CASIO_EXPORT casio_streams_read
 	OF((streams_cookie_t *casio__cookie,
 		unsigned char *casio__dest, size_t casio__size));
-CASIO_EXTERN int CASIO_EXPORT casio_streams_write
+CASIO_EXTERN ssize_t CASIO_EXPORT casio_streams_write
 	OF((streams_cookie_t *casio__cookie,
 		const unsigned char *casio__data, size_t casio__size));
 

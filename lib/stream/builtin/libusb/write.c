@@ -26,10 +26,10 @@
  *	@arg	cookie		the cookie.
  *	@arg	data		the source.
  *	@arg	size		the source size.
- *	@return				the error code (0 if ok).
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-int CASIO_EXPORT casio_libusb_write(cookie_libusb_t *cookie,
+ssize_t CASIO_EXPORT casio_libusb_write(cookie_libusb_t *cookie,
 	const unsigned char *data, size_t size)
 {
 	int sent, libusberr;
@@ -44,15 +44,15 @@ int CASIO_EXPORT casio_libusb_write(cookie_libusb_t *cookie,
 		case LIBUSB_ERROR_PIPE:
 		case LIBUSB_ERROR_NO_DEVICE:
 			msg((ll_error, "The calculator is not here anymore :("));
-			return (casio_error_nocalc);
+			return -(casio_error_nocalc);
 
 		default:
 			msg((ll_fatal, "libusb error was %d: %s", libusberr,
 				libusb_strerror(libusberr)));
-			return (casio_error_unknown);
+			return -(casio_error_unknown);
 	}
 
-	return (0);
+	return (sent);
 }
 
 #endif

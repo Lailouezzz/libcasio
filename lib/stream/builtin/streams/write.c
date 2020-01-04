@@ -26,13 +26,14 @@
  *	@arg	cookie		the cookie.
  *	@arg	data		the source.
  *	@arg	size		the source size.
- *	@return				the error (0 if ok).
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-int CASIO_EXPORT casio_streams_write(streams_cookie_t *cookie,
+ssize_t CASIO_EXPORT casio_streams_write(streams_cookie_t *cookie,
 	const unsigned char *data, size_t size)
 {
 	int fd = cookie->_writefd;
+	size_t writtensize = 0;
 
 	/* Send. */
 
@@ -40,19 +41,20 @@ int CASIO_EXPORT casio_streams_write(streams_cookie_t *cookie,
 		ssize_t wr = write(fd, data, size);
 		if (wr < 0) break;
 		size -= (size_t)wr;
+		writtensize += (size_t)wr;
 	}
 
 	/* Be sure it's written, or check the error. */
 
 	if (size) switch (errno) {
 		case ENODEV:
-			return (casio_error_nocalc);
+			return -(casio_error_nocalc);
 		default:
 			msg((ll_fatal, "errno was %d: %s", errno, strerror(errno)));
-			return (casio_error_unknown);
+			return -(casio_error_unknown);
 	}
 
-	return (0);
+	return (writtensize);
 }
 
 #endif

@@ -126,10 +126,10 @@ CASIO_LOCAL ssize_t casio_file_read(file_cookie_t *cookie,
  *	@arg	cookie		the cookie.
  *	@arg	data		the source
  *	@arg	size		the source size
- *	@return				the error code (0 if ok)
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-CASIO_LOCAL int casio_file_write(file_cookie_t *cookie,
+CASIO_LOCAL ssize_t casio_file_write(file_cookie_t *cookie,
 	const unsigned char *data, size_t size)
 {
 	size_t sent;
@@ -145,7 +145,7 @@ CASIO_LOCAL int casio_file_write(file_cookie_t *cookie,
 			/* End of file (EOF). */
 
 			msg((ll_error, "encountered an end of file"));
-			return (casio_error_eof);
+			return -(casio_error_eof);
 
 		case EINTR: /* alarm */
 		case ETIMEDOUT:
@@ -155,20 +155,20 @@ CASIO_LOCAL int casio_file_write(file_cookie_t *cookie,
 			/* Timeout error. */
 
 			msg((ll_error, "timeout received"));
-			return (casio_error_timeout);
+			return -(casio_error_timeout);
 
 		case ENODEV:
 			/* Device disconnected. */
 
 			msg((ll_fatal, "calculator was disconnected"));
-			return (casio_error_nocalc);
+			return -(casio_error_nocalc);
 
 		default:
 			msg((ll_fatal, "errno was %d: %s", errno, strerror(errno)));
-			return (casio_error_unknown);
+			return -(casio_error_unknown);
 	}
 
-	return (0);
+	return sent;
 }
 
 /**

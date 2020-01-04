@@ -58,7 +58,8 @@
 /* Write. */
 
 # define  WRITE(CASIO__BUF, CASIO__SZ) { \
-	int WRITE_err = casio_write(buffer, (CASIO__BUF), (CASIO__SZ)); \
+	ssize_t WRITE_ssize = casio_write(buffer, (CASIO__BUF), (CASIO__SZ)); \
+	int WRITE_err = WRITE_ssize < 0 ? -WRITE_ssize : 0; \
 	if (WRITE_err) return (WRITE_err); }
 # define DWRITE(CASIO__OBJECT) \
 	WRITE(&(CASIO__OBJECT), sizeof(CASIO__OBJECT))

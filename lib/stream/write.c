@@ -25,32 +25,38 @@
  *	@arg	stream		the stream to write to.
  *	@arg	data		the data to write.
  *	@arg	size		the amount of bytes to write.
- *	@return				the error code (0 if ok).
+ *	@return				the size written if > 0, or if < 0 the error code is -[returned value].
  */
 
-int CASIO_EXPORT casio_write(casio_stream_t *stream,
+ssize_t CASIO_EXPORT casio_write(casio_stream_t *stream,
 	const void *data, size_t size)
 {
-	int err;
+	int err = casio_error_ok;
+	ssize_t ssize = 0;
 
 	/* check if we can write */
-	failure(~stream->casio_stream_mode & CASIO_OPENMODE_WRITE,
-		casio_error_write)
+	failure(~stream->casio_stream_mode & CASIO_OPENMODE_WRITE, 
+		casio_error_write);
 
 	/* write */
-	if (!size) return (0);
-	err = (*getcb(stream, write))(stream->casio_stream_cookie, data, size);
-	if (err) {
-		msg((ll_error, "Stream writing failure: %s", casio_strerror(err)));
+	if (size == 0) {
+		return (0);
+	}
+	ssize = (*getcb(stream, write))(stream->casio_stream_cookie, data, size);
+	
+	if (ssize < 0) {
+		err = -ssize;
+		msg((ll_error, "Stream reading failure: %s", casio_strerror(err)));
 		goto fail;
 	}
 
 	/* move the cursor and return */
-	stream->casio_stream_offset += size;
-	err = 0;
+	if(ssize >= 0) {
+		stream->casio_stream_offset += size;
+	}
 fail:
 	stream->casio_stream_lasterr = err;
-	return (err);
+	return ssize;
 }
 
 /**
@@ -66,5 +72,6 @@ int CASIO_EXPORT casio_write_char(casio_stream_t *stream, int car)
 {
 	unsigned char ccar = car;
 
-	return (casio_write(stream, &ccar, 1));
+	ssize_t ssize = casio_write(stream, &ccar, 1);
+	return (ssize < 0 ? (int)-ssize : 0);
 }

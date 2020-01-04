@@ -202,11 +202,12 @@ CASIO_LOCAL ssize_t seven_scsi_read(seven_scsi_cookie_t *cookie,
 	return copiedsize;
 }
 
-CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
+CASIO_LOCAL ssize_t seven_scsi_write(seven_scsi_cookie_t *cookie,
 	unsigned char const *buffer, size_t size)
 {
 	casio_scsi_t scsi;
 	int err;
+	size_t writtensize = 0;
 
 	do {
 		casio_uint16_t activity;
@@ -229,7 +230,7 @@ CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data_len = 16;
 
 			if ((err = casio_scsi_request(cookie->stream, &scsi)))
-				return (err);
+				return -(err);
 
 #if 0
 			activity = (poll_data[10] << 8) | poll_data[11];
@@ -264,14 +265,15 @@ CASIO_LOCAL int seven_scsi_write(seven_scsi_cookie_t *cookie,
 			scsi.casio_scsi_data_len = to_send;
 
 			if ((err = casio_scsi_request(cookie->stream, &scsi)))
-				return (err);
+				return -(err);
 
 			buffer += to_send;
 			size -= to_send;
+			writtensize += to_send;
 		}
 	} while (size);
 
-	return (0);
+	return (writtensize);
 }
 
 /* ---

@@ -91,7 +91,8 @@ CASIO_LOCAL int casio_seven_send_buf(casio_link_t *handle,
 		}
 
 		/* send prepared packet */
-		err = casio_write(handle->casio_link_stream, buf, bufsize);
+		ssize_t ssize = casio_write(handle->casio_link_stream, buf, bufsize);
+		err = ssize < 0 ? -ssize : 0;
 		if (err) return (err);
 
 		/* set wasreset for logging */

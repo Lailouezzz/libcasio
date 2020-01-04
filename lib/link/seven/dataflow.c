@@ -167,7 +167,8 @@ int CASIO_EXPORT casio_seven_get_buffer(casio_link_t *handle,
 			msg((ll_info, "buffer too full, should be emptied"));
 
 			/* Empty the buffer in the stream. */
-			buf_err = casio_write(buffer, buf, ps);
+			ssize_t ssize = casio_write(buffer, buf, ps);
+			buf_err = ssize < 0 ? -ssize : 0;
 			if (buf_err) { err = casio_error_nowrite; goto fail; }
 
 			/* Reset the pointer. */
