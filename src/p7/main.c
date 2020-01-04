@@ -214,10 +214,11 @@ static void print_file_info(void *cookie,
  *	Parse a path str. 
  *	Make sure ppath point to a casio_path_t structure initialized to 0.
  *
- *	@arg	pathstr		the C str to parse
- *	@arg	flags		the path flags
- *	@arg	ppath		the pointer to the path structure (modified)
- *	@return				return 0 if okey
+ *	@arg	filenamestr		the C str file name (can be NULL)
+ *	@arg	dirnamestr		the C str dir name (can be NULL)
+ *	@arg	flags			the path flags
+ *	@arg	ppath			the pointer to the path structure (modified)
+ *	@return					return 0 if okey
  */
 
 static int create_path(const char *filenamestr, const char *dirnamestr, unsigned int flags, casio_path_t *ppath)
@@ -226,6 +227,8 @@ static int create_path(const char *filenamestr, const char *dirnamestr, unsigned
 	int lfilenamestr = filenamestr ? strlen(filenamestr) : 0;
 	int ldirnamestr = dirnamestr ? strlen(dirnamestr) : 0;
 	casio_pathnode_t **pnode = &ppath->casio_path_nodes;
+	filenamestr = lfilenamestr ? filenamestr : NULL;
+	dirnamestr = ldirnamestr ? dirnamestr : NULL;
 
 	/* make the nodes */
 	if (filenamestr && dirnamestr) {
@@ -405,7 +408,7 @@ int main(int ac, char **av)
 		case mn_list:
 			/* Initialize the path */
 			path.casio_path_device = args.storage;
-			create_path("", "", casio_pathflag_rel, &path);
+			create_path(NULL, NULL, casio_pathflag_rel, &path);
 
 			/* Open 7.00 fs and list */
 			if ((err = casio_open_seven_fs(&fs, handle))
