@@ -60,12 +60,12 @@ int CASIO_EXPORT casio_seven_send_buffer(casio_link_t *handle,
 	resp = !shift;
 	for (id = 1; id <= total;) {
 		unsigned char *p = buf;
-		size_t toread;
+		ssize_t toread;
 
 		/* Read the big block. */
 		toread = min(BUFSIZE, size);
 		toread = casio_read(buffer, buf + 8, toread);
-		if (toread == (size_t)-1) {
+		if (toread < 0) {
 			return (casio_error_noread);
 		}
 		size -= toread;
