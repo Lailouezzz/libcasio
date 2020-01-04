@@ -210,6 +210,31 @@ static void print_file_info(void *cookie,
 }
 
 /**
+ *	free_nodespath:
+ *	Free the nodes owned by a path.
+ *	
+ *	@arg	ppath	pointer to the path
+ *	@return			return 0 if okey
+ */
+
+int free_nodespath(casio_path_t *ppath)
+{
+	casio_pathnode_t *pnode = ppath->casio_path_nodes;
+	
+	ppath->casio_path_nodes = NULL;
+	while(pnode)
+	{
+		casio_pathnode_t *nextpnode = pnode->casio_pathnode_next;
+		pnode->casio_pathnode_next = NULL;
+
+		casio_free_pathnode(pnode);
+		pnode = nextpnode;
+	}
+
+	return (0);
+}
+
+/**
  *	parse_path:
  *	Parse a path str. 
  *	Make sure ppath point to a casio_path_t structure initialized to 0.
@@ -278,6 +303,11 @@ int main(int ac, char **av)
 	int err = 0; args_t args;
 	casio_link_t *handle = NULL;
 	casio_fs_t *fs = NULL;
+	casio_path_t path = { 0 };
+	char data_buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
+	casio_stream_t *fileStream = NULL;
+	FILE *file = NULL;
+	path.casio_path_nodes = NULL; // Just for be sure
 
 	/* Decode the arguments. */
 
@@ -324,9 +354,6 @@ int main(int ac, char **av)
 
 	/* Check according to menu */
 
-	casio_path_t path = { 0 };
-	char data_buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
-	casio_stream_t *fileStream = NULL;
 	switch (args.menu) {
 #if 0
 		case mn_send:
@@ -376,7 +403,7 @@ int main(int ac, char **av)
 				break;
 
 			/* Open local file in write mode */
-			FILE *file = fopen(args.filename, "wb");
+			file = fopen(args.filename, "wb");
 			
 			/* If we can't open error */
 			if(!file) {
@@ -398,10 +425,8 @@ int main(int ac, char **av)
 				fwrite(data_buffer, 1, size, file);
 			} while (err == 0);
 			
-			/* All good so close streams and clear error */
+			/* All good so clear error */
 			err = 0;
-			fclose(file);
-			casio_close(fileStream);
 
 			break;
 
@@ -454,6 +479,14 @@ int main(int ac, char **av)
 	fs = NULL;
 	casio_close_link(handle);
 	handle = NULL;
+	free_nodespath(&path);
+	path.casio_path_nodes = NULL; // Just for be sure
+	casio_close(fileStream);
+	fileStream = NULL;
+	if (file) {
+		fclose(file);
+		file = NULL;
+	}
 
 	/* Then we're good */
 	return (0);
@@ -490,6 +523,14 @@ fail:
 	fs = NULL;
 	casio_close_link(handle);
 	handle = NULL;
+	free_nodespath(&path);
+	path.casio_path_nodes = NULL; // Just for be sure
+	casio_close(fileStream);
+	fileStream = NULL;
+	if (file) {
+		fclose(file);
+		file = NULL;
+	}
 
 	/* then go away */
 	return (1);
