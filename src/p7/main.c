@@ -411,18 +411,18 @@ int main(int ac, char **av)
 				err = casio_error_noaccess;
 				break;
 			}
-			ssize_t size;
+			ssize_t ssize;
 			do
 			{
-				size = casio_read(fileStream, data_buffer, sizeof(data_buffer));
-				if(size < 0) {
-					err = -size;
+				ssize = casio_read(fileStream, data_buffer, sizeof(data_buffer));
+				if(ssize < 0) {
+					err = -ssize;
 					if(err == casio_error_eof)
 						break;
 					else 
 						goto fail;
 				}
-				fwrite(data_buffer, 1, size, file);
+				fwrite(data_buffer, 1, ssize, file);
 			} while (err == 0);
 			
 			/* All good so clear error */
