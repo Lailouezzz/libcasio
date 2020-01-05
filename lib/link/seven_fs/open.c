@@ -26,6 +26,7 @@ CASIO_LOCAL casio_fsfuncs_t sevenfs_callbacks = {
 	(casio_fs_freepath_t*)&casio_free_sevenfs_path,
 	NULL,
 	NULL,
+	NULL,
 	(casio_fs_del_t*)&casio_sevenfs_delete,
 	NULL,
 	(casio_fs_list_t*)&casio_sevenfs_list,

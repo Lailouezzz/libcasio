@@ -23,7 +23,7 @@
 
 CASIO_LOCAL casio_fsfuncs_t posix_fs_funcs = {
 	NULL, &casio_make_posix_path, &casio_free_posix_path,
-	&casio_posix_stat, NULL, NULL, NULL,
+	&casio_posix_stat, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL
 };
 
