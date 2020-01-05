@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/getfreemem.c -- delete an element from a libcasio filesystem.
+ * fs/getfreemem.c -- get the available free space on a fs.
  * Copyright (C) 2020 Alan "Lailouezzz" Le Bouder <alanlebouder@gmail.com>
  *
  * This file is part of libcasio.
