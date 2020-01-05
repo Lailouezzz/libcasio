@@ -177,11 +177,11 @@ int fxremote_flash(args_t *args)
 	 * Maybe it just ANDs, or something...? Anyway, I'll do it as well. */
 
 	{
-		int num = 1, total = (top - 0xA0010000) / 0x10000;
+		int num = 1, total = ((args->eraseflash ? 0xA0280000 : top) - 0xA0010000) / 0x10000;
 
 		osdisp_init(&osdisp_cookie, "Clearing the sectors.", "Cleared!");
 		osdisp(&osdisp_cookie, 1, 0);
-		for (addr = 0xA0010000; addr < top; addr += 0x10000) {
+		for (addr = 0xA0010000; addr < (args->eraseflash ? 0xA0280000 : top); addr += 0x10000) {
 			casio_uint32_t localaddr;
 
 			localaddr = casio_htobe32(addr);

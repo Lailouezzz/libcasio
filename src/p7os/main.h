@@ -38,6 +38,7 @@ enum menu_e {
 typedef struct {
 	enum menu_e  menu;
 	int noprepare;
+	int eraseflash;
 
 	/* communication and tweaks */
 	const char *com;

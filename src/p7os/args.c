@@ -70,6 +70,7 @@ static const char help_main1[] =
 "                     If this option isn't used, the program will look for a\n"
 "                     calculator connected using direct USB.\n"
 "  --no-prepare       Use the current environment, instead of uploading one.\n"
+"  --erase-flash      Instead of 0xA0270000 the last erase addr is 0xA0400000.\n"
 "  -u, --uexe <path>  Use a custom update program.\n"
 "                     If `--no-prepare` is not given, this option is "
 	"required.\n"
@@ -181,6 +182,7 @@ static const struct option longopts[] = {
 	{"version",          no_argument, NULL, 'v'},
 	{"com",        required_argument, NULL, 'c'},
 	{"no-prepare",       no_argument, NULL, 'n'},
+	{"erase-flash",      no_argument, NULL, 'e'},
 	{"uexe",       required_argument, NULL, 'u'},
 	{"output",     required_argument, NULL, 'o'},
 	{"log",        required_argument, NULL, 'l'},
@@ -225,13 +227,16 @@ int parse_args(int ac, char **av, args_t *args)
 			version = 1;
 			break;
 
-		/* COM port, should prepare or not. */
+		/* COM port, should prepare or not, should erase flash or not. */
 
 		case 'c':
 			args->com = optarg;
 			break;
 		case 'n':
 			args->noprepare = 1;
+			break;
+		case 'e':
+			args->eraseflash = 1;
 			break;
 
 		/* log level, Update.Exe, output path */
