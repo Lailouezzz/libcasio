@@ -63,4 +63,10 @@ CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_open
 	OF((sevenfs_cookie_t *casio__cookie, sevenfs_path_t *casio__path,
 		casio_off_t casio__size, casio_openmode_t casio__mode, casio_stream_t **casio__stream));
 
+/* Get the free space */
+
+CASIO_EXTERN int CASIO_EXPORT casio_sevenfs_getfreemem
+	OF((sevenfs_cookie_t *casio__cookie, sevenfs_path_t *casio__path,
+		size_t *casio__capacity));
+
 #endif /* LOCAL_LINK_SEVEN_FS_H */
