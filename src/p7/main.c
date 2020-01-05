@@ -305,9 +305,10 @@ int main(int ac, char **av)
 	casio_fs_t *fs = NULL;
 	casio_path_t path = { 0 };
 	char data_buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
-	casio_stream_t *fileStream = NULL;
+	casio_stream_t *filestream = NULL;
 	FILE *file = NULL;
 	path.casio_path_nodes = NULL; // Just for be sure
+	ssize_t ssize;
 
 	/* Decode the arguments. */
 
@@ -392,6 +393,58 @@ int main(int ac, char **av)
 			err = casio_reset(handle, args.storage);
 			break;
 #endif
+		case mn_send:
+			/* Initialize the path */
+			path.casio_path_device = args.storage;
+			create_path(args.filename, args.dirname, casio_pathflag_rel, &path);
+
+			/* Open local file in read mode */
+			file = fopen(args.filename, "rb");
+
+			/* Get file size */
+			fseek(file, 0, SEEK_END);
+			size_t filesize = ftell(file);
+			rewind(file);
+
+			/* Open 7.00 fs */
+			if ((err = casio_open_seven_fs(&fs, handle)))
+				break;
+
+			/* Get capacity */
+			size_t capacity;
+			err = casio_getfreemem(fs, &path, &capacity);
+			if (err) break;
+
+			/* optimize if required */
+			if (filesize > capacity) {
+				printf("Not enough space on the device. Let's optimize!\n");
+				err = casio_optimize(fs, args.storage);
+				if (err) break;
+			}
+
+			/* Open file in write only */
+			if ((err = casio_open(fs, &filestream, &path, filesize, CASIO_OPENMODE_WRITE)))
+				break;
+
+			/* Write loop */
+			do
+			{
+				ssize = fread(data_buffer, 1, sizeof(data_buffer), file);
+				ssize = casio_write(filestream, data_buffer, ssize);
+				if(ssize < 0) {
+					err = -ssize;
+					if(err == casio_error_eof)
+						break;
+					else
+						goto fail;
+				}
+			} while (err == 0 && ssize != 0);
+			
+			/* All good so clear error */
+			err = 0;
+
+			break;
+
 		case mn_get:
 			/* Initialize the path */
 			path.casio_path_device = args.storage;
@@ -399,7 +452,7 @@ int main(int ac, char **av)
 
 			/* Open 7.00 fs and open file in read only */
 			if ((err = casio_open_seven_fs(&fs, handle))
-			 || (err = casio_open(fs, &fileStream, &path, 0, CASIO_OPENMODE_READ)))
+			 || (err = casio_open(fs, &filestream, &path, 0, CASIO_OPENMODE_READ)))
 				break;
 
 			/* Open local file in write mode */
@@ -411,15 +464,16 @@ int main(int ac, char **av)
 				err = casio_error_noaccess;
 				break;
 			}
-			ssize_t ssize;
+
+			/* Read loop */
 			do
 			{
-				ssize = casio_read(fileStream, data_buffer, sizeof(data_buffer));
+				ssize = casio_read(filestream, data_buffer, sizeof(data_buffer));
 				if(ssize < 0) {
 					err = -ssize;
 					if(err == casio_error_eof)
 						break;
-					else 
+					else
 						goto fail;
 				}
 				fwrite(data_buffer, 1, ssize, file);
@@ -481,8 +535,8 @@ int main(int ac, char **av)
 	handle = NULL;
 	free_nodespath(&path);
 	path.casio_path_nodes = NULL; // Just for be sure
-	casio_close(fileStream);
-	fileStream = NULL;
+	casio_close(filestream);
+	filestream = NULL;
 	if (file) {
 		fclose(file);
 		file = NULL;
@@ -525,8 +579,8 @@ fail:
 	handle = NULL;
 	free_nodespath(&path);
 	path.casio_path_nodes = NULL; // Just for be sure
-	casio_close(fileStream);
-	fileStream = NULL;
+	casio_close(filestream);
+	filestream = NULL;
 	if (file) {
 		fclose(file);
 		file = NULL;
