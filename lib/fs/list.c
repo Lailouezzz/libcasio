@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * fs/delete.c -- delete an element from a libcasio filesystem.
+ * fs/list.c -- delete an element from a libcasio filesystem.
  * Copyright (C) 2019 Alan "Lailouezzz" Le Bouder <alanlebouder@gmail.com>
  *
  * This file is part of libcasio.
