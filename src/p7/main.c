@@ -357,30 +357,6 @@ int main(int ac, char **av)
 
 	switch (args.menu) {
 #if 0
-		case mn_send:
-			/* get file size */
-			fseek(args.local, 0, SEEK_END);
-			casio_off_t filesize = (casio_off_t)ftell(args.local);
-			rewind(args.local);
-
-			/* get capacity */
-			unsigned long capacity;
-			err = casio_getfreemem(handle, args.storage, &capacity);
-			if (err) break;
-
-			/* optimize if required */
-			if (filesize > (casio_off_t)capacity) {
-				printf("Not enough space on the device. Let's optimize!\n");
-				err = casio_optimize(handle, args.storage);
-				if (err) break;
-			}
-
-			/* send the file */
-			err = casio_sendfile(handle, args.local,
-				args.dirname, args.filename,
-				args.storage, 1, args.force ? NULL : &sendfile_confirm,
-				args.nicedisp ? &sendfile_display : NULL);
-			break;
 		case mn_copy:
 			err = casio_copy(handle, args.dirname, args.filename,
 				args.newdir, args.newname, args.storage);
