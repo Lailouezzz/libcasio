@@ -31,8 +31,12 @@ CASIO_LOCAL int casio_sevenfs_open_read(sevenfs_cookie_t *cookie, sevenfs_path_t
 		casio_stream_t **stream)
 {
 	casio_link_t *handle = cookie; int err;
-	const char *dirname = (path->sevenfs_path_dir != 0xFF) ? &path->sevenfs_path_data[path->sevenfs_path_dir] : NULL;
-	const char *filename = &path->sevenfs_path_data[path->sevenfs_path_file];
+	const char *dirname = path->sevenfs_path_dir != 0xFF ? 
+						 &path->sevenfs_path_data[path->sevenfs_path_dir] :
+						  NULL;
+	const char *filename = path->sevenfs_path_file != 0xFF ? 
+						  &path->sevenfs_path_data[path->sevenfs_path_file] :
+						   NULL;
 	const char *devname = &path->sevenfs_path_data[path->sevenfs_path_dev];
 
 	/* Make checks */
@@ -94,7 +98,9 @@ CASIO_LOCAL int casio_sevenfs_open_write(sevenfs_cookie_t *cookie, sevenfs_path_
 	const char *dirname = path->sevenfs_path_dir != 0xFF ? 
 						 &path->sevenfs_path_data[path->sevenfs_path_dir] :
 						  NULL;
-	const char *filename = &path->sevenfs_path_data[path->sevenfs_path_file];
+	const char *filename = path->sevenfs_path_file != 0xFF ? 
+						  &path->sevenfs_path_data[path->sevenfs_path_file] :
+						   NULL;
 	const char *devname = &path->sevenfs_path_data[path->sevenfs_path_dev];
 
 	/* Make checks */
