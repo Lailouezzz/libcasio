@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * link/seven_fs/delete.c -- delete an element from a Protocol 7.00 filesystem.
+ * link/seven_fs/list.c -- list all files/directories from a Protocol 7.00 filesystem.
  * Copyright (C) 2019 Alan "Lailouezzz" Le Bouder <alanlebouder@gmail.com>
  *
  * This file is part of libcasio.
