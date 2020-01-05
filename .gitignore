@@ -5,6 +5,8 @@
 /lib*.dll*
 /man/*.[1-9]
 /man/*.gz
+*.g1a
+*.g3a
 
 /docs/_build
 build
