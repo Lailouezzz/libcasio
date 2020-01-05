@@ -91,9 +91,11 @@ CASIO_LOCAL int casio_sevenfs_open_write(sevenfs_cookie_t *cookie, sevenfs_path_
 		casio_off_t size, casio_stream_t **stream, int ow)
 {
 	casio_link_t *handle = cookie; int err;
-	char *dirname = &path->sevenfs_path_data[path->sevenfs_path_dir];
-	char *filename = &path->sevenfs_path_data[path->sevenfs_path_file];
-	char *devname = &path->sevenfs_path_data[path->sevenfs_path_dev];
+	const char *dirname = path->sevenfs_path_dir != 0xFF ? 
+						 &path->sevenfs_path_data[path->sevenfs_path_dir] :
+						  NULL;
+	const char *filename = &path->sevenfs_path_data[path->sevenfs_path_file];
+	const char *devname = &path->sevenfs_path_data[path->sevenfs_path_dev];
 
 	/* Make checks */
 	chk_required_filename(filename);
