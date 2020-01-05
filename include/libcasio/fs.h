@@ -234,6 +234,11 @@ typedef int CASIO_EXPORT casio_fs_list_t
 	OF((void *casio__cookie, casio_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
 
+/* The `casio_fs_getfreemem` callback is used to get the free space */
+typedef int CASIO_EXPORT casio_fs_getfreemem_t
+	OF((void *casio__cokie, casio_path_t *casio__path,
+		size_t *casio__capacity));
+
 /* The `casio_fs_optim` callback is used to optimize the filesystem
  * (run a defragmentation, …).
  *
@@ -253,19 +258,20 @@ typedef int CASIO_EXPORT casio_fs_optim_t
  * abstraction. */
 
 struct casio_fsfuncs_s {
-	casio_fs_close_t    *casio_fsfuncs_close;
-	casio_fs_makepath_t *casio_fsfuncs_makepath;
-	casio_fs_freepath_t *casio_fsfuncs_freepath;
+	casio_fs_close_t    	*casio_fsfuncs_close;
+	casio_fs_makepath_t 	*casio_fsfuncs_makepath;
+	casio_fs_freepath_t 	*casio_fsfuncs_freepath;
 
-	casio_fs_stat_t     *casio_fsfuncs_stat;
-	casio_fs_make_t     *casio_fsfuncs_make;
-	casio_fs_del_t      *casio_fsfuncs_del;
-	casio_fs_move_t     *casio_fsfuncs_move;
+	casio_fs_stat_t     	*casio_fsfuncs_stat;
+	casio_fs_getfreemem_t	*casio_fsfuncs_getfreemem;
+	casio_fs_make_t     	*casio_fsfuncs_make;
+	casio_fs_del_t      	*casio_fsfuncs_del;
+	casio_fs_move_t     	*casio_fsfuncs_move;
 
-	casio_fs_list_t     *casio_fsfuncs_list;
-	casio_fs_open_t     *casio_fsfuncs_open;
+	casio_fs_list_t     	*casio_fsfuncs_list;
+	casio_fs_open_t     	*casio_fsfuncs_open;
 
-	casio_fs_optim_t    *casio_fsfuncs_optim;
+	casio_fs_optim_t    	*casio_fsfuncs_optim;
 };
 
 /* ---
@@ -326,6 +332,12 @@ CASIO_EXTERN int CASIO_EXPORT casio_optimize
 CASIO_EXTERN int CASIO_EXPORT casio_list
 	OF((casio_fs_t *casio__fs, casio_path_t *casio__path,
 		casio_fs_list_func_t *casio__callback, void *casio__cbcookie));
+
+/* Get the free space */
+
+CASIO_EXTERN int CASIO_EXPORT casio_getfreemem
+	OF((casio_fs_t *casio__fs, casio_path_t *casio__path,
+		size_t *casio__capacity));
 
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
