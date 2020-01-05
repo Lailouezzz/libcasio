@@ -61,6 +61,7 @@ typedef struct casio_scsi_s         casio_scsi_t;
  * `WRITE`: the stream is writable.
  * `TRUNC`: the file will be truncated.
  * `APPEND`: will append to the file.
+ * `OW`: will overwrite if there is existing file.
  *
  * `SEEK`: the stream is seekable.
  * `SERIAL`: serial operations are available.
@@ -73,10 +74,11 @@ typedef unsigned int casio_openmode_t;
 # define CASIO_OPENMODE_WRITE  0x0002
 # define CASIO_OPENMODE_TRUNC  0x0004
 # define CASIO_OPENMODE_APPEND 0x0008
-# define CASIO_OPENMODE_SEEK   0x0010
-# define CASIO_OPENMODE_SERIAL 0x0020
-# define CASIO_OPENMODE_SCSI   0x0040
-# define CASIO_OPENMODE_USB    0x0080
+# define CASIO_OPENMODE_OW     0x0010
+# define CASIO_OPENMODE_SEEK   0x0020
+# define CASIO_OPENMODE_SERIAL 0x0040
+# define CASIO_OPENMODE_SCSI   0x0080
+# define CASIO_OPENMODE_USB    0x0100
 
 /* Offset types, to move within a stream, are the following:
  * `SET`: set the current position to the offset.
