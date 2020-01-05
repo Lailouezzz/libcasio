@@ -187,8 +187,12 @@ int CASIO_EXPORT casio_sevenfs_open(sevenfs_cookie_t *cookie, sevenfs_path_t *pa
 		casio_off_t size, casio_openmode_t mode, casio_stream_t **stream)
 {
 	casio_link_t *handle = cookie; int err;
-	const char *dirname = &path->sevenfs_path_data[path->sevenfs_path_dir];
-	const char *filename = &path->sevenfs_path_data[path->sevenfs_path_file];
+	const char *dirname = path->sevenfs_path_dir != 0xFF ? 
+						 &path->sevenfs_path_data[path->sevenfs_path_dir] :
+						  NULL;
+	const char *filename = path->sevenfs_path_file != 0xFF ? 
+						  &path->sevenfs_path_data[path->sevenfs_path_file] :
+						   NULL;
 	const char *devname = &path->sevenfs_path_data[path->sevenfs_path_dev];
 
 	/* Make checks (not really required) */

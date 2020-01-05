@@ -65,6 +65,11 @@
 
 # define chk_dirname(CASIO__DN) /* TODO */
 
+/* Check that the directory name is there and ok. */
+
+# define chk_required_dirname(CASIO__DN) \
+	if (!(CASIO_DN)) return (casio_error_invalid);
+
 /* Check that the MCS request head is ok. */
 
 # define chk_head(CASIO__HD) \
