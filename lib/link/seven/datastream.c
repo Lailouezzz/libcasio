@@ -357,6 +357,7 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 		msg((ll_info, "The data stream is a read one."));
 		mode = CASIO_OPENMODE_READ;
 
+		/* TODO : use the size parameter for use disp in read mode. */
 		cookie->_read = 1;
 		cookie->_id = 0;
 		cookie->_total = 0;
