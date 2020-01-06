@@ -374,13 +374,10 @@ int main(int ac, char **av)
 			path.casio_path_device = args.storage;
 			create_path(args.filename, args.dirname, casio_pathflag_rel, &path);
 
-			/* Open local file in read mode */
-			file = fopen(args.filename, "rb");
-
 			/* Get file size */
-			fseek(file, 0, SEEK_END);
-			size_t filesize = ftell(file);
-			rewind(file);
+			fseek(args.local, 0, SEEK_END);
+			size_t filesize = ftell(args.local);
+			rewind(args.local);
 
 			/* Open 7.00 fs */
 			if ((err = casio_open_seven_fs(&fs, handle)))
@@ -405,7 +402,7 @@ int main(int ac, char **av)
 			/* Write loop */
 			do
 			{
-				ssize = fread(data_buffer, 1, sizeof(data_buffer), file);
+				ssize = fread(data_buffer, 1, sizeof(data_buffer), args.local);
 				ssize = casio_write(filestream, data_buffer, ssize);
 				if(ssize < 0) {
 					err = -ssize;
@@ -431,16 +428,6 @@ int main(int ac, char **av)
 			 || (err = casio_open(fs, &filestream, &path, 0, CASIO_OPENMODE_READ)))
 				break;
 
-			/* Open local file in write mode */
-			file = fopen(args.filename, "wb");
-			
-			/* If we can't open error */
-			if(!file) {
-				fprintf(stderr, "Couldn't open in write mode %s", args.filename);
-				err = casio_error_noaccess;
-				break;
-			}
-
 			/* Read loop */
 			do
 			{
@@ -452,7 +439,7 @@ int main(int ac, char **av)
 					else
 						goto fail;
 				}
-				fwrite(data_buffer, 1, ssize, file);
+				fwrite(data_buffer, 1, ssize, args.local);
 			} while (err == 0);
 			
 			/* All good so clear error */
