@@ -492,6 +492,12 @@ CASIO_EXTERN int CASIO_EXPORT casio_open_seven_mcs
 CASIO_EXTERN int CASIO_EXPORT casio_open_seven_fs
 	OF((casio_fs_t **casio__filesystem, casio_link_t *casio__link));
 
+/* Set display callback and cookie */
+
+CASIO_EXTERN int CASIO_EXPORT casio_seven_set_disp
+	OF((casio_stream_t *casio__stream, casio_link_progress_t *casio__disp,
+		void *casio__dcookie));
+
 CASIO_END_DECLS
 CASIO_END_NAMESPACE
 #endif /* LIBCASIO_PROTOCOL_SEVEN_H */

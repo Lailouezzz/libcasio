@@ -366,3 +366,24 @@ int CASIO_EXPORT casio_seven_open_data_stream(casio_stream_t **stream,
 	/* initialize the stream */
 	return (casio_open_stream(stream, mode, cookie, &seven_data_callbacks, 0));
 }
+
+/**
+ *	casio_seven_set_disp:
+ *	Set display callback and cookie.
+ *
+ *	@arg	stream		the stream to make.
+ *	@arg	disp		the display callback.
+ *	@arg	dcookie		the display callback cookie.
+ *	@return				the error (0 if ok).
+ */
+
+int CASIO_EXPORT casio_seven_set_disp(casio_stream_t *stream,
+									  casio_link_progress_t *disp, void *dcookie)
+{
+	seven_data_cookie_t *cookie = casio_get_cookie(stream);
+
+	cookie->_disp = disp;
+	cookie->_disp_cookie = dcookie;
+
+	return (0);
+}
