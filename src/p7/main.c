@@ -119,8 +119,10 @@ static int sendfile_confirm(void)
  */
 
 static int sendfile_display_initialized = 0;
-static void sendfile_display(unsigned int id, unsigned int total)
+static void sendfile_display(void *cookie, unsigned int id, unsigned int total)
 {
+	(void)cookie;
+
 	/* here's the buffer */
 	static char buf[50] =
 		"\r|---------------------------------------| 00.00%";
@@ -306,7 +308,6 @@ int main(int ac, char **av)
 	casio_path_t path = { 0 };
 	char data_buffer[CASIO_SEVEN_MAX_RAWDATA_SIZE];
 	casio_stream_t *filestream = NULL;
-	FILE *file = NULL;
 	path.casio_path_nodes = NULL; // Just for be sure
 	ssize_t ssize;
 
@@ -398,6 +399,9 @@ int main(int ac, char **av)
 			/* Open file in write only */
 			if ((err = casio_open(fs, &filestream, &path, filesize, CASIO_OPENMODE_WRITE)))
 				break;
+
+			/* Setup disp */
+			casio_seven_set_disp(filestream, sendfile_display, NULL);
 
 			/* Write loop */
 			do
@@ -500,10 +504,6 @@ int main(int ac, char **av)
 	path.casio_path_nodes = NULL; // Just for be sure
 	casio_close(filestream);
 	filestream = NULL;
-	if (file) {
-		fclose(file);
-		file = NULL;
-	}
 
 	/* Then we're good */
 	return (0);
@@ -544,10 +544,6 @@ fail:
 	path.casio_path_nodes = NULL; // Just for be sure
 	casio_close(filestream);
 	filestream = NULL;
-	if (file) {
-		fclose(file);
-		file = NULL;
-	}
 
 	/* then go away */
 	return (1);
