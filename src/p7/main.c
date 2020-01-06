@@ -402,6 +402,7 @@ int main(int ac, char **av)
 
 			/* Setup disp */
 			casio_seven_set_disp(filestream, sendfile_display, NULL);
+			sendfile_display(NULL, 1, 0);
 
 			/* Write loop */
 			do
